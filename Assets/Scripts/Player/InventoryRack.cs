@@ -5,11 +5,27 @@ using System.Linq;
 
 [RequireComponent(typeof(Lootable))]
 public class InventoryRack : MonoBehaviour
-{    
-    [SerializeField]
-    private bool[,] Occupied = new bool[Inventory.RackHeight, Inventory.RackWidth];
-    [SerializeField]
+{        
+    [System.Serializable]
+    struct InitialCorruption
+    {
+        public Vector2Int Coordinates;
+        public int Amount;
+    }
+
+    public bool[,] Occupied = new bool[Inventory.RackHeight, Inventory.RackWidth];    
     private int[,] Corruption = new int[Inventory.RackHeight, Inventory.RackWidth];
+
+    [SerializeField] InitialCorruption[] initialCorruptions;
+
+    private void Awake()
+    {
+        for (int i = 0; i < initialCorruptions.Length; i++)
+        {
+            var corruption = initialCorruptions[i];
+            Corruption[corruption.Coordinates.y, corruption.Coordinates.x] = corruption.Amount;
+        }
+    }
 
     public int RackIndex;
 

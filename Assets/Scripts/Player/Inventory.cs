@@ -5,7 +5,7 @@ using System.Linq;
 
 public class Inventory : MonoBehaviour
 {
-    public static readonly int RackWidth = 16;
+    public static readonly int RackWidth = 8;
     public static readonly int RackHeight = 4;
 
     public List<InventoryRack> Racks = new List<InventoryRack>();
@@ -60,7 +60,6 @@ public class Inventory : MonoBehaviour
 
     private void Lootable_OnLoot(Lootable loot, LootEventArgs args)
     {
-        Debug.Log($"{loot.Id} {args.Consumed} {args.Owner}");
         if (args.Owner != LootOwner.Player || args.Consumed) return;
 
         var inventoryRack = loot.GetComponent<InventoryRack>();
@@ -93,7 +92,10 @@ public class Inventory : MonoBehaviour
             if (CanPickupShape(loot.InventoryShape, out Vector3Int coordinates))
             {                
                 loot.Coordinates = coordinates;
-            } else
+                Debug.Log($"{loot.Id} {coordinates}");
+
+            }
+            else
             {
                 return;
             }
