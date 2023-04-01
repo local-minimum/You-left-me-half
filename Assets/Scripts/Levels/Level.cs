@@ -130,7 +130,7 @@ abstract public class Level : MonoBehaviour
 
     Dictionary<KeyValuePair<int, int>, char> levelRestore = new Dictionary<KeyValuePair<int, int>, char>();
 
-    public bool ClaimPosition(GridEntity entity, Vector3Int position)
+    public bool ClaimPosition(GridEntity entity, Vector3Int position, bool allowVirtualPositions)
     {
         var z = grid.Length - position.z - 1;
         if (z < 0 || z >= grid.Length || position.x < 0) return false;
@@ -139,7 +139,12 @@ abstract public class Level : MonoBehaviour
         if (position.x >= line.Length) return false;
 
         var current = line[position.x];
-        if (GridEntity.InBound.GetStringValue().Contains(current) || GridEntity.PlayerSpawn.GetStringValue().Contains(current))
+        Debug.Log($"{current}, {allowVirtualPositions}");
+        if (
+            GridEntity.InBound.GetStringValue().Contains(current) || 
+            GridEntity.PlayerSpawn.GetStringValue().Contains(current) || 
+            allowVirtualPositions && GridEntity.VirtualOutBount.GetStringValue().Contains(current)
+            )
         {
             var chars = line.ToCharArray();
             var restorePosition = new KeyValuePair<int, int>(position.x, position.z);

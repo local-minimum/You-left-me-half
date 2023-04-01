@@ -102,4 +102,10 @@ public class Inventory : MonoBehaviour
         loot.transform.SetParent(transform);
         args.Consumed = true;
     }
+
+    public bool Has(System.Func<Lootable, bool> predicate, out Lootable loot)
+    {
+        loot = GetComponentsInChildren<Lootable>().Where(predicate).FirstOrDefault();
+        return loot != null;
+    }
 }

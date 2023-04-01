@@ -21,10 +21,12 @@ public class PlayerController : MonoBehaviour
     KeyCode turnCCWKey = KeyCode.Q;
 
     MovingEntity movableEntity;
+    Inventory inventory;
 
     private void Awake()
     {
         movableEntity = GetComponent<MovingEntity>();
+        inventory = GetComponent<Inventory>();
         movableEntity.OnMove += MovableEntity_OnMove;
     }
 
@@ -49,7 +51,7 @@ public class PlayerController : MonoBehaviour
         transform.rotation = Quaternion.LookRotation(lookDirection.AsVector());
         transform.position = Level.AsWorldPosition(position);
 
-        Level.instance.ClaimPosition(GridEntity.Player, position);
+        Level.instance.ClaimPosition(GridEntity.Player, position, AllowEnterVirtualSpaces);
     }
 
     Navigation GetKeyPress()
@@ -93,6 +95,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Range(0, 2)]
     float moveTime = 0.5f;
 
+    bool AllowEnterVirtualSpaces
+    {
+        get => !inventory.Has(loot => loot.GetType() == typeof(Uplink), out Lootable loot);
+    }
     /// <summary>
     /// Query level if position can be reserved / entered by player
     /// </summary>
@@ -102,7 +108,7 @@ public class PlayerController : MonoBehaviour
     {            
         if (navigation.Translates())
         {
-            if (Level.instance.ClaimPosition(GridEntity.Player, target))
+            if (Level.instance.ClaimPosition(GridEntity.Player, target, AllowEnterVirtualSpaces))
             {
                 return true;
             }

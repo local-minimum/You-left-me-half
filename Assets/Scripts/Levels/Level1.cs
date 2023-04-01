@@ -8,8 +8,8 @@ public class Level1 : Level
     [HideInInspector]
     protected string[] startGrid = new string[] {
         "--xxxxx-xxxxxx-xxxx-",
-        "xsxxxxx-x-xxxx-xxxx-",
-        "xxxxxxx-x-xxxx-xxx--",
+        "xsxxxxx-x-xxxx-xxxxx",
+        "xxxxxxx-x-xxxx-xxx-x",
         "---xxxx-xxxxxx-xxxxx",
         "xxxxxxx-x-------xxxx",
         "---v----x-----v----x",
