@@ -139,7 +139,7 @@ abstract public class Level : MonoBehaviour
         if (position.x >= line.Length) return false;
 
         var current = line[position.x];
-        Debug.Log($"{current}, {allowVirtualPositions}");
+        
         if (
             GridEntity.InBound.GetStringValue().Contains(current) || 
             GridEntity.PlayerSpawn.GetStringValue().Contains(current) || 

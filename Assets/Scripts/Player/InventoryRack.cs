@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Linq;
 
 [RequireComponent(typeof(Lootable))]
-public class InventoryRack
+public class InventoryRack : MonoBehaviour
 {    
     [SerializeField]
     private bool[,] Occupied = new bool[Inventory.RackHeight, Inventory.RackWidth];
@@ -28,7 +28,7 @@ public class InventoryRack
                 offset.x + origin.x, 
                 offset.y + origin.y - yOffset
                 ))
-            .Where(coords => coords.y >= 0 && coords.y < Inventory.RackHeight)
+            .Where(coords => coords.y >= 0 && coords.y < Inventory.RackHeight && coords.x >= 0 && coords.x < Inventory.RackWidth)
             .All(coords => !Occupied[coords.y, coords.x] && Corruption[coords.y, coords.x] == 0);
     }
 }

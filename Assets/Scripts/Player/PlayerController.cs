@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         movableEntity = GetComponent<MovingEntity>();
-        inventory = GetComponent<Inventory>();
+        inventory = GetComponentInChildren<Inventory>();
         movableEntity.OnMove += MovableEntity_OnMove;
     }
 

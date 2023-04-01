@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class LootEventArgs: System.EventArgs
 {
@@ -50,7 +51,7 @@ public class Lootable : MonoBehaviour
 
     public bool Loot(LootOwner owner)
     {
-        var args = new LootEventArgs(owner);
+        var args = new LootEventArgs(owner);        
         OnLoot?.Invoke(this, args);
         return args.Consumed;
     }
@@ -60,5 +61,13 @@ public class Lootable : MonoBehaviour
         var args = new LootEventArgs(owner, coordnates);
         OnLoot?.Invoke(this, args);
         return args.Consumed;
+    }
+
+    private void Awake()
+    {
+        if (InventoryShape.Any(coords => coords.y < 0))
+        {
+            Debug.LogError($"{Id} ({name}) has negative y-values in inventory shape");
+        }
     }
 }

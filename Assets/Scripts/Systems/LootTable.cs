@@ -79,15 +79,15 @@ public class LootTable : MonoBehaviour, StateSaver
 
     public void DeserializeState(string json)
     {
-        var ownedLoot = AvailableLootables;
+        var allLoot = AllLootables;
         var records = JsonUtility
             .FromJson<StateDto>(json)
             .records            
             .ToDictionary(loot => loot.id, loot => loot);
 
-        for (int i = 0; i<ownedLoot.Length; i++)
+        for (int i = 0; i<allLoot.Length; i++)
         {
-            var loot = ownedLoot[i];
+            var loot = allLoot[i];
             
             if (records.ContainsKey(loot.Id))
             {

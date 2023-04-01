@@ -16,7 +16,7 @@ public class Inventory : MonoBehaviour
         Lootable.OnLoot += Lootable_OnLoot;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         Lootable.OnLoot -= Lootable_OnLoot;
     }
@@ -60,6 +60,7 @@ public class Inventory : MonoBehaviour
 
     private void Lootable_OnLoot(Lootable loot, LootEventArgs args)
     {
+        Debug.Log($"{loot.Id} {args.Consumed} {args.Owner}");
         if (args.Owner != LootOwner.Player || args.Consumed) return;
 
         var inventoryRack = loot.GetComponent<InventoryRack>();
@@ -90,7 +91,7 @@ public class Inventory : MonoBehaviour
         } else
         {
             if (CanPickupShape(loot.InventoryShape, out Vector3Int coordinates))
-            {
+            {                
                 loot.Coordinates = coordinates;
             } else
             {
