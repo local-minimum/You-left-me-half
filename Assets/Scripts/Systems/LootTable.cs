@@ -5,7 +5,7 @@ using System.Linq;
 
 public class LootTable : MonoBehaviour, StateSaver
 {
-    private static LootTable instance;
+    public static LootTable instance { get; private set; }
 
     private void Awake()
     {
@@ -98,5 +98,21 @@ public class LootTable : MonoBehaviour, StateSaver
                 loot.gameObject.SetActive(false);
             }
         }
+    }
+
+    public bool GetLootByPartialId(string partialId, out Lootable loot)
+    {
+        var options = AvailableLootables
+            .Where(l => l.Id.StartsWith(partialId))
+            .ToArray();
+
+        if (options.Length > 0)
+        {
+            loot = options[0];
+            return true;
+        }
+
+        loot = null;
+        return false;
     }
 }
