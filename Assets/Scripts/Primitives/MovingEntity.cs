@@ -4,7 +4,7 @@ using UnityEngine;
 
 public delegate void MoveEvent(string id, Vector3Int position, FaceDirection lookDirection);
 
-public class MovableEntity : MonoBehaviour
+public class MovingEntity : MonoBehaviour
 {
     [SerializeField, Tooltip("Leave empty to use game object name")]
     string id;

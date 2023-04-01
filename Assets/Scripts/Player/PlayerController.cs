@@ -20,11 +20,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     KeyCode turnCCWKey = KeyCode.Q;
 
-    MovableEntity movableEntity;
+    MovingEntity movableEntity;
 
     private void Awake()
     {
-        movableEntity = GetComponent<MovableEntity>();
+        movableEntity = GetComponent<MovingEntity>();
         movableEntity.OnMove += MovableEntity_OnMove;
     }
 

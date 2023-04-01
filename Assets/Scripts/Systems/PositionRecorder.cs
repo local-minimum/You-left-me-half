@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Linq;
 using CompressString;
 
-public class PositionRecorder : MonoBehaviour
+public class PositionRecorder : MonoBehaviour, StateSaver
 {
     [System.Serializable]
     private struct StateDto
@@ -37,9 +37,19 @@ public class PositionRecorder : MonoBehaviour
     Dictionary<string, FaceDirection> lookDirections = new Dictionary<string, FaceDirection>();
     bool listening = true;
 
+    private static PositionRecorder recorder;
+
     private void Awake()
-    {
-        var entities = FindObjectsOfType<MovableEntity>();
+    {        
+        if (recorder != null && recorder != this)
+        {
+            Destroy(this);
+            return;
+        }
+
+        recorder = this;
+
+        var entities = FindObjectsOfType<MovingEntity>();
         for (int i=0; i<entities.Length; i++)
         {
             entities[i].OnMove += PositionRecorder_OnMove;
@@ -48,7 +58,7 @@ public class PositionRecorder : MonoBehaviour
 
     private void OnDestroy()
     {
-        var entities = FindObjectsOfType<MovableEntity>();
+        var entities = FindObjectsOfType<MovingEntity>();
         for (int i = 0; i < entities.Length; i++)
         {
             entities[i].OnMove -= PositionRecorder_OnMove;
@@ -72,7 +82,7 @@ public class PositionRecorder : MonoBehaviour
     public string SerializeState()
     {
         var records = positions.Keys
-            .Select(id => new PositionRecordDto(id,positions[id],lookDirections[id]))
+            .Select(id => new PositionRecordDto(id, positions[id], lookDirections[id]))
             .ToArray();
 
         return JsonUtility.ToJson(new StateDto(records));
@@ -93,7 +103,7 @@ public class PositionRecorder : MonoBehaviour
     {
         listening = false;
 
-        var entities = FindObjectsOfType<MovableEntity>();
+        var entities = FindObjectsOfType<MovingEntity>();
         for (int i = 0; i < entities.Length; i++)
         {
             var entity = entities[i];

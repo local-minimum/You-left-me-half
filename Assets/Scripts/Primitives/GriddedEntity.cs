@@ -10,7 +10,7 @@ public class GriddedEntity : MonoBehaviour
 
     private void Awake()
     {
-        var movable = GetComponent<MovableEntity>();
+        var movable = GetComponent<MovingEntity>();
         if (movable) { 
             movable.OnMove += GriddedEntity_OnMove;
         }
@@ -18,7 +18,7 @@ public class GriddedEntity : MonoBehaviour
 
     private void OnDestroy()
     {
-        var movable = GetComponent<MovableEntity>();
+        var movable = GetComponent<MovingEntity>();
         if (movable)
         {
             movable.OnMove -= GriddedEntity_OnMove;
