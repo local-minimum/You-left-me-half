@@ -7,13 +7,16 @@ public class Level1 : Level
 {
     [HideInInspector]
     protected string[] startGrid = new string[] {
-        "---xx---xx-------",
-        "---xxx--xx----xxx",
-        "---x----x----xxxx",
-        "---x----x----xxxx",
-        "---xxxxxxxxxxxxx-",
-        "----------x------",
-        "Sxxxxxxxxxx------",
+        "--xxxxx-xxxxxx-xxxx-",
+        "xsxxxxx-x-xxxx-xxxx-",
+        "xxxxxxx-x-xxxx-xxx--",
+        "---xxxx-xxxxxx-xxxxx",
+        "xxxxxxx-x-------xxxx",
+        "---v----x-----v----x",
+        "xxxxxxxvxxxxxxxxxxxx",
+        "xxxxxx-----x--------",
+        "xxxxxx--xxxxxxxxxxx-",
+        "xxxxxx--xxxxxxxxxxx-"
     };
 
     protected override string[] grid { get => startGrid; }

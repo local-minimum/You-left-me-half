@@ -167,7 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7602a30e0ed3164abb3e53f6be515b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerSpawnDirection: 0
+  PlayerSpawnDirection: 1
   gizmoScale: 0.97
 --- !u!1 &705507993
 GameObject:

@@ -14,6 +14,8 @@ public enum GridEntity
     InBound,
     [StringValue("-")]
     OutBound,
+    [StringValue("Vv")]
+    VirtualOutBount,
 }
 
 abstract public class Level : MonoBehaviour
@@ -87,6 +89,11 @@ abstract public class Level : MonoBehaviour
             case 'X':
             case 'x':
                 color = Color.cyan;
+                return true;
+            // Virtual Block
+            case 'V':
+            case 'v':
+                color = Color.gray;
                 return true;
             default:
                 color = Color.black;
