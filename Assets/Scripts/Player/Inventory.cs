@@ -57,6 +57,16 @@ public class Inventory : MonoBehaviour
         return false;
     }
 
+    private void Drop(Lootable lootable)
+    {
+        Racks.ForEach(rack => rack.SetOccupancy(lootable.Coordinates, lootable.InventoryShape, false));
+    }
+
+
+    private void Pickup(Lootable lootable)
+    {
+        Racks.ForEach(rack => rack.SetOccupancy(lootable.Coordinates, lootable.InventoryShape, true));
+    }
 
     private void Lootable_OnLoot(Lootable loot, LootEventArgs args)
     {
@@ -82,6 +92,7 @@ public class Inventory : MonoBehaviour
         {
             if (CanPickupShape(args.Coordinates, loot.InventoryShape))
             {
+                if (loot.Owner == LootOwner.Player) Drop(loot);
                 loot.Coordinates = args.Coordinates;                
             } else
             {
@@ -90,10 +101,9 @@ public class Inventory : MonoBehaviour
         } else
         {
             if (CanPickupShape(loot.InventoryShape, out Vector3Int coordinates))
-            {                
+            {
+                if (loot.Owner == LootOwner.Player) Drop(loot);
                 loot.Coordinates = coordinates;
-                Debug.Log($"{loot.Id} {coordinates}");
-
             }
             else
             {
@@ -103,6 +113,7 @@ public class Inventory : MonoBehaviour
 
         loot.Owner = args.Owner;
         loot.transform.SetParent(transform);
+        Pickup(loot);
         args.Consumed = true;
     }
 

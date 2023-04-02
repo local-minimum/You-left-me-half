@@ -68,26 +68,30 @@ public abstract class InventoryRack : MonoBehaviour
             origin.y >= (RackIndex + 1) * Inventory.RackHeight;
     }
 
-    public bool IsSlotable(Vector3Int origin, Vector2Int[] offsets, out Vector2Int[] internalSlots)
+    private IEnumerable<Vector2Int> TransformToInternalCoordinates(Vector3Int origin, Vector2Int[] offsets)
     {
         var yOffset = RackIndex * Inventory.RackHeight;
-        internalSlots = offsets
+        return offsets
             .Select(offset => new Vector2Int(
                 offset.x + origin.x,
                 offset.y + origin.y - yOffset
                 ))
-            .Where(coords => coords.y >= 0 && coords.y < Inventory.RackHeight && coords.x >= 0 && coords.x < Inventory.RackWidth)
-            .ToArray();
-
-         return internalSlots.All(coords => !Occupied[coords.y, coords.x] && Corruption[coords.y, coords.x] == 0);
+            .Where(coords => coords.y >= 0 && coords.y < Inventory.RackHeight && coords.x >= 0 && coords.x < Inventory.RackWidth);
     }
 
-    public void Occupy(Vector2Int[] internalSlots)
+    public bool IsSlotable(Vector3Int origin, Vector2Int[] offsets)
     {
+        return TransformToInternalCoordinates(origin, offsets)
+            .All(coords => !Occupied[coords.y, coords.x] && Corruption[coords.y, coords.x] == 0);
+    }
+
+    public void SetOccupancy(Vector3Int origin, Vector2Int[] offsets, bool value)
+    {
+        var internalSlots = TransformToInternalCoordinates(origin, offsets).ToArray();
         for (int i = 0; i<internalSlots.Length; i++)
         {
             var slot = internalSlots[i];
-            Occupied[slot.y, slot.x] = true;
+            Occupied[slot.y, slot.x] = value;
         }
     }
 }
