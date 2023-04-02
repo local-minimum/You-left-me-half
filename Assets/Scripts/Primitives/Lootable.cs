@@ -47,7 +47,32 @@ public class Lootable : MonoBehaviour
     public LootOwner Owner { get; set; }
 
     [SerializeField]
-    public Vector2Int[] InventoryShape;
+    public Vector2Int[] InventoryShape;    
+
+    public IEnumerable<Vector2Int> InventorySlots
+    {
+        get
+        {
+            return InventoryShape
+                .Select(coords => new Vector2Int(coords.x + Coordinates.x, coords.y + Coordinates.y));
+                
+        }
+    }
+
+    public RectInt UIShape
+    {
+        get
+        {
+            var minX = InventoryShape.Min(v => v.x);
+            var minY = InventoryShape.Min(v => v.y);
+            var maxX = InventoryShape.Max(v => v.x);
+            var maxY = InventoryShape.Max(v => v.y);
+            return new RectInt(minX, minY, maxX - minX + 1, maxY - minY + 1);
+        }
+    }
+
+    [SerializeField]
+    public Texture2D texture;
 
     public bool Loot(LootOwner owner)
     {

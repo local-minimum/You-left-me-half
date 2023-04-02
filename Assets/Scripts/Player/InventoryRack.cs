@@ -7,7 +7,7 @@ using System.Linq;
 public abstract class InventoryRack : MonoBehaviour
 {        
     public bool[,] Occupied = new bool[Inventory.RackHeight, Inventory.RackWidth];    
-    private int[,] Corruption = new int[Inventory.RackHeight, Inventory.RackWidth];
+    public int[,] Corruption = new int[Inventory.RackHeight, Inventory.RackWidth];
 
     public IEnumerable<string> CorruptionAsStrings
     {

@@ -3,13 +3,29 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
+public enum InventoryEvent { PickUp, Drop, Move };
+
+public delegate void InventoryChange(Lootable loot, InventoryEvent inventoryEvent, Vector3Int previousOrigin);
+
 public class Inventory : MonoBehaviour
 {
+    public static event InventoryChange OnInventoryChange;
+
     public static readonly int RackWidth = 8;
     public static readonly int RackHeight = 4;
 
+    public static int RackLimit = 4;
+
     public List<InventoryRack> Racks = new List<InventoryRack>();
-    public int MaxRacks;
+    public int MaxRacks = 2;
+
+    private void Start()
+    {
+        if (MaxRacks > RackLimit)
+        {
+            Debug.LogError($"{name} claims too many rack slots");
+        }
+    }
 
     private void OnEnable()
     {
@@ -70,9 +86,17 @@ public class Inventory : MonoBehaviour
 
     private void Lootable_OnLoot(Lootable loot, LootEventArgs args)
     {
+        if (loot.Owner == LootOwner.Player && args.Owner != LootOwner.Player)
+        {
+            Drop(loot);
+            OnInventoryChange?.Invoke(loot, InventoryEvent.Drop, Vector3Int.zero);
+        }
+
         if (args.Owner != LootOwner.Player || args.Consumed) return;
 
+        InventoryEvent inventoryEvent = InventoryEvent.PickUp;
         var inventoryRack = loot.GetComponent<InventoryRack>();
+        var previousCoordinates = loot.Coordinates;
 
         if (inventoryRack != null)
         {
@@ -92,7 +116,11 @@ public class Inventory : MonoBehaviour
         {
             if (CanPickupShape(args.Coordinates, loot.InventoryShape))
             {
-                if (loot.Owner == LootOwner.Player) Drop(loot);
+                if (loot.Owner == LootOwner.Player)
+                {
+                    Drop(loot);
+                    inventoryEvent = InventoryEvent.Move;
+                }
                 loot.Coordinates = args.Coordinates;                
             } else
             {
@@ -102,7 +130,11 @@ public class Inventory : MonoBehaviour
         {
             if (CanPickupShape(loot.InventoryShape, out Vector3Int coordinates))
             {
-                if (loot.Owner == LootOwner.Player) Drop(loot);
+                if (loot.Owner == LootOwner.Player)
+                {
+                    Drop(loot);
+                    inventoryEvent = InventoryEvent.Move;
+                }
                 loot.Coordinates = coordinates;
             }
             else
@@ -115,6 +147,8 @@ public class Inventory : MonoBehaviour
         loot.transform.SetParent(transform);
         Pickup(loot);
         args.Consumed = true;
+
+        OnInventoryChange?.Invoke(loot, inventoryEvent, previousCoordinates);
     }
 
     public bool Has(System.Func<Lootable, bool> predicate, out Lootable loot)
