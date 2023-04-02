@@ -76,13 +76,13 @@ public abstract class InventoryRack : MonoBehaviour
                 offset.x + origin.x,
                 offset.y + origin.y - yOffset
                 ))
-            .Where(coords => coords.y >= 0 && coords.y < Inventory.RackHeight && coords.x >= 0 && coords.x < Inventory.RackWidth);
+            .Where(coords => coords.y >= 0 && coords.y < Inventory.RackHeight);
     }
 
     public bool IsSlotable(Vector3Int origin, Vector2Int[] offsets)
     {
         return TransformToInternalCoordinates(origin, offsets)
-            .All(coords => !Occupied[coords.y, coords.x] && Corruption[coords.y, coords.x] == 0);
+            .All(coords => coords.x >= 0 && coords.x < Inventory.RackWidth && !Occupied[coords.y, coords.x] && Corruption[coords.y, coords.x] == 0);
     }
 
     public void SetOccupancy(Vector3Int origin, Vector2Int[] offsets, bool value)
