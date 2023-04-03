@@ -91,15 +91,19 @@ public class Inventory : MonoBehaviour
         return false;
     }
 
+    HashSet<Lootable> Loots = new HashSet<Lootable>();
+
     private void Drop(Lootable lootable)
     {
         Racks.ForEach(rack => rack.SetOccupancy(lootable.Coordinates, lootable.InventoryShape, false));
+        Loots.Remove(lootable);
     }
 
 
     private void Pickup(Lootable lootable)
     {
         Racks.ForEach(rack => rack.SetOccupancy(lootable.Coordinates, lootable.InventoryShape, true));
+        Loots.Add(lootable);
     }
 
     private void Lootable_OnLoot(Lootable loot, LootEventArgs args)
@@ -171,8 +175,7 @@ public class Inventory : MonoBehaviour
 
     public bool Has(System.Func<Lootable, bool> predicate, out Lootable loot)
     {
-        // TODO: Perhaps the inventory should just track all loot too?
-        loot = GetComponentsInChildren<Lootable>().Where(predicate).FirstOrDefault();
+        loot = Loots.Where(predicate).FirstOrDefault();
         return loot != null;
     }
 }
