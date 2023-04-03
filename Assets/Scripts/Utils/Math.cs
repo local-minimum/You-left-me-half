@@ -9,4 +9,8 @@ public static class Math
     public static Vector2Int XY(this Vector3Int v) => new Vector2Int(v.x, v.y);
 
     public static Vector2Int XZ(this Vector3Int v) => new Vector2Int(v.z, v.z);
+
+    public static Vector3Int XY(this Vector2Int v) => new Vector3Int(v.x, v.y);
+
+    public static Vector3Int XZ(this Vector2Int v) => new Vector3Int(v.x, 0, v.y);
 }

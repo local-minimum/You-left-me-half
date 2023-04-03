@@ -52,10 +52,15 @@ public class InventoryHUD : MonoBehaviour
         InventorySlotHUD.OnEndDragLoot -= InventorySlotHUD_OnEndDragLoot;
     }
 
+    string dragged;
     Vector3 mouseDragStart;
+    Vector2Int dragSlotStart;
+    Vector2Int hoverSlot;
 
     private void InventorySlotHUD_OnBeginDragLoot(string lootId)
     {
+        dragged = lootId;
+        dragSlotStart = hoverSlot;
         mouseDragStart = Input.mousePosition;
     }
 
@@ -69,26 +74,85 @@ public class InventoryHUD : MonoBehaviour
 
     private void InventorySlotHUD_OnEndDragLoot(string lootId)
     {
+        if (dragged != null)
+        {
+            var slotsOffset = hoverSlot - dragSlotStart;
+            ApplyOverInventorySlots(dragged, coordinates =>
+            {
+                var offsetCoordinates = coordinates + slotsOffset;
+                if (Slots.ContainsKey(offsetCoordinates))
+                {
+                    Slots[offsetCoordinates].Hover = false;
+                }
+            });
+        }
         var rt = Transforms[lootId];
         var loot = Loots[lootId];
-        SlotPosition(loot.Coordinates, loot.UIShape, rt);
+        dragged = null;
+
+        if (hoverSlot.x < 0)
+        {
+            if (!loot.Loot(LootOwner.Level))
+            {
+                Debug.LogWarning($"Level never picked up {lootId}");
+            }
+            return;
+        }
+
+        var newSlot = loot.Coordinates.XY() + (hoverSlot - dragSlotStart);
+        if (!loot.Loot(LootOwner.Player, newSlot.XY()))
+        {            
+            SlotPosition(loot.Coordinates, loot.UIShape, rt);
+        }
+    }
+
+    void ApplyOverInventorySlots(string lootId, System.Action<Vector2Int> action)
+    {
+        var coordinates = Loots[lootId].InventorySlots.ToArray();
+        for (int i = 0; i < coordinates.Length; i++)
+        {
+            action(coordinates[i]);
+        }
     }
 
     private void InventorySlotHUD_OnBeginHoverSlot(InventorySlotHUD slot)
     {
-        var coordinates = Loots[slot.LootId].InventorySlots.ToArray();
-        for (int i = 0; i < coordinates.Length; i++)
+        hoverSlot = slot.Coordinates;
+
+        if (dragged != null)
         {
-            Slots[coordinates[i]].Hover = true;
+            var slotsOffset = slot.Coordinates - dragSlotStart;
+            ApplyOverInventorySlots(dragged, coordinates => {
+                var offsetCoordinates = coordinates + slotsOffset;
+                if (Slots.ContainsKey(offsetCoordinates))
+                {
+                    Slots[offsetCoordinates].Hover = true;
+                }
+            });
+        }
+        else if (slot.LootId != null)
+        {
+            ApplyOverInventorySlots(slot.LootId, coordinates => { Slots[coordinates].Hover = true; });
         }
     }
 
     private void InventorySlotHUD_OnEndHoverSlot(InventorySlotHUD slot)
     {
-        var coordinates = Loots[slot.LootId].InventorySlots.ToArray();
-        for (int i = 0; i < coordinates.Length; i++)
+        hoverSlot = Vector2Int.left;
+        if (dragged != null)
         {
-            Slots[coordinates[i]].Hover = false;
+            var slotsOffset = slot.Coordinates - dragSlotStart;
+            ApplyOverInventorySlots(dragged, coordinates => {
+                var offsetCoordinates = coordinates + slotsOffset;
+                if (Slots.ContainsKey(offsetCoordinates))
+                {
+                    Slots[offsetCoordinates].Hover = false;
+                }
+            });
+        }
+        else if (slot.LootId != null)
+        {
+            ApplyOverInventorySlots(slot.LootId, coordinates => { Slots[coordinates].Hover = false; });
         }
     }
 
@@ -257,6 +321,7 @@ public class InventoryHUD : MonoBehaviour
 
     private void MoveLoot(Lootable loot, Vector3Int previousOrigin)
     {
+        Debug.Log("Move");
         var rectTransform = Transforms[loot.Id];
         if (loot.GetComponent<InventoryRack>())
         {
@@ -272,6 +337,7 @@ public class InventoryHUD : MonoBehaviour
 
     private void DropLoot(Lootable loot)
     {
+        Debug.Log("Drop");
         var lootId = loot.Id;
         Loots.Remove(loot.Id);
         var lootTransform = Transforms[lootId];

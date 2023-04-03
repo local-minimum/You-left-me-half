@@ -105,18 +105,12 @@ public class InventorySlotHUD : MonoBehaviour
 
     public void OnPointerEnter()
     {
-        if (State == InventorySlotHUDState.Occupied)
-        {
-            OnBeginHoverSlot?.Invoke(this);
-        }
+        OnBeginHoverSlot?.Invoke(this);
     }
 
     public void OnPointerExit()
     {
-        if (State == InventorySlotHUDState.Occupied)
-        {
-            OnEndHoverSlot?.Invoke(this);
-        }
+        OnEndHoverSlot?.Invoke(this);
     }
 
     public void OnDragStart()

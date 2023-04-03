@@ -90,9 +90,9 @@ public class Lootable : MonoBehaviour
 
     private void Awake()
     {
-        if (InventoryShape.Any(coords => coords.y < 0))
+        if (InventoryShape.Length > 0 && InventoryShape.Min(coords => coords.y) != 0)
         {
-            Debug.LogError($"{Id} ({name}) has negative y-values in inventory shape");
+            Debug.LogError($"{Id} ({name}) does not have a 0 y-offset or has negative y-offsets");
         }
     }
 }

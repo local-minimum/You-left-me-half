@@ -42,26 +42,44 @@ public class Inventory : MonoBehaviour
         return Mathf.Min(Racks.Count, MaxRacks) * RackHeight - shapeHeight;
     }
 
-    private bool CanPickupShape(Vector3Int origin, Vector2Int[] shape)
+    private bool CanPickupShape(Lootable loot, Vector3Int origin)
     {
-        int shapeHeight = shape.Max(offset => offset.y) + 1;
+        if (origin.y < 0) return false;
+
+        int shapeHeight = loot.InventoryShape.Max(offset => offset.y) + 1;
+        var inventorySlots = loot.InventorySlots;
+        var originXY = origin.XY();
 
         if (MaxRowForShape(shapeHeight) < origin.y) return false;
 
-        return Racks.All(rack => rack.IsOutsideRack(origin, shapeHeight) || rack.IsSlotable(origin, shape));
+        return Racks.All(rack => {
+            if (rack.IsOutsideRack(origin, shapeHeight)) return true;
+            if (!rack.IsSlotable(origin, loot.InventoryShape, out List<Vector2Int> offsets)) {
+                Debug.Log($"{offsets.Count} violators");
+                return offsets.All(offset => inventorySlots.Contains(offset + originXY));                
+            }
+            return true;
+        });
     }
     
-    private bool CanPickupShape(Vector2Int[] shape, out Vector3Int origin)
+    private bool CanPickupShape(Lootable loot, out Vector3Int origin)
     {
+        var shape = loot.InventoryShape;
         int shapeHeight = shape.Max(offset => offset.y) + 1;
         var maxY = MaxRowForShape(shapeHeight);
+        var inventorySlots = loot.InventorySlots;
 
         for (var y = 0; y<=maxY; y++)
         {
             for (var x = 0; x<RackWidth; x++)
             {
                 var anchor = new Vector3Int(x, y);
-                if (Racks.All(rack => rack.IsOutsideRack(anchor, shapeHeight) || rack.IsSlotable(anchor, shape)))
+                var anchorXY = anchor.XY();
+
+                if (Racks.All(rack => {
+                    if (rack.IsOutsideRack(anchor, shapeHeight)) return true;
+                    return rack.IsSlotable(anchor, loot.InventoryShape, out List<Vector2Int> offsets);
+                }))
                 {
                     origin = anchor;
                     return true;
@@ -113,8 +131,8 @@ public class Inventory : MonoBehaviour
             }
         }
         else if (args.DefinedPosition)
-        {
-            if (CanPickupShape(args.Coordinates, loot.InventoryShape))
+        {            
+            if (CanPickupShape(loot, args.Coordinates))
             {
                 if (loot.Owner == LootOwner.Player)
                 {
@@ -128,7 +146,7 @@ public class Inventory : MonoBehaviour
             }
         } else
         {
-            if (CanPickupShape(loot.InventoryShape, out Vector3Int coordinates))
+            if (CanPickupShape(loot, out Vector3Int coordinates))
             {
                 if (loot.Owner == LootOwner.Player)
                 {
@@ -153,6 +171,7 @@ public class Inventory : MonoBehaviour
 
     public bool Has(System.Func<Lootable, bool> predicate, out Lootable loot)
     {
+        // TODO: Perhaps the inventory should just track all loot too?
         loot = GetComponentsInChildren<Lootable>().Where(predicate).FirstOrDefault();
         return loot != null;
     }
