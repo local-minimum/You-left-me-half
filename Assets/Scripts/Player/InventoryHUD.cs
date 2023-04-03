@@ -35,12 +35,61 @@ public class InventoryHUD : MonoBehaviour
     private void OnEnable()
     {
         Inventory.OnInventoryChange += Inventory_OnInventoryChange;
-
+        InventorySlotHUD.OnBeginHoverSlot += InventorySlotHUD_OnBeginHoverSlot;
+        InventorySlotHUD.OnEndHoverSlot += InventorySlotHUD_OnEndHoverSlot;
+        InventorySlotHUD.OnBeginDragLoot += InventorySlotHUD_OnBeginDragLoot;
+        InventorySlotHUD.OnDragLoot += InventorySlotHUD_OnDragLoot;
+        InventorySlotHUD.OnEndDragLoot += InventorySlotHUD_OnEndDragLoot;
     }
 
     private void OnDisable()
     {
         Inventory.OnInventoryChange -= Inventory_OnInventoryChange;
+        InventorySlotHUD.OnBeginHoverSlot -= InventorySlotHUD_OnBeginHoverSlot;
+        InventorySlotHUD.OnEndHoverSlot -= InventorySlotHUD_OnEndHoverSlot;
+        InventorySlotHUD.OnBeginDragLoot -= InventorySlotHUD_OnBeginDragLoot;
+        InventorySlotHUD.OnDragLoot -= InventorySlotHUD_OnDragLoot;
+        InventorySlotHUD.OnEndDragLoot -= InventorySlotHUD_OnEndDragLoot;
+    }
+
+    Vector3 mouseDragStart;
+
+    private void InventorySlotHUD_OnBeginDragLoot(string lootId)
+    {
+        mouseDragStart = Input.mousePosition;
+    }
+
+    private void InventorySlotHUD_OnDragLoot(string lootId)
+    {
+        var offset = Input.mousePosition - mouseDragStart;
+        var rt = Transforms[lootId];
+        var loot = Loots[lootId];
+        SlotPosition(loot.Coordinates, loot.UIShape, rt, offset);
+    }
+
+    private void InventorySlotHUD_OnEndDragLoot(string lootId)
+    {
+        var rt = Transforms[lootId];
+        var loot = Loots[lootId];
+        SlotPosition(loot.Coordinates, loot.UIShape, rt);
+    }
+
+    private void InventorySlotHUD_OnBeginHoverSlot(InventorySlotHUD slot)
+    {
+        var coordinates = Loots[slot.LootId].InventorySlots.ToArray();
+        for (int i = 0; i < coordinates.Length; i++)
+        {
+            Slots[coordinates[i]].Hover = true;
+        }
+    }
+
+    private void InventorySlotHUD_OnEndHoverSlot(InventorySlotHUD slot)
+    {
+        var coordinates = Loots[slot.LootId].InventorySlots.ToArray();
+        for (int i = 0; i < coordinates.Length; i++)
+        {
+            Slots[coordinates[i]].Hover = false;
+        }
     }
 
     private void PositionRack(int rackIndex, RectTransform rt)
@@ -53,7 +102,8 @@ public class InventoryHUD : MonoBehaviour
         rt.offsetMax = Vector2.zero;
     }
 
-    private void SlotPosition(Vector3Int coordinates, RectInt uiShape, RectTransform rt)
+    private void SlotPosition(Vector3Int coordinates, RectInt uiShape, RectTransform rt) => SlotPosition(coordinates, uiShape, rt, Vector3.zero);
+    private void SlotPosition(Vector3Int coordinates, RectInt uiShape, RectTransform rt, Vector3 dragOffset)
     {
         int rackIndex = coordinates.y / Inventory.RackHeight;
 
@@ -77,8 +127,8 @@ public class InventoryHUD : MonoBehaviour
 
         rt.anchorMin = lootRect.min;
         rt.anchorMax = lootRect.max;
-        rt.offsetMin = Vector2.zero;
-        rt.offsetMax = Vector2.zero;
+        rt.offsetMin = dragOffset;
+        rt.offsetMax = dragOffset;
     }
 
     static readonly Rect InventoryPadding = new Rect(0.01f, 0.005f, 0.98f, 0.99f);
@@ -165,16 +215,17 @@ public class InventoryHUD : MonoBehaviour
         return rt;
     }
 
-    private void ApplyNewSlotState(Lootable loot, InventorySlotHUDState state, Vector3Int previousOrigin)
+    private void FreeSlotState(Lootable loot, Vector3Int previousOrigin)
     {
         var coordinates = loot.InventoryShape
             .Select(coords => new Vector2Int(coords.x + previousOrigin.x, coords.y + previousOrigin.y))
             .ToArray();
         for (int i = 0; i < coordinates.Length; i++)
         {
-            Slots[coordinates[i]].State = state;
+            var slot = Slots[coordinates[i]];
+            slot.State = InventorySlotHUDState.Free;
+            slot.LootId = null;
         }
-
     }
 
 
@@ -183,7 +234,9 @@ public class InventoryHUD : MonoBehaviour
         var coordinates = loot.InventorySlots.ToArray();
         for (int i = 0; i < coordinates.Length; i++)
         {
-            Slots[coordinates[i]].State = state;
+            var slot = Slots[coordinates[i]];
+            slot.State = state;
+            slot.LootId = loot.Id;
         }
 
     }
@@ -210,7 +263,8 @@ public class InventoryHUD : MonoBehaviour
             PositionRack(loot.Coordinates.y, rectTransform);
         } else
         {
-            ApplyNewSlotState(loot, InventorySlotHUDState.Free, previousOrigin);
+
+            FreeSlotState(loot, previousOrigin);
             SlotPosition(loot.Coordinates, loot.UIShape, rectTransform);
             ApplyNewSlotState(loot, InventorySlotHUDState.Occupied);
         }
@@ -219,7 +273,7 @@ public class InventoryHUD : MonoBehaviour
     private void DropLoot(Lootable loot)
     {
         var lootId = loot.Id;
-        Loots.Remove(lootId);
+        Loots.Remove(loot.Id);
         var lootTransform = Transforms[lootId];
         Destroy(lootTransform.gameObject);
         Transforms.Remove(lootId);
