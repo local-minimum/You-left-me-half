@@ -29,11 +29,19 @@ public class Inventory : MonoBehaviour
     private void OnEnable()
     {
         Lootable.OnLoot += Lootable_OnLoot;
+        PlayerController.OnPlayerMove += PlayerController_OnPlayerMove;
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         Lootable.OnLoot -= Lootable_OnLoot;
+        PlayerController.OnPlayerMove -= PlayerController_OnPlayerMove;
+    }
+
+    private Vector3Int playerPosition;
+    private void PlayerController_OnPlayerMove(Vector3Int position, FaceDirection lookDirection)
+    {
+        playerPosition = position;
     }
 
     public int MaxRowForShape(int shapeHeight)
@@ -121,6 +129,15 @@ public class Inventory : MonoBehaviour
         InventoryEvent inventoryEvent = InventoryEvent.PickUp;
         var inventoryRack = loot.GetComponent<InventoryRack>();
         var placement = args.Coordinates;
+
+        if (loot.GetType() == typeof(Uplink) && loot.Owner == LootOwner.Level)
+        {
+            if (Level.instance.GridBoundsStatus(playerPosition.x, playerPosition.z) != GridEntity.InBound)
+            {
+                Debug.Log("Tried to pick up uplink when not allowed");
+                return;
+            }
+        }
 
         if (inventoryRack != null)
         {

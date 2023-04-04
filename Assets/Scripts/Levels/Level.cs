@@ -14,7 +14,32 @@ public enum GridEntity
     [StringValue("-")]
     OutBound,
     [StringValue("Vv")]
-    VirtualOutBount,
+    VirtualOutBound,
+}
+
+static class GridEntityExtensions
+{
+    public static GridEntity ToGridEntity(this char ch) {
+        switch (ch) {
+            case 'p':
+            case 'P':
+                return GridEntity.Player;
+            case 's':
+            case 'S':
+                return GridEntity.PlayerSpawn;
+            case 'O':
+            case 'o':
+                return GridEntity.Other;
+            case 'X':
+            case 'x':
+                return GridEntity.InBound;
+            case 'V':
+            case 'v':
+                return GridEntity.VirtualOutBound;
+            default:
+                return GridEntity.OutBound;
+        }
+    }
 }
 
 abstract public class Level : MonoBehaviour
@@ -129,6 +154,32 @@ abstract public class Level : MonoBehaviour
 
     Dictionary<KeyValuePair<int, int>, char> levelRestore = new Dictionary<KeyValuePair<int, int>, char>();
 
+    public GridEntity GridBoundsStatus(int x, int z)
+    {
+        var entity = getPosition(x, z).ToGridEntity();
+        if (entity == GridEntity.OutBound || entity == GridEntity.InBound || entity == GridEntity.VirtualOutBound)
+        {
+            return entity;
+        }
+
+        var kvp = new KeyValuePair<int, int>(x, z);
+        if (levelRestore.ContainsKey(kvp))
+        {
+            entity = levelRestore[kvp].ToGridEntity();
+            if (entity == GridEntity.OutBound || entity == GridEntity.InBound || entity == GridEntity.VirtualOutBound)
+            {
+                return entity;
+            }            
+        }
+
+        if (entity == GridEntity.PlayerSpawn || entity == GridEntity.Player || entity == GridEntity.Other)
+        {
+            return GridEntity.InBound;
+        }
+
+        return GridEntity.OutBound;
+    }
+
     public bool ClaimPosition(GridEntity entity, Vector3Int position, bool allowVirtualPositions)
     {
         var z = grid.Length - position.z - 1;
@@ -142,7 +193,7 @@ abstract public class Level : MonoBehaviour
         if (
             GridEntity.InBound.GetStringValue().Contains(current) || 
             GridEntity.PlayerSpawn.GetStringValue().Contains(current) || 
-            allowVirtualPositions && GridEntity.VirtualOutBount.GetStringValue().Contains(current)
+            allowVirtualPositions && GridEntity.VirtualOutBound.GetStringValue().Contains(current)
             )
         {
             var chars = line.ToCharArray();
