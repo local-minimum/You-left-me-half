@@ -6,8 +6,8 @@ using System.Linq;
 public class LootEventArgs: System.EventArgs
 {
     public LootOwner Owner { get; private set; }
-    public Vector3Int Coordinates { get; private set; }
-    public bool DefinedPosition { get; private set; }
+    public Vector3Int Coordinates { get; set; }
+    public bool DefinedPosition { get; set; }
     public bool Consumed { get; set; }
 
     public LootEventArgs(LootOwner owner)
@@ -32,6 +32,8 @@ public class Lootable : MonoBehaviour
 {
     public static event LootEvent OnLoot;
 
+    private LootableManifestation manifestation;
+
     [SerializeField, Tooltip("Leave empty to use game object name")]
     string id;
 
@@ -47,16 +49,14 @@ public class Lootable : MonoBehaviour
     public LootOwner Owner { get; set; }
 
     [SerializeField]
-    public Vector2Int[] InventoryShape;    
+    public Vector2Int[] InventoryShape;
 
-    public IEnumerable<Vector2Int> InventorySlots
+    public IEnumerable<Vector2Int> InventorySlots() => InventorySlots(Coordinates);
+
+    public IEnumerable<Vector2Int> InventorySlots(Vector3Int placement)
     {
-        get
-        {
-            return InventoryShape
-                .Select(coords => new Vector2Int(coords.x + Coordinates.x, coords.y + Coordinates.y));
-                
-        }
+        return InventoryShape
+                .Select(coords => new Vector2Int(coords.x + placement.x, coords.y + placement.y));        
     }
 
     public RectInt UIShape
@@ -74,19 +74,19 @@ public class Lootable : MonoBehaviour
     [SerializeField]
     public Texture2D texture;
 
-    public bool Loot(LootOwner owner)
+    private bool Loot(LootEventArgs args)
     {
-        var args = new LootEventArgs(owner);        
         OnLoot?.Invoke(this, args);
+        if (args.Consumed)
+        {
+            manifestation.gameObject.SetActive(args.Owner == LootOwner.Level);
+            Owner = args.Owner;
+            Coordinates = args.Coordinates;
+        }
         return args.Consumed;
     }
-
-    public bool Loot(LootOwner owner, Vector3Int coordnates)
-    {
-        var args = new LootEventArgs(owner, coordnates);
-        OnLoot?.Invoke(this, args);
-        return args.Consumed;
-    }
+    public bool Loot(LootOwner owner) => Loot(new LootEventArgs(owner));    
+    public bool Loot(LootOwner owner, Vector3Int coordnates) => Loot(new LootEventArgs(owner, coordnates));
 
     private void Awake()
     {
@@ -94,5 +94,7 @@ public class Lootable : MonoBehaviour
         {
             Debug.LogError($"{Id} ({name}) does not have a 0 y-offset or has negative y-offsets");
         }
+
+        manifestation = GetComponentInChildren<LootableManifestation>();
     }
 }

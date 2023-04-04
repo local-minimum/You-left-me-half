@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -203,5 +202,30 @@ abstract public class Level : MonoBehaviour
     private void OnDestroy()
     {
         if (instance == this) { instance = null; }
+    }
+
+    private void OnEnable()
+    {
+        Lootable.OnLoot += Lootable_OnLoot;
+    }
+
+    private void OnDisable()
+    {
+        Lootable.OnLoot -= Lootable_OnLoot;
+    }
+
+    private void Lootable_OnLoot(Lootable loot, LootEventArgs args)
+    {
+        if (args.Owner != LootOwner.Level) return;
+
+        if (!args.DefinedPosition)
+        {
+            Debug.LogWarning($"Random placement of loot {loot.Id} attempted, not yet implemented");
+            return;
+        }
+
+        loot.transform.SetParent(transform);
+        loot.transform.position = args.Coordinates * gridScale;
+        args.Consumed = true;
     }
 }

@@ -23,8 +23,20 @@ public class PlayerController : MonoBehaviour
     MovingEntity movableEntity;
     Inventory inventory;
 
+    public static PlayerController instance { get; set; }    
+
+    public Vector3Int Position { get { return position; } }
+
     private void Awake()
     {
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        } else if (instance == null)
+        {
+            instance = this;
+        }
         movableEntity = GetComponent<MovingEntity>();
         inventory = GetComponentInChildren<Inventory>();
         movableEntity.OnMove += MovableEntity_OnMove;
@@ -32,6 +44,10 @@ public class PlayerController : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (instance = this)
+        {
+            instance = null;
+        }
         movableEntity.OnMove -= MovableEntity_OnMove;
     }
 

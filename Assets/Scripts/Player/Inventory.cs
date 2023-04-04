@@ -5,7 +5,7 @@ using System.Linq;
 
 public enum InventoryEvent { PickUp, Drop, Move };
 
-public delegate void InventoryChange(Lootable loot, InventoryEvent inventoryEvent, Vector3Int previousOrigin);
+public delegate void InventoryChange(Lootable loot, InventoryEvent inventoryEvent, Vector3Int placement);
 
 public class Inventory : MonoBehaviour
 {
@@ -47,7 +47,7 @@ public class Inventory : MonoBehaviour
         if (origin.y < 0) return false;
 
         int shapeHeight = loot.InventoryShape.Max(offset => offset.y) + 1;
-        var inventorySlots = loot.InventorySlots;
+        var inventorySlots = loot.InventorySlots();
         var originXY = origin.XY();
 
         if (MaxRowForShape(shapeHeight) < origin.y) return false;
@@ -67,7 +67,7 @@ public class Inventory : MonoBehaviour
         var shape = loot.InventoryShape;
         int shapeHeight = shape.Max(offset => offset.y) + 1;
         var maxY = MaxRowForShape(shapeHeight);
-        var inventorySlots = loot.InventorySlots;
+        var inventorySlots = loot.InventorySlots();
 
         for (var y = 0; y<=maxY; y++)
         {
@@ -97,18 +97,21 @@ public class Inventory : MonoBehaviour
     {
         Racks.ForEach(rack => rack.SetOccupancy(lootable.Coordinates, lootable.InventoryShape, false));
         Loots.Remove(lootable);
+        Debug.Log("Drop");
+
     }
 
 
-    private void Pickup(Lootable lootable)
+    private void Pickup(Lootable lootable, Vector3Int placement)
     {
-        Racks.ForEach(rack => rack.SetOccupancy(lootable.Coordinates, lootable.InventoryShape, true));
+        Racks.ForEach(rack => rack.SetOccupancy(placement, lootable.InventoryShape, true));
         Loots.Add(lootable);
+        Debug.Log("Pickup");
     }
 
     private void Lootable_OnLoot(Lootable loot, LootEventArgs args)
     {
-        if (loot.Owner == LootOwner.Player && args.Owner != LootOwner.Player)
+        if (Loots.Contains(loot) && args.Owner != LootOwner.Player)
         {
             Drop(loot);
             OnInventoryChange?.Invoke(loot, InventoryEvent.Drop, Vector3Int.zero);
@@ -118,7 +121,7 @@ public class Inventory : MonoBehaviour
 
         InventoryEvent inventoryEvent = InventoryEvent.PickUp;
         var inventoryRack = loot.GetComponent<InventoryRack>();
-        var previousCoordinates = loot.Coordinates;
+        var placement = args.Coordinates;
 
         if (inventoryRack != null)
         {
@@ -127,7 +130,8 @@ public class Inventory : MonoBehaviour
             if (racks < MaxRacks)
             {
                 inventoryRack.RackIndex = racks;
-                loot.Coordinates = new Vector3Int(0, racks);
+                args.Coordinates = new Vector3Int(0, racks);
+                args.DefinedPosition = true;
                 Racks.Add(inventoryRack);
             } else
             {
@@ -143,7 +147,6 @@ public class Inventory : MonoBehaviour
                     Drop(loot);
                     inventoryEvent = InventoryEvent.Move;
                 }
-                loot.Coordinates = args.Coordinates;                
             } else
             {
                 return;
@@ -157,7 +160,9 @@ public class Inventory : MonoBehaviour
                     Drop(loot);
                     inventoryEvent = InventoryEvent.Move;
                 }
-                loot.Coordinates = coordinates;
+                args.Coordinates = coordinates;
+                args.DefinedPosition = true;
+                placement = coordinates;
             }
             else
             {
@@ -165,12 +170,11 @@ public class Inventory : MonoBehaviour
             }
         }
 
-        loot.Owner = args.Owner;
         loot.transform.SetParent(transform);
-        Pickup(loot);
+        Pickup(loot, placement);
         args.Consumed = true;
 
-        OnInventoryChange?.Invoke(loot, inventoryEvent, previousCoordinates);
+        OnInventoryChange?.Invoke(loot, inventoryEvent, placement);
     }
 
     public bool Has(System.Func<Lootable, bool> predicate, out Lootable loot)

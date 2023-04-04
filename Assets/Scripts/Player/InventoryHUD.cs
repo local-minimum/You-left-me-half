@@ -92,7 +92,7 @@ public class InventoryHUD : MonoBehaviour
 
         if (hoverSlot.x < 0)
         {
-            if (!loot.Loot(LootOwner.Level))
+            if (!loot.Loot(LootOwner.Level, PlayerController.instance.Position))
             {
                 Debug.LogWarning($"Level never picked up {lootId}");
             }
@@ -108,7 +108,7 @@ public class InventoryHUD : MonoBehaviour
 
     void ApplyOverInventorySlots(string lootId, System.Action<Vector2Int> action)
     {
-        var coordinates = Loots[lootId].InventorySlots.ToArray();
+        var coordinates = Loots[lootId].InventorySlots().ToArray();
         for (int i = 0; i < coordinates.Length; i++)
         {
             action(coordinates[i]);
@@ -225,9 +225,9 @@ public class InventoryHUD : MonoBehaviour
         );
     }
 
-    private RectTransform CreateRackUI(Lootable loot, InventoryRack rack)
+    private RectTransform CreateRackUI(Lootable loot, InventoryRack rack, Vector3Int placement)
     {
-        var rackIndex = loot.Coordinates.y;
+        var rackIndex = placement.y;
 
         var rt = CreateChild($"Rack: {rackIndex}", loot.texture);
         PositionRack(rackIndex, rt);
@@ -270,94 +270,80 @@ public class InventoryHUD : MonoBehaviour
 
     static readonly Rect RackPadding = new Rect(0.05f, 0f, 0.9f, 1f);
 
-    private RectTransform CreateLootUI(Lootable loot)
+    private RectTransform CreateLootUI(Lootable loot, Vector3Int placement)
     {
         var rt = CreateChild($"Item: {loot.Id}", loot.texture);
-
-        Debug.Log($"{loot.UIShape} {loot.UIShape.center}");
-        SlotPosition(loot.Coordinates, loot.UIShape, rt);
+        
+        SlotPosition(placement, loot.UIShape, rt);
         return rt;
     }
 
-    private void FreeSlotState(Lootable loot, Vector3Int previousOrigin)
-    {
-        var coordinates = loot.InventoryShape
-            .Select(coords => new Vector2Int(coords.x + previousOrigin.x, coords.y + previousOrigin.y))
-            .ToArray();
-        for (int i = 0; i < coordinates.Length; i++)
-        {
-            var slot = Slots[coordinates[i]];
-            slot.State = InventorySlotHUDState.Free;
-            slot.LootId = null;
-        }
-    }
 
-
-    private void ApplyNewSlotState(Lootable loot, InventorySlotHUDState state)
+    private void ApplyNewSlotState(Lootable loot, Vector3Int placement, InventorySlotHUDState state)
     {
-        var coordinates = loot.InventorySlots.ToArray();
+        var coordinates = loot.InventorySlots(placement).ToArray();
         for (int i = 0; i < coordinates.Length; i++)
         {
             var slot = Slots[coordinates[i]];
             slot.State = state;
-            slot.LootId = loot.Id;
+            slot.LootId = state == InventorySlotHUDState.Free ? null : loot.Id;
         }
 
     }
 
-    private void PutInInventory(Lootable loot)
+    private void PutInInventory(Lootable loot, Vector3Int placement)
     {
         Loots.Add(loot.Id, loot);
         var rack = loot.GetComponent<InventoryRack>();
         if (rack != null)
         {
-            Transforms.Add(loot.Id, CreateRackUI(loot, rack));
+            Transforms.Add(loot.Id, CreateRackUI(loot, rack, placement));
         } else
         {
-            Transforms.Add(loot.Id, CreateLootUI(loot));
-            ApplyNewSlotState(loot, InventorySlotHUDState.Occupied);
+            Transforms.Add(loot.Id, CreateLootUI(loot, placement));
+            ApplyNewSlotState(loot, placement, InventorySlotHUDState.Occupied);
         }
     }
 
-    private void MoveLoot(Lootable loot, Vector3Int previousOrigin)
+    private void MoveLoot(Lootable loot, Vector3Int placement)
     {
-        Debug.Log("Move");
+        Debug.Log("Inventory Move");
         var rectTransform = Transforms[loot.Id];
         if (loot.GetComponent<InventoryRack>())
         {
-            PositionRack(loot.Coordinates.y, rectTransform);
+            PositionRack(placement.y, rectTransform);
         } else
         {
 
-            FreeSlotState(loot, previousOrigin);
-            SlotPosition(loot.Coordinates, loot.UIShape, rectTransform);
-            ApplyNewSlotState(loot, InventorySlotHUDState.Occupied);
+            ApplyNewSlotState(loot, loot.Coordinates, InventorySlotHUDState.Free);
+            SlotPosition(placement, loot.UIShape, rectTransform);
+            ApplyNewSlotState(loot, placement, InventorySlotHUDState.Occupied);
         }
     }
 
     private void DropLoot(Lootable loot)
     {
-        Debug.Log("Drop");
         var lootId = loot.Id;
         Loots.Remove(loot.Id);
         var lootTransform = Transforms[lootId];
         Destroy(lootTransform.gameObject);
         Transforms.Remove(lootId);
-        ApplyNewSlotState(loot, InventorySlotHUDState.Free);
+        ApplyNewSlotState(loot, loot.Coordinates, InventorySlotHUDState.Free);
+        Debug.Log("Inventory Drop");
     }
 
-    private void Inventory_OnInventoryChange(Lootable loot, InventoryEvent inventoryEvent, Vector3Int previousOrigin)
+    private void Inventory_OnInventoryChange(Lootable loot, InventoryEvent inventoryEvent, Vector3Int placement)
     {
         switch (inventoryEvent)
         {
             case InventoryEvent.PickUp:
-                PutInInventory(loot);
+                PutInInventory(loot, placement);
                 break;
             case InventoryEvent.Drop:
                 DropLoot(loot);
                 break;
             case InventoryEvent.Move:
-                MoveLoot(loot, previousOrigin);
+                MoveLoot(loot, placement);
                 break;
 
         }
