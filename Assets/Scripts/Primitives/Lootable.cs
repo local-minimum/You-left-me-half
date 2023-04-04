@@ -48,6 +48,8 @@ public class Lootable : MonoBehaviour
     public Vector3Int Coordinates { get; set; }
     public LootOwner Owner { get; set; }
 
+    public FaceDirection ManifestSide { get; set; }
+
     [SerializeField]
     public Vector2Int[] InventoryShape;
 

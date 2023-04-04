@@ -2,8 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public delegate void PlayerMove(Vector3Int position, FaceDirection lookDirection);
+
 public class PlayerController : MonoBehaviour
 {
+    public static event PlayerMove OnPlayerMove;
+
     FaceDirection lookDirection;
     Vector3Int position;
 
@@ -68,6 +72,7 @@ public class PlayerController : MonoBehaviour
         transform.position = Level.AsWorldPosition(position);
 
         Level.instance.ClaimPosition(GridEntity.Player, position, AllowEnterVirtualSpaces);
+        OnPlayerMove?.Invoke(position, lookDirection);
     }
 
     Navigation GetKeyPress()
@@ -189,6 +194,7 @@ public class PlayerController : MonoBehaviour
                     afterAction = () => { 
                         Level.instance.ReleasePosition(GridEntity.Player, position);
                         movableEntity?.SetNewGridPosition(gridTarget, lookDirection);
+                        OnPlayerMove?.Invoke(gridTarget, lookDirection);
                     };
                 }
                 else
@@ -208,6 +214,7 @@ public class PlayerController : MonoBehaviour
                 action = (float progress) => { transform.rotation = Quaternion.Lerp(origin, target, progress); };
                 afterAction = () => {                         
                     movableEntity?.SetNewGridPosition(position, nav.asDirection(lookDirection));
+                    OnPlayerMove?.Invoke(position, lookDirection);
                 };
             }
 

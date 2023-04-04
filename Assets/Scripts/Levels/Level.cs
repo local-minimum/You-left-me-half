@@ -19,7 +19,7 @@ public enum GridEntity
 
 abstract public class Level : MonoBehaviour
 {
-    static int gridScale = 3;
+    public static int GridScale = 3;
 
     abstract public int lvl { get; }
     abstract protected string[] grid { get; }
@@ -105,7 +105,7 @@ abstract public class Level : MonoBehaviour
         if (GridCharacterToColor(getPosition(x, z), out Color color))
         {
             Gizmos.color = color;
-            Gizmos.DrawWireCube(new Vector3(x, 0.5f, z)*gridScale, Vector3.one * gridScale * gizmoScale);
+            Gizmos.DrawWireCube(new Vector3(x, 0.5f, z)*GridScale, Vector3.one * GridScale * gizmoScale);
         }
     }
 
@@ -177,7 +177,7 @@ abstract public class Level : MonoBehaviour
         return false;
     }
 
-    public static Vector3Int AsWorldPosition(Vector3Int gridPosition) => gridPosition * gridScale;
+    public static Vector3Int AsWorldPosition(Vector3Int gridPosition) => gridPosition * GridScale;
 
     private static Level _instance;
     public static Level instance { 
@@ -207,11 +207,22 @@ abstract public class Level : MonoBehaviour
     private void OnEnable()
     {
         Lootable.OnLoot += Lootable_OnLoot;
+        PlayerController.OnPlayerMove += PlayerController_OnPlayerMove;
     }
 
     private void OnDisable()
     {
         Lootable.OnLoot -= Lootable_OnLoot;
+        PlayerController.OnPlayerMove -= PlayerController_OnPlayerMove;
+    }
+
+    Vector3Int playerPosition;
+    FaceDirection playerLookDirection;
+
+    private void PlayerController_OnPlayerMove(Vector3Int position, FaceDirection lookDirection)
+    {
+        playerPosition = position;
+        playerLookDirection = lookDirection;
     }
 
     private void Lootable_OnLoot(Lootable loot, LootEventArgs args)
@@ -225,7 +236,8 @@ abstract public class Level : MonoBehaviour
         }
 
         loot.transform.SetParent(transform);
-        loot.transform.position = args.Coordinates * gridScale;
+        loot.transform.position = GridScale * (args.Coordinates + 0.5f * playerLookDirection.AsVector());
+        loot.ManifestSide = playerLookDirection;
         args.Consumed = true;
     }
 }

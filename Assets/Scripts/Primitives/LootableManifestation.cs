@@ -28,7 +28,7 @@ public class LootableManifestation : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            if (lootable.Owner != LootOwner.Level || (PlayerController.instance.Position - lootable.Coordinates).ManhattanMagnitude() > 1) return;
+            if (lootable.Owner != LootOwner.Level || (PlayerController.instance.Position - lootable.Coordinates).CheckerDitsance() > 1) return;
 
             if (!lootable.Loot(LootOwner.Player))
             {
