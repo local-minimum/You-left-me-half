@@ -131,6 +131,10 @@ public class InventorySlotHUD : MonoBehaviour
 
     public void OnDragEnd()
     {
-        if (DraggedLoot == LootId && LootId != null) OnEndDragLoot?.Invoke(DraggedLoot);
+        if (DraggedLoot == LootId && LootId != null)
+        {
+            OnEndDragLoot?.Invoke(DraggedLoot);
+            DraggedLoot = null;
+        }
     }
 }

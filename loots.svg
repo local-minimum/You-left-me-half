@@ -25,11 +25,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="3.959798"
-     inkscape:cx="442.22429"
-     inkscape:cy="1001.6856"
+     inkscape:zoom="1.4"
+     inkscape:cx="250.17966"
+     inkscape:cy="895.60958"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer9"
+     inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1920"
      inkscape:window-height="1027"
@@ -52,8 +52,7 @@
      inkscape:label="Grid"
      inkscape:groupmode="layer"
      id="layer1"
-     style="display:inline;opacity:0.27300002"
-     sodipodi:insensitive="true">
+     style="display:inline;opacity:0.27300002">
     <rect
        style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect4520"
@@ -167,7 +166,10 @@
        height="14.967093"
        width="14.967093"
        id="rect4548"
-       style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+       style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="C:\Users\Admin\Documents\Unity\You left me half\Assets\Sprites\UI - Lootable\HealthCanisterFG.png"
+       inkscape:export-xdpi="105.1"
+       inkscape:export-ydpi="105.1" />
     <rect
        style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect4550"
@@ -229,7 +231,10 @@
        width="14.967093"
        height="14.967093"
        x="100.22607"
-       y="36.278576" />
+       y="36.278576"
+       inkscape:export-filename="C:\Users\Admin\Documents\Unity\You left me half\Assets\Sprites\UI - Lootable\HealthCanisterFG.png"
+       inkscape:export-xdpi="105.1"
+       inkscape:export-ydpi="105.1" />
     <rect
        y="36.278576"
        x="115.19316"
@@ -307,7 +312,9 @@
   <g
      inkscape:groupmode="layer"
      id="layer7"
-     inkscape:label="HealthCanister Bot">
+     inkscape:label="HealthCanister Bot"
+     style="display:inline"
+     sodipodi:insensitive="true">
     <path
        style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 103.96785,23.14896 h 9.32104 V 49.541824 H 101.96333 V 25.420751 Z"
@@ -320,7 +327,7 @@
      id="layer8"
      inkscape:label="HealthCanister Mid"
      sodipodi:insensitive="true"
-     style="display:none">
+     style="display:inline">
     <path
        style="opacity:1;fill:#ff0000;fill-opacity:1;stroke:#000000;stroke-width:0.1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 103.96785,23.148964 h 9.32104 V 49.541828 H 101.96333 V 25.420755 Z"
@@ -331,7 +338,15 @@
   <g
      inkscape:groupmode="layer"
      id="layer9"
-     inkscape:label="HealthCanister Top">
+     inkscape:label="HealthCanister Top"
+     style="display:inline"
+     sodipodi:insensitive="true">
+    <path
+       style="display:inline;opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 103.96785,23.148964 h 9.32104 V 49.541828 H 101.96333 V 25.420755 Z"
+       id="rect956-7"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccc" />
     <path
        style="opacity:1;fill:#800000;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 105.53328,37.280834 2.15964,2.472243 2.02601,-2.472243 2.11667,2.876171 -4.2095,5.291667 -4.20949,-5.291667 z"
@@ -432,7 +447,7 @@
      id="layer2"
      inkscape:label="Uplink"
      sodipodi:insensitive="true"
-     style="display:none">
+     style="display:inline">
     <g
        id="g4619">
       <path
@@ -511,7 +526,7 @@
      inkscape:groupmode="layer"
      id="layer5"
      inkscape:label="XPCanister Mid"
-     style="display:none"
+     style="display:inline"
      sodipodi:insensitive="true">
     <path
        sodipodi:nodetypes="ccccc"
