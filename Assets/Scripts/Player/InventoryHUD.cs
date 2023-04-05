@@ -274,6 +274,12 @@ public class InventoryHUD : MonoBehaviour
     {
         var rt = CreateChild($"Item: {loot.Id}", loot.texture);
         
+        if (loot.GetType() == typeof(Canister))
+        {
+            var canisterHUD = rt.gameObject.AddComponent<CanisterHUD>();
+            canisterHUD.canister = loot as Canister;
+        }
+
         SlotPosition(placement, loot.UIShape, rt);
         return rt;
     }

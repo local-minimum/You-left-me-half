@@ -198,4 +198,46 @@ public class Inventory : MonoBehaviour
         loot = Loots.Where(predicate).FirstOrDefault();
         return loot != null;
     }
+
+    private IEnumerable<T> GetLootsByType<T>() => Loots.Where(loot => loot.GetType() == typeof(T)) as IEnumerable<T>;
+    private IEnumerable<Canister> GetXPCanisters() => GetLootsByType<Canister>().Where(canister => canister.CanisterType == CanisterType.XP);
+    private IEnumerable<Canister> GetHealthCanisters() => GetLootsByType<Canister>().Where(canister => canister.CanisterType == CanisterType.XP);
+    private IEnumerable<Canister> GetCanisters(CanisterType type) => GetLootsByType<Canister>().Where(canister => canister.CanisterType == type);
+
+
+    public int XP { get => GetXPCanisters().Sum(canister => canister.Stored); }
+    public int Health { get => GetHealthCanisters().Sum(canister => canister.Stored); }
+
+    public void Receive(int amount, CanisterType type)
+    {
+        var canisters = GetCanisters(type).ToArray();
+        for (int i=0; i<canisters.Length; i++)
+        {
+            var canister = canisters[i];
+            if (canister.Receive(amount, out int remaining))
+            {
+                amount = remaining;
+            } else
+            {
+                break;
+            }
+        }
+    }
+
+    public void Withdraw(int amount, CanisterType type)
+    {
+        var canisters = GetCanisters(type).ToArray();
+        for (int i = 0; i < canisters.Length; i++)
+        {
+            var canister = canisters[i];
+            if (canister.Withdraw(amount, out int remaining))
+            {
+                amount = remaining;
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
 }
