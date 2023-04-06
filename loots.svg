@@ -26,8 +26,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="250.17966"
-     inkscape:cy="895.60958"
+     inkscape:cx="285.17978"
+     inkscape:cy="1002.7041"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -52,7 +52,7 @@
      inkscape:label="Grid"
      inkscape:groupmode="layer"
      id="layer1"
-     style="display:inline;opacity:0.27300002">
+     style="display:none;opacity:0.27300002">
     <rect
        style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect4520"
@@ -183,14 +183,20 @@
        width="14.967093"
        height="14.967093"
        x="10.423512"
-       y="36.278576" />
+       y="36.278576"
+       inkscape:export-filename="C:\Users\Admin\Documents\Unity\You left me half\Assets\Sprites\UI - Lootable\MeleAttack1FG.png"
+       inkscape:export-xdpi="105.1"
+       inkscape:export-ydpi="105.1" />
     <rect
        y="36.278576"
        x="25.390606"
        height="14.967093"
        width="14.967093"
        id="rect4554"
-       style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+       style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="C:\Users\Admin\Documents\Unity\You left me half\Assets\Sprites\UI - Lootable\MeleAttack1FG.png"
+       inkscape:export-xdpi="105.1"
+       inkscape:export-ydpi="105.1" />
     <rect
        style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect4556"
@@ -248,14 +254,20 @@
        height="14.967093"
        width="14.967093"
        id="rect4568"
-       style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+       style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="C:\Users\Admin\Documents\Unity\You left me half\Assets\Sprites\UI - Lootable\MeleAttack1FG.png"
+       inkscape:export-xdpi="105.1"
+       inkscape:export-ydpi="105.1" />
     <rect
        style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect4570"
        width="14.967093"
        height="14.967093"
        x="25.390606"
-       y="51.24567" />
+       y="51.24567"
+       inkscape:export-filename="C:\Users\Admin\Documents\Unity\You left me half\Assets\Sprites\UI - Lootable\MeleAttack1FG.png"
+       inkscape:export-xdpi="105.1"
+       inkscape:export-ydpi="105.1" />
     <rect
        y="51.24567"
        x="40.3577"
@@ -311,9 +323,79 @@
   </g>
   <g
      inkscape:groupmode="layer"
+     id="layer10"
+     inkscape:label="MeleAttack Bot"
+     sodipodi:insensitive="true"
+     style="display:none">
+    <path
+       style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 12.294398,38.216278 h 22.317006 l 3.665227,3.401455 -1.839668,22.590506 H 14.411065 Z"
+       id="rect901"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccc" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer11"
+     inkscape:label="MeleAttack Mid"
+     style="display:none"
+     sodipodi:insensitive="true">
+    <path
+       style="opacity:1;fill:#ff2ad4;fill-opacity:1;stroke:#000000;stroke-width:0.1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 12.294398,38.216279 h 22.317006 l 3.665227,3.401455 -1.839668,22.590507 H 14.411065 Z"
+       id="rect901-5"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccc" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer12"
+     inkscape:label="MeleAttack Cover"
+     sodipodi:insensitive="true"
+     style="display:inline">
+    <path
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 12.294398,38.216279 h 22.317006 l 3.665227,3.401455 -1.839668,22.590507 H 14.411065 Z"
+       id="rect901-3"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccc" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer13"
+     inkscape:label="MeleAttack Icon 1"
+     style="display:inline"
+     sodipodi:insensitive="true">
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 32.072342,60.533284 c -4.723292,0 -7.683997,0.174824 -7.683997,-4.953287"
+       id="path937"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <circle
+       style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-width:1.5;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path939"
+       cx="24.488569"
+       cy="52.815876"
+       r="2.8397388" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 26.927405,50.978399 c 2.591736,-1.496339 3.88367,-4.647572 1.937703,-8.018086"
+       id="path941"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path943"
+       d="M 21.890442,50.978399 C 19.298706,49.48206 18.006772,46.330827 19.952739,42.960313"
+       style="fill:none;stroke:#000000;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
      id="layer7"
      inkscape:label="HealthCanister Bot"
-     style="display:inline"
+     style="display:none"
      sodipodi:insensitive="true">
     <path
        style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
@@ -327,7 +409,7 @@
      id="layer8"
      inkscape:label="HealthCanister Mid"
      sodipodi:insensitive="true"
-     style="display:inline">
+     style="display:none">
     <path
        style="opacity:1;fill:#ff0000;fill-opacity:1;stroke:#000000;stroke-width:0.1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 103.96785,23.148964 h 9.32104 V 49.541828 H 101.96333 V 25.420755 Z"
@@ -339,7 +421,7 @@
      inkscape:groupmode="layer"
      id="layer9"
      inkscape:label="HealthCanister Top"
-     style="display:inline"
+     style="display:none"
      sodipodi:insensitive="true">
     <path
        style="display:inline;opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
@@ -358,7 +440,7 @@
      inkscape:groupmode="layer"
      id="layer3"
      inkscape:label="Rack"
-     style="display:inline"
+     style="display:none"
      sodipodi:insensitive="true">
     <g
        id="g4653"
@@ -447,7 +529,7 @@
      id="layer2"
      inkscape:label="Uplink"
      sodipodi:insensitive="true"
-     style="display:inline">
+     style="display:none">
     <g
        id="g4619">
       <path
@@ -513,7 +595,7 @@
      inkscape:groupmode="layer"
      id="layer4"
      inkscape:label="XPCanister Bot"
-     style="display:inline"
+     style="display:none"
      sodipodi:insensitive="true">
     <path
        style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
@@ -526,7 +608,7 @@
      inkscape:groupmode="layer"
      id="layer5"
      inkscape:label="XPCanister Mid"
-     style="display:inline"
+     style="display:none"
      sodipodi:insensitive="true">
     <path
        sodipodi:nodetypes="ccccc"
@@ -539,7 +621,7 @@
      inkscape:groupmode="layer"
      id="layer6"
      inkscape:label="XPCanister Top"
-     style="display:inline"
+     style="display:none"
      sodipodi:insensitive="true">
     <text
        xml:space="preserve"
