@@ -92,10 +92,18 @@ public class Lootable : MonoBehaviour
 
     private void Awake()
     {
-        if (InventoryShape.Length > 0 && InventoryShape.Min(coords => coords.y) != 0)
+        if (InventoryShape.Length == 0)
         {
-            Debug.LogError($"{Id} ({name}) does not have a 0 y-offset or has negative y-offsets");
+            Debug.LogWarning($"{id} has no inventory shape so it will forever be picked up and invisible");
         }
+        else if (InventoryShape.Min(coords => coords.y) != 0)
+        {
+            Debug.LogError($"{Id} inventory shape does not have a 0 y-offset or has negative y-offsets");
+        } else if (InventoryShape.GroupBy(choords => choords).Count() != InventoryShape.Length)
+        {
+            Debug.LogWarning($"{Id} inventory shape has duplicate coordinates");
+        }
+
 
         manifestation = GetComponentInChildren<LootableManifestation>();
     }

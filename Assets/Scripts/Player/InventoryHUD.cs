@@ -278,6 +278,10 @@ public class InventoryHUD : MonoBehaviour
         {
             var canisterHUD = rt.gameObject.AddComponent<CanisterHUD>();
             canisterHUD.canister = loot as Canister;
+        } else if (loot.GetType() == typeof(Attack))
+        {
+            var lootHUD = rt.gameObject.AddComponent<AttackInventoryHUD>();
+            lootHUD.attack = loot as Attack;
         }
 
         SlotPosition(placement, loot.UIShape, rt);
