@@ -34,6 +34,7 @@ public class LootableManifestation : MonoBehaviour
             {
                 Debug.Log($"Player failed to pick up {lootable.Id}");
             }
+            hovered = false;
         }
     }
 }
