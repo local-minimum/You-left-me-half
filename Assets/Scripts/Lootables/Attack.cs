@@ -23,6 +23,8 @@ public class Attack : Lootable
     public float critFactor = 1.5f;
     [Range(0, 1)]
     public float failFactor = 0.5f;
+    [Range(0, 2)]
+    public float beforeCooldownSeconds = 0.5f;
     [Range(0, 10)]
     public float cooldownSeconds = 1f;
 

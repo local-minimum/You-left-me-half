@@ -33,10 +33,17 @@ public class AttackInventoryHUD : HUDProgressionIcon
         lastAttack = Time.timeSinceLevelLoad;
     }
 
+    float ActionStatus
+    {
+        get
+        {
+            return Mathf.Clamp01((Time.timeSinceLevelLoad - lastAttack - attack.beforeCooldownSeconds) / attack.cooldownSeconds);
+        }
+    }
 
     void HandleClick()
     {
-        if (Time.timeSinceLevelLoad - lastAttack > attack.cooldownSeconds)
+        if (ActionStatus == 1)
         {
             lastAttack = Time.timeSinceLevelLoad;
             OnAttack?.Invoke(attack);
@@ -47,6 +54,6 @@ public class AttackInventoryHUD : HUDProgressionIcon
     {
         if (!IsActionHud) return;
 
-        progressImage.fillAmount = Mathf.Clamp01((Time.timeSinceLevelLoad - lastAttack) / attack.cooldownSeconds);
+        progressImage.fillAmount = ActionStatus;
     }
 }
