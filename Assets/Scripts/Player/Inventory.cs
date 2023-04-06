@@ -104,8 +104,6 @@ public class Inventory : MonoBehaviour
     {
         Racks.ForEach(rack => rack.SetOccupancy(lootable.Coordinates, lootable.InventoryShape, false));
         Loots.Remove(lootable);
-        Debug.Log("Drop");
-
     }
 
 
@@ -113,7 +111,6 @@ public class Inventory : MonoBehaviour
     {
         Racks.ForEach(rack => rack.SetOccupancy(placement, lootable.InventoryShape, true));
         Loots.Add(lootable);
-        Debug.Log("Pickup");
     }
 
     private void Lootable_OnLoot(Lootable loot, LootEventArgs args)

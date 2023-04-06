@@ -94,7 +94,7 @@ public class Lootable : MonoBehaviour
     {
         if (InventoryShape.Length == 0)
         {
-            Debug.LogWarning($"{id} has no inventory shape so it will forever be picked up and invisible");
+            Debug.LogWarning($"{Id} has no inventory shape so it will forever be picked up and invisible");
         }
         else if (InventoryShape.Min(coords => coords.y) != 0)
         {
