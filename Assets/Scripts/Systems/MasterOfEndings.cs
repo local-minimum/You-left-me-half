@@ -8,8 +8,31 @@ public enum Ending { NoHealth, NoHealthCanister, LostConnection }
 public delegate void EndingEvent(EndingType type, Ending ending);
 
 public class MasterOfEndings : MonoBehaviour
-{
+{    
+    public static MasterOfEndings Instance { get; private set; }
+
+
     public static event EndingEvent OnEnding;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        } else if (Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
 
     private void OnEnable()
     {
@@ -31,5 +54,10 @@ public class MasterOfEndings : MonoBehaviour
         {
             OnEnding?.Invoke(EndingType.Death, Ending.NoHealth);
         }
+    }
+
+    public void TriggerDisconnect()
+    {
+        OnEnding?.Invoke(EndingType.Death, Ending.LostConnection);
     }
 }
