@@ -107,4 +107,19 @@ public class Lootable : MonoBehaviour
 
         manifestation = GetComponentInChildren<LootableManifestation>();
     }
+
+    private void OnEnable()
+    {
+        MasterOfEndings.OnEnding += MasterOfEndings_OnEnding;
+    }
+
+    private void OnDisable()
+    {
+        MasterOfEndings.OnEnding -= MasterOfEndings_OnEnding;
+    }
+    private void MasterOfEndings_OnEnding(EndingType type, Ending ending)
+    {
+        enabled = false;
+    }
+
 }

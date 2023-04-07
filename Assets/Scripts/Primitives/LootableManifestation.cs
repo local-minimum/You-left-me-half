@@ -10,7 +10,7 @@ public class LootableManifestation : MonoBehaviour
     private void Awake()
     {
         lootable = GetComponentInParent<Lootable>();
-    }
+    }    
 
     private void OnMouseEnter()
     {
@@ -24,7 +24,7 @@ public class LootableManifestation : MonoBehaviour
 
     private void Update()
     {
-        if (!hovered) return;
+        if (!hovered || !lootable.enabled) return;
 
         if (Input.GetMouseButtonDown(0))
         {

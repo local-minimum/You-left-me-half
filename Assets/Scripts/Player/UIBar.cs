@@ -37,7 +37,6 @@ public class UIBar : MonoBehaviour
 
     private void Inventory_OnCanisterChange(CanisterType type, int stored, int capacity)
     {
-        Debug.Log($"{type}: {stored}/{capacity}");
         if (type != this.type) return;
         Capacity = capacity;
         fillImage.fillAmount = capacity == 0 ? 0 : (float)stored / capacity;

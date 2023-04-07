@@ -24,7 +24,7 @@ public class InventoryHUD : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        if (instance == null) instance = this;
+        if (instance == null) instance = this;        
     }
 
     private void OnDestroy()
@@ -40,6 +40,7 @@ public class InventoryHUD : MonoBehaviour
         InventorySlotHUD.OnBeginDragLoot += InventorySlotHUD_OnBeginDragLoot;
         InventorySlotHUD.OnDragLoot += InventorySlotHUD_OnDragLoot;
         InventorySlotHUD.OnEndDragLoot += InventorySlotHUD_OnEndDragLoot;
+        MasterOfEndings.OnEnding += MasterOfEndings_OnEnding;
     }
 
     private void OnDisable()
@@ -50,6 +51,12 @@ public class InventoryHUD : MonoBehaviour
         InventorySlotHUD.OnBeginDragLoot -= InventorySlotHUD_OnBeginDragLoot;
         InventorySlotHUD.OnDragLoot -= InventorySlotHUD_OnDragLoot;
         InventorySlotHUD.OnEndDragLoot -= InventorySlotHUD_OnEndDragLoot;
+        MasterOfEndings.OnEnding -= MasterOfEndings_OnEnding;
+    }
+
+    private void MasterOfEndings_OnEnding(EndingType type, Ending ending)
+    {
+        enabled = false;
     }
 
     string dragged;

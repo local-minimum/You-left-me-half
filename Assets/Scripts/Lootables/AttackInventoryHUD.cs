@@ -19,6 +19,21 @@ public class AttackInventoryHUD : HUDProgressionIcon
         if (IsActionHud) SetupActionInteractions();
     }
 
+    private void OnEnable()
+    {
+        MasterOfEndings.OnEnding += MasterOfEndings_OnEnding;
+    }
+
+    private void OnDisable()
+    {
+        MasterOfEndings.OnEnding -= MasterOfEndings_OnEnding;
+    }
+
+    private void MasterOfEndings_OnEnding(EndingType type, Ending ending)
+    {
+        enabled = false;
+    }
+
     void Configure() => Configure(attack.textureProgress, attack.textureOverlay, attack.fillMethod);
 
 

@@ -62,6 +62,21 @@ public class InventorySlotHUD : MonoBehaviour
         image.sprite = sprite;
     }
 
+    private void OnEnable()
+    {
+        MasterOfEndings.OnEnding += MasterOfEndings_OnEnding;
+    }
+
+    private void OnDisable()
+    {
+        MasterOfEndings.OnEnding -= MasterOfEndings_OnEnding;
+    }
+
+    private void MasterOfEndings_OnEnding(EndingType type, Ending ending)
+    {
+        enabled = false;
+    }
+
     private InventorySlotHUDState state = InventorySlotHUDState.Free;
 
     public InventorySlotHUDState State

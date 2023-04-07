@@ -20,12 +20,15 @@ public class Inventory : MonoBehaviour
     public List<InventoryRack> Racks = new List<InventoryRack>();
     public int MaxRacks = 2;
 
+    private bool alive { get; set; }
+
     private void Start()
     {
         if (MaxRacks > RackLimit)
         {
             Debug.LogError($"{name} claims too many rack slots");
         }
+        alive = true;
     }
 
     private void OnEnable()

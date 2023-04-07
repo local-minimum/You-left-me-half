@@ -26,7 +26,6 @@ public class PlayerController : MonoBehaviour
 
     MovingEntity movableEntity;
     Inventory inventory;
-
     public static PlayerController instance { get; set; }    
 
     public Vector3Int Position { get { return position; } }
@@ -61,6 +60,21 @@ public class PlayerController : MonoBehaviour
         transform.position = Level.AsWorldPosition(position);
         this.lookDirection = lookDirection;
         transform.rotation = Quaternion.LookRotation(lookDirection.AsVector());
+    }
+
+    private void OnEnable()
+    {
+        MasterOfEndings.OnEnding += MasterOfEndings_OnEnding;
+    }
+
+    private void OnDisable()
+    {
+        MasterOfEndings.OnEnding -= MasterOfEndings_OnEnding;
+    }
+
+    private void MasterOfEndings_OnEnding(EndingType type, Ending ending)
+    {
+        enabled = false;
     }
 
     void Start()
@@ -111,6 +125,7 @@ public class PlayerController : MonoBehaviour
                 break;
         }
     }
+
     [SerializeField, Range(0, 2)]
     float turnTime = 0.4f;
     [SerializeField, Range(0, 2)]
