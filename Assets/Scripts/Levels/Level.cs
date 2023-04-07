@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public enum GridEntity
@@ -152,7 +153,8 @@ abstract public class Level : MonoBehaviour
     }
 
 
-    Dictionary<KeyValuePair<int, int>, char> levelRestore = new Dictionary<KeyValuePair<int, int>, char>();
+
+    Dictionary<(int, int), char[]> levelRestore = new Dictionary<(int, int), char[]>();
 
     public GridEntity GridBoundsStatus(int x, int z)
     {
@@ -162,13 +164,13 @@ abstract public class Level : MonoBehaviour
             return entity;
         }
 
-        var kvp = new KeyValuePair<int, int>(x, z);
-        if (levelRestore.ContainsKey(kvp))
-        {
-            entity = levelRestore[kvp].ToGridEntity();
-            if (entity == GridEntity.OutBound || entity == GridEntity.InBound || entity == GridEntity.VirtualOutBound)
+        var xz = (x, z);
+        var original = GetPositionRestore(x, z, out int i).ToGridEntity();
+        if (i >=0)
+        {            
+            if (original == GridEntity.OutBound || original == GridEntity.InBound || original == GridEntity.VirtualOutBound)
             {
-                return entity;
+                return original;
             }            
         }
 
@@ -180,7 +182,31 @@ abstract public class Level : MonoBehaviour
         return GridEntity.OutBound;
     }
 
-    public bool ClaimPosition(GridEntity entity, Vector3Int position, bool allowVirtualPositions)
+    public GridEntity GridStatus(int x, int z) => getPosition(x, z).ToGridEntity();    
+
+    private char GetPositionRestore(int x, int z, out int i)
+    {
+        var restorePosition = (x, z);
+        if (!levelRestore.ContainsKey(restorePosition))
+        {
+            i = -1;
+            return char.MinValue;
+        }
+
+        var restoreArr = levelRestore[restorePosition];            
+        for (i = 1; i >= 0; i--)
+        {
+            if (restoreArr[i] != char.MinValue)
+            {
+                return restoreArr[i];
+            }
+        }
+
+        i = -1;
+        return char.MinValue;
+    }
+
+    public bool ClaimPosition(GridEntity entity, Vector3Int position, bool allowVirtualPositions, bool allowOutOfBounds = false)
     {
         var z = grid.Length - position.z - 1;
         if (z < 0 || z >= grid.Length || position.x < 0) return false;
@@ -193,18 +219,37 @@ abstract public class Level : MonoBehaviour
         if (
             GridEntity.InBound.GetStringValue().Contains(current) || 
             GridEntity.PlayerSpawn.GetStringValue().Contains(current) || 
-            allowVirtualPositions && GridEntity.VirtualOutBound.GetStringValue().Contains(current)
+            allowVirtualPositions && GridEntity.VirtualOutBound.GetStringValue().Contains(current) ||
+            allowOutOfBounds && GridEntity.OutBound.GetStringValue().Contains(current)
             )
         {
             var chars = line.ToCharArray();
-            var restorePosition = new KeyValuePair<int, int>(position.x, position.z);
-            if (!levelRestore.ContainsKey(restorePosition)) levelRestore[restorePosition] = current;
+            var restorePosition = (position.x, position.z);
+            if (!levelRestore.ContainsKey(restorePosition))
+            {
+                levelRestore[restorePosition] = new char[2] { current, char.MinValue };                
+            } else
+            {
+                var restoreArr = levelRestore[restorePosition];
+                bool hadEmptyRestoreSlot = false;
+                for (int i = 0; i < 2; i++)
+                {
+                    if (restoreArr[i] == char.MinValue)
+                    {
+                        restoreArr[i] = current;
+                        hadEmptyRestoreSlot = true;
+                        break;
+                    }
+                }
+                if (!hadEmptyRestoreSlot) return false;
+            }
             chars[position.x] = entity.GetStringValue()[0];
             grid[z] = new string(chars);
             return true;
         }
         return false;
     }
+
 
     public bool ReleasePosition(GridEntity entity, Vector3Int position)
     {
@@ -217,8 +262,17 @@ abstract public class Level : MonoBehaviour
         var current = line[position.x];
         if (entity.GetStringValue().Contains(current))
         {
-            var restorePosition = new KeyValuePair<int, int>(position.x, position.z);
-            var original = levelRestore.ContainsKey(restorePosition) ? levelRestore[restorePosition] : GridEntity.InBound.GetStringValue()[0];
+            var restorePosition = (position.x, position.z);
+
+            var original = GetPositionRestore(position.x, position.z, out int i);
+            if (i >= 0)
+            {
+                levelRestore[restorePosition][i] = char.MinValue;
+            } else
+            {
+                return false;
+            }
+            
             var chars = line.ToCharArray();
             chars[position.x] = original;
             grid[z] = new string(chars);
@@ -229,6 +283,7 @@ abstract public class Level : MonoBehaviour
     }
 
     public static Vector3Int AsWorldPosition(Vector3Int gridPosition) => gridPosition * GridScale;
+    public static Vector3Int AsGridPosition(Vector3 worldPosition) => new Vector3Int(Mathf.FloorToInt(worldPosition.x / GridScale), 0, Mathf.FloorToInt(worldPosition.z / GridScale));
 
     private static Level _instance;
     public static Level instance { 

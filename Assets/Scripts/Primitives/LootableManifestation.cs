@@ -2,39 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LootableManifestation : MonoBehaviour
+public class LootableManifestation : WorldClickable
 {
     Lootable lootable;
-    bool hovered = false;
 
     private void Awake()
     {
         lootable = GetComponentInParent<Lootable>();
-    }    
-
-    private void OnMouseEnter()
-    {
-        hovered = true;    
     }
 
-    private void OnMouseExit()
-    {
-        hovered = false;
-    }
+    protected override bool PreClickCheckRefusal() => !lootable.enabled;
 
-    private void Update()
-    {
-        if (!hovered || !lootable.enabled) return;
+    protected override bool RefuseClick() =>
+        lootable.Owner != LootOwner.Level ||
+        (PlayerController.instance.Position - lootable.Coordinates).CheckerDitsance() > 1;
 
-        if (Input.GetMouseButtonDown(0))
+    protected override void OnClick()
+    {
+        if (!lootable.Loot(LootOwner.Player))
         {
-            if (lootable.Owner != LootOwner.Level || (PlayerController.instance.Position - lootable.Coordinates).CheckerDitsance() > 1) return;
-
-            if (!lootable.Loot(LootOwner.Player))
-            {
-                Debug.Log($"Player failed to pick up {lootable.Id}");
-            }
-            hovered = false;
+            Debug.Log($"Player failed to pick up {lootable.Id}");
         }
     }
 }
