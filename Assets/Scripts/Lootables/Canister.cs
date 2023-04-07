@@ -24,8 +24,9 @@ public class Canister : Lootable
     public int Capacity { get { return capacity; } }
 
     private int stored = 0;
+    bool ready = false;
 
-    public int Stored { get { return stored; } }
+    public int Stored { get { return ready ? stored : initialStored; } }
 
     public float Fill { 
         get {
@@ -52,5 +53,6 @@ public class Canister : Lootable
     private void Start()
     {
         stored = Mathf.Min(capacity, initialStored);
+        ready = true;
     }
 }

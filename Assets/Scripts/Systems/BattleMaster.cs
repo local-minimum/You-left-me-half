@@ -48,6 +48,7 @@ public class BattleMaster : MonoBehaviour
         PlayerController.OnPlayerMove -= PlayerController_OnPlayerMove;
     }
 
+
     Vector3Int playerPosition;
     FaceDirection playerLookDirection;
 

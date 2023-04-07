@@ -5,9 +5,11 @@ using System.Linq;
 public enum InventoryEvent { PickUp, Drop, Move };
 
 public delegate void InventoryChange(Lootable loot, InventoryEvent inventoryEvent, Vector3Int placement);
+public delegate void CanisterChange(CanisterType type, int stored, int capacity);
 
 public class Inventory : MonoBehaviour
 {
+    public static event CanisterChange OnCanisterChange;    
     public static event InventoryChange OnInventoryChange;
 
     public static readonly int RackWidth = 8;
@@ -100,6 +102,12 @@ public class Inventory : MonoBehaviour
 
     HashSet<Lootable> Loots = new HashSet<Lootable>();
 
+    string LootsSummary(IEnumerable<Lootable> loots) { 
+        var s = string.Join(", ", loots.Select(v => v.Id));
+        if (string.IsNullOrEmpty(s)) return "-EMPTY-";
+        return s;
+    }
+    
     private void Drop(Lootable lootable)
     {
         Racks.ForEach(rack => rack.SetOccupancy(lootable.Coordinates, lootable.InventoryShape, false));
@@ -119,6 +127,10 @@ public class Inventory : MonoBehaviour
         {
             Drop(loot);
             OnInventoryChange?.Invoke(loot, InventoryEvent.Drop, Vector3Int.zero);
+            if (loot.GetType() == typeof(Canister))
+            {
+                InvokeCanisterChange(((Canister)loot).CanisterType);
+            }
         }
 
         if (args.Owner != LootOwner.Player || args.Consumed) return;
@@ -188,6 +200,12 @@ public class Inventory : MonoBehaviour
         args.Consumed = true;
 
         OnInventoryChange?.Invoke(loot, inventoryEvent, placement);
+
+        if (inventoryEvent == InventoryEvent.PickUp && loot.GetType() == typeof(Canister))
+        {
+            InvokeCanisterChange(((Canister)loot).CanisterType);
+        }
+
     }
 
     public bool Has(System.Func<Lootable, bool> predicate, out Lootable loot)
@@ -196,21 +214,38 @@ public class Inventory : MonoBehaviour
         return loot != null;
     }
 
-    private IEnumerable<T> GetLootsByType<T>() => Loots.Where(loot => loot.GetType() == typeof(T)) as IEnumerable<T>;
-    private IEnumerable<Canister> GetXPCanisters() => GetLootsByType<Canister>().Where(canister => canister.CanisterType == CanisterType.XP);
-    private IEnumerable<Canister> GetHealthCanisters() => GetLootsByType<Canister>().Where(canister => canister.CanisterType == CanisterType.XP);
-    private IEnumerable<Canister> GetCanisters(CanisterType type) => GetLootsByType<Canister>().Where(canister => canister.CanisterType == type);
+    private IEnumerable<T> GetLoot<T>() where T : Lootable => Loots
+        .Where(loot => loot.GetType() == typeof(T))
+        .Select(loot => (T)loot);
+
+    private IEnumerable<Canister> GetXPCanisters() => GetLoot<Canister>()
+        .Where(canister => canister.CanisterType == CanisterType.XP);
+    private IEnumerable<Canister> GetHealthCanisters() => GetLoot<Canister>()
+        .Where(canister => canister.CanisterType == CanisterType.XP);
+    private IEnumerable<Canister> GetCanisters(CanisterType type) => GetLoot<Canister>()
+        .Where(canister => canister.CanisterType == type);
 
 
     public int XP { get => GetXPCanisters().Sum(canister => canister.Stored); }
     public int Health { get => GetHealthCanisters().Sum(canister => canister.Stored); }
 
+    
+    public void InvokeCanisterChange(CanisterType type)
+    {
+        var (stored, capacity) = GetCanisters(type)
+            .Aggregate((0, 0), (acc, canister) => (acc.Item1 + canister.Stored, acc.Item2 + canister.Capacity));
+        
+        OnCanisterChange?.Invoke(type, stored, capacity);
+    }
+
     public void Receive(int amount, CanisterType type)
     {
         var canisters = GetCanisters(type).ToArray();
+
         for (int i=0; i<canisters.Length; i++)
         {
             var canister = canisters[i];
+
             if (canister.Receive(amount, out int remaining))
             {
                 amount = remaining;
@@ -219,6 +254,8 @@ public class Inventory : MonoBehaviour
                 break;
             }
         }
+
+        InvokeCanisterChange(type);
     }
 
     public void Withdraw(int amount, CanisterType type)
@@ -230,11 +267,12 @@ public class Inventory : MonoBehaviour
             if (canister.Withdraw(amount, out int remaining))
             {
                 amount = remaining;
-            }
-            else
+            } else
             {
                 break;
             }
         }
+
+        InvokeCanisterChange(type);
     }
 }
