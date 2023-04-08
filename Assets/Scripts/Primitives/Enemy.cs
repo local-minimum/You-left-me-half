@@ -18,9 +18,21 @@ public class Enemy : MonoBehaviour
 
     MovingEntity movable;
 
+    EnemyPattern RandomDefaultPattern
+    {
+        get
+        {
+            return DefaultPatterns[Random.Range(0, DefaultPatterns.Length)];
+        }
+    }
+
     private void Start()
     {
         movable = GetComponent<MovingEntity>();
         movable.SetNewGridPosition(Level.AsGridPosition(transform.position), transform.forward.AsDirection());
+        if (!RandomDefaultPattern.Play())
+        {
+            Debug.LogWarning("Failed to launch enemy pattern");
+        }
     }
 }

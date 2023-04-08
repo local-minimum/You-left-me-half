@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class Sentry : EnemyPattern
 {
@@ -17,27 +18,34 @@ public class Sentry : EnemyPattern
     private FaceDirection[] LookDirections;
 
     [SerializeField]
-    float minLook = 1;
+    float minLookTime = 1;
 
     [SerializeField]
-    float maxLook = 1.2f;
+    float maxLookTime = 1.2f;
+
+    [SerializeField]
+    float turnTime = 0.4f;
 
     public override void Abort()
     {
         playing = false;
     }
 
-    public override void Play()
+    public override bool Play()
     {
-        playing = true;
+        if (dynamicSentryPos || sentryPosition == movable.Position)
+        {
+            playing = true;
+        }
+
+        return playing;
     }
 
-    public override void Resume()
-    {
-        Play();
-    }
+    public override bool Resume() => Play();    
 
-    public override bool Terminatable => true;
+    bool easing = false;
+
+    public override bool Terminatable => !easing;
 
     MovingEntity movable;
 
@@ -63,8 +71,54 @@ public class Sentry : EnemyPattern
         sentryPosition = position;
     }
 
+    Navigation GetNextNavigation()
+    {
+        var options = LookDirections.Where(d => d != movable.LookDirection).ToArray();
+        if (options.Length == 0) return Navigation.None;
+        var lookTarget = options[Random.Range(0, options.Length)];
+
+        return NavigationExtensions.FromToRotation(movable.LookDirection, lookTarget);
+    }
+
+    float nextTurn;
+
     private void Update()
     {
-        if (!playing) return;
+        if (!playing || easing || Time.timeSinceLevelLoad < nextTurn) return;
+
+        var instructions = movable.Navigate(
+            GridEntity.Other,
+            GetNextNavigation(),
+            0,
+            turnTime,
+            (_, _) => { easing = false; },
+            false
+        );
+
+        StartCoroutine(Move(instructions));
+    }
+
+    IEnumerator<WaitForSeconds> Move(NavInstructions navInstructions)
+    {
+        easing = true;
+
+        if (navInstructions.enabled)
+        {
+            float start = Time.timeSinceLevelLoad;
+            float progress = 0;
+            float tick = Mathf.Max(0.02f, navInstructions.duration / 100f);
+            while (progress < 1)
+            {
+                progress = (Time.timeSinceLevelLoad - start) / navInstructions.duration;
+                navInstructions.Interpolate(progress);
+                yield return new WaitForSeconds(tick);
+            }
+
+            navInstructions.OnDone();
+        }
+
+        nextTurn = Time.timeSinceLevelLoad + Random.Range(minLookTime, maxLookTime);
+
+        easing = false;
     }
 }

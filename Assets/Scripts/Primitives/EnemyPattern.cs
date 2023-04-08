@@ -22,7 +22,7 @@ public abstract class EnemyPattern : MonoBehaviour
 
     abstract public void Abort();
 
-    abstract public void Resume();
+    abstract public bool Resume();
 
-    abstract public void Play();    
+    abstract public bool Play();    
 }

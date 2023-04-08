@@ -1498,9 +1498,10 @@ MonoBehaviour:
   dynamicSentryPos: 0
   setSentryFromMove: 1
   sentryPosition: {x: 0, y: 0, z: 0}
-  LookDirections: 
-  minLook: 1
-  maxLook: 1.2
+  LookDirections: 0200000003000000
+  minLookTime: 2
+  maxLookTime: 2.5
+  turnTime: 0.4
 --- !u!1 &556127342
 GameObject:
   m_ObjectHideFlags: 0

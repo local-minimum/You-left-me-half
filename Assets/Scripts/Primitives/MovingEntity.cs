@@ -5,6 +5,7 @@ using UnityEngine;
 public struct NavInstructions
 {
     public bool enabled;
+    public bool failed;
     public System.Action<float> Interpolate;
     public System.Action OnDone;
     public float duration;
@@ -20,14 +21,15 @@ public struct NavInstructions
     )
     {
         enabled = true;
+        failed = false;
         Interpolate = interpolate;
         OnDone = onDone;
         this.duration = duration;
         this.targetPosition = targetPosition;
         this.targetLookDirection = targetLookDirection;
-    }
+    }    
 
-    public static NavInstructions NoMove {
+    public static NavInstructions NoNavigation {
         get
         {
             var intructions = new NavInstructions();
@@ -35,6 +37,18 @@ public struct NavInstructions
             return intructions;
         }
     }
+
+    public static NavInstructions FailedMove
+    {
+        get
+        {
+            var intructions = new NavInstructions();
+            intructions.enabled = false;
+            intructions.failed = true;
+            return intructions;
+        }
+    }
+
 }
 
 
@@ -58,13 +72,13 @@ public class MovingEntity : MonoBehaviour
         }
     }
 
-    Vector3Int position;
-    FaceDirection lookDirection;
+    public Vector3Int Position { get; private set; }
+    public FaceDirection LookDirection { get; private set; }
 
     public void SetNewGridPosition(Vector3Int position, FaceDirection lookDirection)
     {
-        this.position = position;
-        this.lookDirection = lookDirection;
+        this.Position = position;
+        this.LookDirection = lookDirection;
         OnMove?.Invoke(Id, position, lookDirection);
     }
 
@@ -73,15 +87,15 @@ public class MovingEntity : MonoBehaviour
         switch (navigation)
         {
             case Navigation.Forward:
-                return position + lookDirection.AsIntVector();
+                return Position + LookDirection.AsIntVector();
             case Navigation.Backward:
-                return position + lookDirection.Invert().AsIntVector();
+                return Position + LookDirection.Invert().AsIntVector();
             case Navigation.Left:
-                return position + lookDirection.RotateCCW().AsIntVector();
+                return Position + LookDirection.RotateCCW().AsIntVector();
             case Navigation.Right:
-                return position + lookDirection.RotateCW().AsIntVector();
+                return Position + LookDirection.RotateCW().AsIntVector();
             default:
-                return position;
+                return Position;
         }
     }
 
@@ -124,16 +138,16 @@ public class MovingEntity : MonoBehaviour
 
                 System.Action<float> interpolate = (float progress) => { transform.position = Vector3.Lerp(origin, target, progress); };
                 System.Action onDone = () => {
-                    Level.instance.ReleasePosition(GridEntity.Player, position);
-                    SetNewGridPosition(gridTarget, lookDirection);
-                    onComplete(gridTarget, lookDirection);
+                    Level.instance.ReleasePosition(GridEntity.Player, Position);
+                    SetNewGridPosition(gridTarget, LookDirection);
+                    if (onComplete != null) onComplete(gridTarget, LookDirection);
                     
                 };
-                return new NavInstructions(interpolate, onDone, moveTime, gridTarget, lookDirection);
+                return new NavInstructions(interpolate, onDone, moveTime, gridTarget, LookDirection);
             }
             else
             {
-                return NavInstructions.NoMove;
+                return NavInstructions.FailedMove;
             }
 
         }
@@ -141,18 +155,18 @@ public class MovingEntity : MonoBehaviour
         {
             Quaternion originRotation = transform.rotation;
 
-            var targetLookDirection = nav.asDirection(lookDirection);
+            var targetLookDirection = nav.asDirection(LookDirection);
             var targetRotation = targetLookDirection.AsRotation();
 
             System.Action<float> interpolate = (float progress) => { transform.rotation = Quaternion.Lerp(originRotation, targetRotation, progress); };
             System.Action onDone = () => {
-                SetNewGridPosition(position, targetLookDirection);
-                onComplete(position, targetLookDirection);
+                SetNewGridPosition(Position, targetLookDirection);
+                if (onComplete != null) onComplete(Position, targetLookDirection);
             };
 
-            return new NavInstructions(interpolate, onDone, turnTime, position, targetLookDirection);
+            return new NavInstructions(interpolate, onDone, turnTime, Position, targetLookDirection);
         }
 
-        return NavInstructions.NoMove;
+        return NavInstructions.NoNavigation;
     }
 }

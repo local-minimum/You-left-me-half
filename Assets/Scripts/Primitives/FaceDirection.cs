@@ -138,5 +138,5 @@ public static class FaceExtentions
             default:
                 throw new System.ArgumentException($"{faceDirection} has no inverse");
         }
-    }
+    }    
 }
