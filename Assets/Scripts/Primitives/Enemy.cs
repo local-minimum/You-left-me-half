@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -22,7 +23,8 @@ public class Enemy : MonoBehaviour
     {
         get
         {
-            return DefaultPatterns[Random.Range(0, DefaultPatterns.Length)];
+            var options = DefaultPatterns.Where(p => p.Eligible).ToArray();
+            return options[Random.Range(0, options.Length)];
         }
     }
 

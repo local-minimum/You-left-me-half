@@ -31,9 +31,11 @@ public class Sentry : EnemyPattern
         playing = false;
     }
 
+    public override bool Eligible => dynamicSentryPos || sentryPosition == movable.Position;
+
     public override bool Play()
     {
-        if (dynamicSentryPos || sentryPosition == movable.Position)
+        if (Eligible)
         {
             playing = true;
         }

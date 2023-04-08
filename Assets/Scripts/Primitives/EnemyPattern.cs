@@ -19,7 +19,7 @@ public abstract class EnemyPattern : MonoBehaviour
     public bool Playing => playing;
 
     abstract public bool Terminatable { get;  }
-
+    abstract public bool Eligible { get; }
     abstract public void Abort();
 
     abstract public bool Resume();
