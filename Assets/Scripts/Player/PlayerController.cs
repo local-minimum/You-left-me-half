@@ -82,7 +82,7 @@ public class PlayerController : MonoBehaviour
         lookDirection = Level.instance.PlayerSpawnDirection;
         position = Level.instance.PlayerFirstSpawnPosition;
 
-        transform.rotation = Quaternion.LookRotation(lookDirection.AsVector());
+        transform.rotation = lookDirection.AsRotation();
         transform.position = Level.AsWorldPosition(position);
 
         Level.instance.ClaimPosition(GridEntity.Player, position, AllowEnterVirtualSpaces);

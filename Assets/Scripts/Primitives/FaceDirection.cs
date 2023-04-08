@@ -7,6 +7,31 @@ public enum FaceDirection
 
 public static class FaceExtentions
 {
+    private static bool IsSmall(float value) => Mathf.Abs(value) < 1e-4f;
+
+    public static FaceDirection AsDirection(this Vector3 globalDirection)
+    {
+        var smallX = IsSmall(globalDirection.x);
+        var smallY = IsSmall(globalDirection.y);
+        var smallZ = IsSmall(globalDirection.z);
+
+        if (!smallZ && smallX && smallY)
+        {
+            return globalDirection.z > 0 ? FaceDirection.North : FaceDirection.South;
+        }
+        if (!smallX && smallY && smallZ)
+        {
+            return globalDirection.x > 0 ? FaceDirection.East : FaceDirection.West;
+        }
+        if (!smallY && smallX && smallZ)
+        {
+            return globalDirection.x > 0 ? FaceDirection.Up : FaceDirection.Down;
+        }
+
+        throw new System.ArgumentException($"{globalDirection} is not a cardinal directional vector");
+
+    }
+
     public static Vector3 AsVector(this FaceDirection faceDirection)
     {
         switch (faceDirection)
@@ -27,6 +52,9 @@ public static class FaceExtentions
                 throw new System.ArgumentException($"{faceDirection} is not a known as a vector");
         }
     }
+
+    public static Quaternion AsRotation(this FaceDirection lookDirection) => Quaternion.LookRotation(lookDirection.AsVector());
+
 
     public static Vector3Int AsIntVector(this FaceDirection faceDirection)
     {
