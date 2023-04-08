@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 /// <summary>
 /// Utility class for things that exists on the level grid
 /// </summary>
@@ -41,4 +42,6 @@ public class GriddedEntity : MonoBehaviour
             transform.position = Level.AsWorldPosition(gridPosition);
         }
     }
+
+
 }

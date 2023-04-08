@@ -7,10 +7,7 @@ public delegate void PlayerMove(Vector3Int position, FaceDirection lookDirection
 public class PlayerController : MonoBehaviour
 {
     public static event PlayerMove OnPlayerMove;
-
-    FaceDirection lookDirection;
-    Vector3Int position;
-
+    
     [SerializeField]
     KeyCode forwardKey = KeyCode.W;
     [SerializeField]
@@ -28,7 +25,7 @@ public class PlayerController : MonoBehaviour
     Inventory inventory;
     public static PlayerController instance { get; set; }    
 
-    public Vector3Int Position { get { return position; } }
+    public Vector3Int Position { get; private set; }
 
     private void Awake()
     {
@@ -56,9 +53,8 @@ public class PlayerController : MonoBehaviour
 
     private void MovableEntity_OnMove(string id, Vector3Int position, FaceDirection lookDirection)
     {
-        this.position = position;
+        Position = position;
         transform.position = Level.AsWorldPosition(position);
-        this.lookDirection = lookDirection;
         transform.rotation = Quaternion.LookRotation(lookDirection.AsVector());
     }
 
@@ -79,12 +75,11 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        lookDirection = Level.instance.PlayerSpawnDirection;
-        position = Level.instance.PlayerFirstSpawnPosition;
+        var lookDirection = Level.instance.PlayerSpawnDirection;
+        var position = Level.instance.PlayerFirstSpawnPosition;
 
-        transform.rotation = lookDirection.AsRotation();
-        transform.position = Level.AsWorldPosition(position);
 
+        movableEntity.SetNewGridPosition(position, lookDirection);
         Level.instance.ClaimPosition(GridEntity.Player, position, AllowEnterVirtualSpaces);
         OnPlayerMove?.Invoke(position, lookDirection);
     }
@@ -135,46 +130,6 @@ public class PlayerController : MonoBehaviour
     {
         get => !inventory.Has(loot => loot.GetType() == typeof(Uplink), out Lootable loot);
     }
-    /// <summary>
-    /// Query level if position can be reserved / entered by player
-    /// </summary>
-    /// <param name="navigation">Relative navigation</param>
-    /// <returns></returns>
-    bool ClaimSpot(Navigation navigation, Vector3Int target)
-    {            
-        if (navigation.Translates())
-        {
-            if (Level.instance.ClaimPosition(GridEntity.Player, target, AllowEnterVirtualSpaces))
-            {
-                return true;
-            }
-            return false;
-        }
-        return true;
-    }
-
-    void PathBlocked()
-    {
-
-    }
-
-    Vector3Int GetNavigationTraget(Navigation navigation)
-    {
-        // Debug.Log($"{navigation} from {position} looking {lookDirection}");
-        switch (navigation)
-        {
-            case Navigation.Forward:
-                return position + lookDirection.AsIntVector();
-            case Navigation.Backward:
-                return position + lookDirection.Invert().AsIntVector();
-            case Navigation.Left:
-                return position + lookDirection.RotateCCW().AsIntVector();
-            case Navigation.Right:
-                return position + lookDirection.RotateCW().AsIntVector();
-            default:
-                return position;
-        }
-    }
 
     IEnumerator<WaitForSeconds> Move()
     {
@@ -189,68 +144,32 @@ public class PlayerController : MonoBehaviour
             }
             navigationQueue[moveIndex] = Navigation.None;
 
-            System.Action<float> action = null;
-            System.Action afterAction = null;
+            var navInstructions = movableEntity.Navigate(
+                GridEntity.Player,
+                nav,
+                moveTime,
+                turnTime,
+                (newPosition, newLookDirection) => OnPlayerMove?.Invoke(newPosition, newLookDirection),
+                AllowEnterVirtualSpaces
+            );
 
-            float duration = 0;
-
-            if (nav.Translates())
-            {
-                Vector3 origin = transform.position;
-                Vector3Int gridTarget = GetNavigationTraget(nav);
-
-                if (ClaimSpot(nav, gridTarget))
-                {
-
-                    Vector3 target = Level.AsWorldPosition(gridTarget);
-                    duration = moveTime;
-
-                    action = (float progress) => { transform.position = Vector3.Lerp(origin, target, progress); };
-                    afterAction = () => { 
-                        Level.instance.ReleasePosition(GridEntity.Player, position);
-                        movableEntity?.SetNewGridPosition(gridTarget, lookDirection);
-                        OnPlayerMove?.Invoke(gridTarget, lookDirection);
-                    };
-                }
-                else
-                {
-                    PathBlocked();
-                }
-
-            }
-            else if (nav.Rotates())
-            {
-                Quaternion origin = transform.rotation;
-                var startRotation = origin.eulerAngles.y;
-                var endRotation = startRotation + ((nav == Navigation.TurnCW) ? 90 : -90);
-                Quaternion target = Quaternion.Euler(0, endRotation, 0);
-
-                duration = turnTime;
-                action = (float progress) => { transform.rotation = Quaternion.Lerp(origin, target, progress); };
-                afterAction = () => {                         
-                    movableEntity?.SetNewGridPosition(position, nav.asDirection(lookDirection));
-                    OnPlayerMove?.Invoke(position, lookDirection);
-                };
-            }
-
-            if (action != null)
+            if (navInstructions.enabled)
             {
                 float start = Time.timeSinceLevelLoad;
                 float progress = 0;
+                float tick = Mathf.Max(0.02f, navInstructions.duration / 100f);
                 while (progress < 1)
                 {
-                    progress = (Time.timeSinceLevelLoad - start) / duration;
-                    action(progress);
-                    yield return new WaitForSeconds(Mathf.Max(0.02f, duration / 100f));
+                    progress = (Time.timeSinceLevelLoad - start) / navInstructions.duration;
+                    navInstructions.Interpolate(progress);
+                    yield return new WaitForSeconds(tick);
                 }
 
-                if (afterAction != null) afterAction();
+                navInstructions.OnDone();
             }
-
 
             moveIndex = 1;
         }
-
 
         isMoving = false;
     }
