@@ -16,4 +16,6 @@ public static class VectorMath
     public static Vector3Int XY(this Vector2Int v) => new Vector3Int(v.x, v.y);
 
     public static Vector3Int XZ(this Vector2Int v) => new Vector3Int(v.x, 0, v.y);
+
+    public static (int, int) XZTuple(this Vector3Int v) => (v.x, v.z);
 }

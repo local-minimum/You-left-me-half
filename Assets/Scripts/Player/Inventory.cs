@@ -144,7 +144,7 @@ public class Inventory : MonoBehaviour
 
         if (loot.GetType() == typeof(Uplink) && loot.Owner == LootOwner.Level)
         {
-            if (Level.instance.GridBoundsStatus(playerPosition.x, playerPosition.z) != GridEntity.InBound)
+            if (Level.instance.GridBaseStatus(playerPosition.x, playerPosition.z) != GridEntity.InBound)
             {
                 Debug.Log("Tried to pick up uplink when not allowed");
                 return;

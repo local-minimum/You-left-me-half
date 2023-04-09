@@ -18,7 +18,7 @@ public enum GridEntity
     VirtualOutBound,
 }
 
-static class GridEntityExtensions
+public static class GridEntityExtensions
 {
     public static GridEntity ToGridEntity(this char ch) {
         switch (ch) {
@@ -41,6 +41,18 @@ static class GridEntityExtensions
                 return GridEntity.OutBound;
         }
     }
+
+    public static bool IsClaimable(this GridEntity entity, bool allowVirtual = false) => 
+        entity == GridEntity.InBound || entity == GridEntity.PlayerSpawn || (allowVirtual && entity == GridEntity.VirtualOutBound);
+
+    public static bool IsInbound(this GridEntity entity, bool allowVirtual = false) =>
+        entity != GridEntity.OutBound && (allowVirtual || entity != GridEntity.VirtualOutBound);
+
+    public static bool IsOccupied(this GridEntity entity) => 
+        entity == GridEntity.Player || entity == GridEntity.Other;
+
+    public static bool IsBaseType(this GridEntity entity) =>
+        entity == GridEntity.OutBound || entity == GridEntity.InBound || entity == GridEntity.VirtualOutBound;
 }
 
 abstract public class Level : MonoBehaviour
@@ -51,9 +63,12 @@ abstract public class Level : MonoBehaviour
     abstract protected string[] grid { get; }
         
     public FaceDirection PlayerSpawnDirection;
-
+    
     protected char getPosition(int x, int z) => grid[grid.Length - z - 1][x];
-        
+    protected char getPosition((int, int) coords) => grid[grid.Length - coords.Item1 - 1][coords.Item2];
+
+    protected int getRowLength(int z) => grid[grid.Length - z - 1].Length;
+
     protected void ApplyOverGrid(System.Action<int, int> xzCallback)
     {
         if (grid == null)
@@ -65,12 +80,31 @@ abstract public class Level : MonoBehaviour
 
         for (int z = 0; z < grid.Length; z++)
         {
-            for (int x = 0; x < grid[grid.Length - z - 1].Length; x++)
+            for (int x = 0, l = getRowLength(z); x < l; x++)
             {
                 xzCallback(x, z);
             }
         }
     }
+
+    protected void ApplyOverGrid(System.Action<(int, int)> xzCallback)
+    {
+        if (grid == null)
+        {
+            Debug.LogWarning($"{name} lacks initiated grid");
+            return;
+        }
+
+
+        for (int z = 0; z < grid.Length; z++)
+        {
+            for (int x = 0, l = getRowLength(z); x < l; x++)
+            {
+                xzCallback((x, z));
+            }
+        }
+    }
+
 
     protected Vector3Int FirstGridPosition(System.Func<char, bool> predicate)
     {
@@ -152,34 +186,26 @@ abstract public class Level : MonoBehaviour
         get { return FirstGridPosition(ch => GridEntity.Player.GetStringValue().Contains(ch)); }
     }
 
-
-
     Dictionary<(int, int), char[]> levelRestore = new Dictionary<(int, int), char[]>();
 
-    public GridEntity GridBoundsStatus(int x, int z)
+    public GridEntity GridBaseStatus(int x, int z, bool allowVirtual = false)
     {
         var entity = getPosition(x, z).ToGridEntity();
-        if (entity == GridEntity.OutBound || entity == GridEntity.InBound || entity == GridEntity.VirtualOutBound)
+        if (entity.IsBaseType())
         {
             return entity;
         }
 
-        var xz = (x, z);
         var original = GetPositionRestore(x, z, out int i).ToGridEntity();
-        if (i >=0)
+        if (i >= 0)
         {            
-            if (original == GridEntity.OutBound || original == GridEntity.InBound || original == GridEntity.VirtualOutBound)
+            if (original.IsBaseType())
             {
                 return original;
             }            
         }
 
-        if (entity == GridEntity.PlayerSpawn || entity == GridEntity.Player || entity == GridEntity.Other)
-        {
-            return GridEntity.InBound;
-        }
-
-        return GridEntity.OutBound;
+        return entity.IsInbound(allowVirtual) ? GridEntity.InBound : GridEntity.OutBound;
     }
 
     public GridEntity GridStatus(int x, int z) => getPosition(x, z).ToGridEntity();    
@@ -345,5 +371,59 @@ abstract public class Level : MonoBehaviour
         loot.transform.position = GridScale * (args.Coordinates + 0.5f * playerLookDirection.AsVector());
         loot.ManifestSide = playerLookDirection;
         args.Consumed = true;
+    }
+
+    struct SearchParameters
+    {
+        public (int, int) Origin;
+        public (int, int) Target;
+        public bool[,] Map;
+
+        public SearchParameters((int, int) origin, Vector3Int target, bool[,] map)
+        {
+            Origin = origin;
+            Target = target.XZTuple();
+            Map = map;
+        }
+    }
+
+    bool[,] CreateMapFilter(System.Func<GridEntity, bool> predicate)
+    {
+        var maxX = 0;
+        var lookup = new HashSet<(int, int)>();
+        System.Action<(int, int)> callback = (coords) =>
+        {
+            maxX = Mathf.Max(maxX, coords.Item1);
+            if (predicate(getPosition(coords).ToGridEntity()))
+            {
+                lookup.Add(coords);
+            }
+        };
+        ApplyOverGrid(callback);
+        var map = new bool[maxX, grid.Length];
+
+        foreach (var key in lookup)
+        {
+            map[key.Item2, key.Item1] = true;
+        }
+
+        return map;
+    }
+        
+    public bool FindPathToPlayerFrom(
+        (int, int) origin, 
+        int maxDepth, 
+        System.Func<GridEntity, bool> permissablePredicate,
+        out List<(int, int)> path
+    )
+    {
+        
+        var searchParameters = new SearchParameters(
+            origin, 
+            PlayerPosition, 
+            CreateMapFilter(permissablePredicate)
+        );
+
+        // TODO: A*
     }
 }
