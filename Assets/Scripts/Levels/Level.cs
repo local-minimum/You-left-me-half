@@ -65,7 +65,7 @@ abstract public class Level : MonoBehaviour
     public FaceDirection PlayerSpawnDirection;
     
     protected char getPosition(int x, int z) => grid[grid.Length - z - 1][x];
-    protected char getPosition((int, int) coords) => grid[grid.Length - coords.Item1 - 1][coords.Item2];
+    protected char getPosition((int, int) coords) => grid[grid.Length - coords.Item2 - 1][coords.Item1];
 
     protected int getRowLength(int z) => grid[grid.Length - z - 1].Length;
 
@@ -386,8 +386,7 @@ abstract public class Level : MonoBehaviour
             }
         };
         ApplyOverGrid(callback);
-        var map = new bool[maxX, grid.Length];
-
+        var map = new bool[grid.Length, maxX + 1];        
         foreach (var key in lookup)
         {
             map[key.Item2, key.Item1] = true;
@@ -410,6 +409,16 @@ abstract public class Level : MonoBehaviour
             CreateMapFilter(permissablePredicate),
             maxDepth
         );
+
+        if (!searchParameters.InBound(searchParameters.Origin))
+        {
+            Debug.LogWarning($"Atempting to find player from out of bounds {searchParameters.Origin}");
+        }
+
+        if (!searchParameters.InBound(searchParameters.Target))
+        {
+            Debug.LogError($"Atempting to find player who is out of bounds {searchParameters.Origin}");
+        }
 
         return GraphSearch.AStarSearch(searchParameters, out path);
     }

@@ -31,6 +31,29 @@ public static class FaceExtentions
         throw new System.ArgumentException($"{globalDirection} is not a cardinal directional vector");
 
     }
+    public static FaceDirection AsDirection(this Vector3Int globalDirection)
+    {
+        var zeroX = globalDirection.x == 0;
+        var zeroY = globalDirection.y == 0;
+        var zeroZ = globalDirection.z == 0;
+
+        if (!zeroZ && zeroX && zeroY)
+        {
+            return globalDirection.z > 0 ? FaceDirection.North : FaceDirection.South;
+        }
+        if (!zeroX && zeroY && zeroZ)
+        {
+            return globalDirection.x > 0 ? FaceDirection.East : FaceDirection.West;
+        }
+        if (!zeroY && zeroX && zeroZ)
+        {
+            return globalDirection.x > 0 ? FaceDirection.Up : FaceDirection.Down;
+        }
+
+        throw new System.ArgumentException($"{globalDirection} is not a cardinal directional vector");
+
+    }
+
 
     public static Vector3 AsVector(this FaceDirection faceDirection)
     {

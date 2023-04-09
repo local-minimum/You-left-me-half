@@ -2333,7 +2333,8 @@ MonoBehaviour:
   - {fileID: 500403000}
   AttackPatterns: []
   AreaAwareness: 1
-  LOSAwareness: 5
+  LOSAwareness: 8
+  SeeThroughVirtual: 0
 --- !u!1 &1298018613
 GameObject:
   m_ObjectHideFlags: 0
@@ -7547,7 +7548,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh24012
+  m_Name: pb_Mesh24270
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2

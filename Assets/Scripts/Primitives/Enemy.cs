@@ -33,11 +33,14 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    EnemyPattern activePattern;
+
     private void Start()
     {
         movable = GetComponent<MovingEntity>();
         movable.SetNewGridPosition(Level.AsGridPosition(transform.position), transform.forward.AsDirection());
-        if (!RandomDefaultPattern.Play())
+        activePattern = RandomDefaultPattern;
+        if (!(activePattern?.Play() ?? false))
         {
             Debug.LogWarning("Failed to launch enemy pattern");
         }
@@ -57,8 +60,22 @@ public class Enemy : MonoBehaviour
             
     }
 
-    public bool SeesPlayer(SightMode mode, out List<(int, int)> path)
+    bool DirectionTo((int, int) coords, out FaceDirection direction)
     {
+        var offset = new Vector3Int(coords.Item1, 0, coords.Item2) - movable.Position;
+
+        if ((offset.x == 0) == (offset.z == 0))
+        {
+            direction = FaceDirection.Down;
+            return false;
+        }
+
+        direction = offset.AsDirection();
+        return true;
+    }
+
+    public bool SeesPlayer(SightMode mode, out List<(int, int)> path)
+    {        
         if (!Level.instance.FindPathToPlayerFrom(
             movable.Position.XZTuple(), 
             GetAwareness(mode), 
@@ -68,19 +85,39 @@ public class Enemy : MonoBehaviour
         {
             return false;
         }
+        
+        path.RemoveAt(0);
+
+        var isLOS = (path.GroupBy(coords => coords.Item1).Count() == 1 || path.GroupBy(coords => coords.Item2).Count() == 1) &&
+            path.All(coords => {
+                if (DirectionTo(coords, out FaceDirection dir)) {
+                    return dir == movable.LookDirection;
+                } 
+                return false; 
+            });
 
         if (mode == SightMode.Any)
         {
-            if (path.GroupBy(coords => coords.Item1).Count() == 1 || path.GroupBy(coords => coords.Item2).Count() == 1)
+            if (isLOS)
             {
-                return path.Count() < LOSAwareness;
+                return path.Count() <= LOSAwareness;
             }
 
-            return path.Count() < AreaAwareness;
+            return path.Count() <= AreaAwareness;
         } else if (mode == SightMode.Area)
         {
-            return path.Count() < AreaAwareness;
+            return path.Count() <= AreaAwareness;
         }
-        return path.Count() < LOSAwareness;
+        return isLOS && path.Count() <= LOSAwareness;
+    }
+
+    private void Update()
+    {
+        if (!activePattern.Playing)
+        {
+            // TODO: should perhaps let enemy know type of next...
+            activePattern = RandomDefaultPattern;
+            activePattern?.Play();
+        }
     }
 }

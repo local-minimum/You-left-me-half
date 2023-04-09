@@ -86,7 +86,16 @@ public class Sentry : EnemyPattern
 
     private void Update()
     {
-        if (!playing || easing || Time.timeSinceLevelLoad < nextTurn) return;
+        if (!playing || easing) return;
+
+        if (enemy.SeesPlayer(SightMode.LOS, out List<(int, int)> path))
+        {
+            Debug.Log("Spotted");
+            playing = false;
+            return;
+        }
+
+        if (Time.timeSinceLevelLoad < nextTurn) return;
 
         var instructions = movable.Navigate(
             GridEntity.Other,

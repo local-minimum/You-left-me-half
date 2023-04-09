@@ -37,7 +37,4 @@ public static class VectorMath
         yield return c.StepSouth();
         yield return c.StepEast();
     }
-
-    public static bool InGrid<T>(this (int, int) c, T[,] grid) =>
-        c.Item1 >= 0 && c.Item2 >= 0 && c.Item1 < grid.GetLength(0) && c.Item2 < grid.GetLength(1);
 }
