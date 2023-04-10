@@ -2,7 +2,7 @@
 
 public enum FaceDirection
 {
-    North, South, West, East, Up, Down
+    North, South, West, East, Up, Down, Invalid
 }
 
 public static class FaceExtentions
@@ -28,7 +28,7 @@ public static class FaceExtentions
             return globalDirection.x > 0 ? FaceDirection.Up : FaceDirection.Down;
         }
 
-        throw new System.ArgumentException($"{globalDirection} is not a cardinal directional vector");
+        return FaceDirection.Invalid;
 
     }
     public static FaceDirection AsDirection(this Vector3Int globalDirection)
@@ -50,7 +50,7 @@ public static class FaceExtentions
             return globalDirection.x > 0 ? FaceDirection.Up : FaceDirection.Down;
         }
 
-        throw new System.ArgumentException($"{globalDirection} is not a cardinal directional vector");
+        return FaceDirection.Invalid;
 
     }
 

@@ -138,7 +138,7 @@ public class MovingEntity : MonoBehaviour
 
                 System.Action<float> interpolate = (float progress) => { transform.position = Vector3.Lerp(origin, target, progress); };
                 System.Action onDone = () => {
-                    Level.instance.ReleasePosition(GridEntity.Player, Position);
+                    Level.instance.ReleasePosition(entity, Position);
                     SetNewGridPosition(gridTarget, LookDirection);
                     if (onComplete != null) onComplete(gridTarget, LookDirection);
                     

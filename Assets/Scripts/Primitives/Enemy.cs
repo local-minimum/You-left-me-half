@@ -24,11 +24,16 @@ public class Enemy : MonoBehaviour
 
     MovingEntity movable;
 
-    EnemyPattern RandomDefaultPattern
+    EnemyPattern RandomPattern
     {
         get
         {
-            var options = DefaultPatterns.Where(p => p.Eligible).ToArray();
+            var options = AttackPatterns.Where(p => p.Eligible).ToArray();
+            if (options.Length > 0)
+            {
+                return options[Random.Range(0, options.Length)];
+            }
+            options = DefaultPatterns.Where(p => p.Eligible).ToArray();
             return options[Random.Range(0, options.Length)];
         }
     }
@@ -39,7 +44,7 @@ public class Enemy : MonoBehaviour
     {
         movable = GetComponent<MovingEntity>();
         movable.SetNewGridPosition(Level.AsGridPosition(transform.position), transform.forward.AsDirection());
-        activePattern = RandomDefaultPattern;
+        activePattern = RandomPattern;
         if (!(activePattern?.Play() ?? false))
         {
             Debug.LogWarning("Failed to launch enemy pattern");
@@ -119,8 +124,7 @@ public class Enemy : MonoBehaviour
     {
         if (!activePattern.Playing)
         {
-            // TODO: should perhaps let enemy know type of next...
-            activePattern = RandomDefaultPattern;
+            activePattern = RandomPattern;
             activePattern?.Play();
         }
     }

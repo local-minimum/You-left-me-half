@@ -208,6 +208,7 @@ abstract public class Level : MonoBehaviour
         return entity.IsInbound(allowVirtual) ? GridEntity.InBound : GridEntity.OutBound;
     }
 
+    public GridEntity GridStatus((int, int) coords) => getPosition(coords).ToGridEntity();
     public GridEntity GridStatus(int x, int z) => getPosition(x, z).ToGridEntity();    
 
     private char GetPositionRestore(int x, int z, out int i)

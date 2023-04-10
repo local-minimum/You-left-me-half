@@ -45,24 +45,19 @@ public class Sentry : EnemyPattern
 
     public override bool Resume() => Play();    
 
-    bool easing = false;
-
     public override bool Terminatable => !easing;
-
-    MovingEntity movable;
 
     private void OnEnable()
     {
         if (setSentryFromMove)
         {
-            movable = GetComponentInParent<MovingEntity>();
             movable.OnMove += Sentry_OnMove;
         }
     }
 
     private void OnDisable()
     {
-        if (movable != null)
+        if (setSentryFromMove)
         {
             movable.OnMove -= Sentry_OnMove;
         }
@@ -102,34 +97,12 @@ public class Sentry : EnemyPattern
             GetNextNavigation(),
             0,
             turnTime,
-            (_, _) => { easing = false; },
+            (_, _) => {
+                nextTurn = Time.timeSinceLevelLoad + Random.Range(minLookTime, maxLookTime);
+            },
             false
         );
 
         StartCoroutine(Move(instructions));
-    }
-
-    IEnumerator<WaitForSeconds> Move(NavInstructions navInstructions)
-    {
-        easing = true;
-
-        if (navInstructions.enabled)
-        {
-            float start = Time.timeSinceLevelLoad;
-            float progress = 0;
-            float tick = Mathf.Max(0.02f, navInstructions.duration / 100f);
-            while (progress < 1)
-            {
-                progress = (Time.timeSinceLevelLoad - start) / navInstructions.duration;
-                navInstructions.Interpolate(progress);
-                yield return new WaitForSeconds(tick);
-            }
-
-            navInstructions.OnDone();
-        }
-
-        nextTurn = Time.timeSinceLevelLoad + Random.Range(minLookTime, maxLookTime);
-
-        easing = false;
     }
 }

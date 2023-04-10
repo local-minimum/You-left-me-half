@@ -17,7 +17,7 @@ static public class GraphSearch
         public bool WithinShape((int, int) coords) =>
             coords.Item1 >= 0 && coords.Item2 >= 0 && coords.Item1 < Map.GetLength(1) && coords.Item2 < Map.GetLength(0);
 
-        public SearchParameters((int, int) origin, Vector3Int target, bool[,] map, int maxDepth)
+        public SearchParameters((int, int) origin, Vector3Int target, bool[,] map, int maxDepth = -1)
         {
             Origin = origin;
             Target = target.XZTuple();
@@ -182,5 +182,89 @@ static public class GraphSearch
                 return searchParameters.InBound(potentialTarget.Coordinates);
             }
         }
+    }
+
+    public class LineSearchParameters
+    {
+        public (float, float) Origin;
+        public (float, float) Target;
+        public int MaxDepth;
+        public System.Func<(int, int), bool> Predicate;
+
+        public LineSearchParameters((int, int) origin, Vector3Int target, System.Func<(int, int), bool> predicate, int maxDepth = -1)
+        {
+            Origin = origin;
+            Target = target.XZTuple();
+            Predicate = predicate;
+            MaxDepth = maxDepth < 0 ? int.MaxValue : maxDepth;
+        }
+    }
+
+    static (int, int) Floor(this (float, float) coords) => (Mathf.FloorToInt(coords.Item1), Mathf.FloorToInt(coords.Item2));
+
+    public static bool LineSearch(LineSearchParameters searchParameters, out List<(int, int)> path)
+    {
+        var lastCoords = searchParameters.Origin.Floor();
+        path = new List<(int, int)>() { lastCoords };
+
+        // Differential
+        var dx = searchParameters.Target.Item1 - searchParameters.Origin.Item1;
+        var dz = searchParameters.Target.Item2 - searchParameters.Origin.Item2;
+
+        // Increments
+        var sx = Mathf.Sign(dx);
+        var sz = Mathf.Sign(dz);
+
+        // Segment Length
+        dx = Mathf.Abs(dx);
+        dz = Mathf.Abs(dz);
+        var d = Mathf.Max(dx, dz);
+
+        var r = (float)d / 2;
+        var (x, z) = searchParameters.Origin;
+        
+        if (dx > dz)
+        {
+            for (var i = 0; i < d; i++)
+            {
+                x += sx;
+                r += dz;
+                if (r >= dx)
+                {
+                    z += sz;
+                    r -= dx;
+                }
+
+                var current = (Mathf.FloorToInt(x), Mathf.FloorToInt(z));
+                if (current != lastCoords)
+                {
+                    path.Add(current);
+                    lastCoords = current;
+                }
+            }
+        }
+        else
+        {
+            for (var i = 0; i < d; i++)
+            {
+                z += sz;
+                r += dx;
+                if (r >= dz)
+                {
+                    z += sx;
+                    r -= dz;
+                }
+            }
+
+            var current = (Mathf.FloorToInt(x), Mathf.FloorToInt(z));
+            if (current != lastCoords)
+            {
+                path.Add(current);
+                lastCoords = current;
+            }
+
+        }
+
+        return lastCoords == searchParameters.Target;
     }
 }
