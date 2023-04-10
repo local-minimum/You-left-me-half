@@ -83,6 +83,10 @@ public class Enemy : MonoBehaviour
             out path
         ))
         {
+            if (path != null)
+            {
+                path.RemoveAt(0);
+            }
             return false;
         }
         
@@ -118,6 +122,25 @@ public class Enemy : MonoBehaviour
             // TODO: should perhaps let enemy know type of next...
             activePattern = RandomDefaultPattern;
             activePattern?.Play();
+        }
+    }
+
+    private void OnEnable()
+    {
+        MasterOfEndings.OnEnding += MasterOfEndings_OnEnding;
+    }
+
+    private void OnDisable()
+    {
+        MasterOfEndings.OnEnding -= MasterOfEndings_OnEnding;
+    }
+
+    private void MasterOfEndings_OnEnding(EndingType type, Ending ending)
+    {
+        if (type == EndingType.Death)
+        {
+            activePattern.enabled = false;
+            enabled = false;
         }
     }
 }

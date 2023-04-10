@@ -160,15 +160,15 @@ static public class GraphSearch
 
             if (node == null)
             {
-                
+                /*
                 Debug.Log($"Found no path after investigating {cache.Count()} nodes, max depth {searchParameters.MaxDepth}");
                 node = cache.Values
                     .Where(n => n.State != SearchNodeState.Closed)
                     .OrderBy(n => n.Score)
                     .FirstOrDefault();
 
-                DebugLog(searchParameters, cache, node?.Coordinates ?? (-1, -1));                
-                
+                DebugLog(searchParameters, cache, node?.Coordinates ?? (-1, -1));
+                */
                 path = null;
                 return false;
             }

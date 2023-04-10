@@ -93,7 +93,7 @@ public class Sentry : EnemyPattern
             Debug.Log("Spotted");
             playing = false;
             return;
-        }
+        } 
 
         if (Time.timeSinceLevelLoad < nextTurn) return;
 
