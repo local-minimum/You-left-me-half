@@ -65,6 +65,7 @@ public class Rush : EnemyPattern
 
     [SerializeField]
     float stepTime = 0.2f;
+    int attackIdx = -1;
 
     private void Update()
     {
@@ -72,11 +73,13 @@ public class Rush : EnemyPattern
 
         var idx = attackPlan.IndexOf(movable.Position.XZTuple());
 
-        if (idx < 0 || idx == attackPlan.Count - 1)
+        if (idx < 0 || idx == attackPlan.Count - 1 || idx == attackIdx)
         {
             Abort();
             return;
         }
+
+        attackIdx = idx;
 
         var instructions = movable.Navigate(
             GridEntity.Other,

@@ -19,7 +19,7 @@ public class Level1 : Level
         "xxxxxx--xxxxxxxxxxx-"
     };
 
-    protected override string[] grid { get => startGrid; }
+    protected override string[] charGrid { get => startGrid; }
 
     public override int lvl => 1;
 }

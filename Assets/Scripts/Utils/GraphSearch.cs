@@ -12,10 +12,10 @@ static public class GraphSearch
         bool[,] Map;
 
         public (int, int) Shape => (Map.GetLength(0), Map.GetLength(1));
-        public bool InBound(int x, int z) => Map[z, x];
-        public bool InBound((int, int) coords) => Map[coords.Item2, coords.Item1];
+        public bool InBound(int x, int z) => Map[x, z];
+        public bool InBound((int, int) coords) => Map[coords.Item1, coords.Item2];
         public bool WithinShape((int, int) coords) =>
-            coords.Item1 >= 0 && coords.Item2 >= 0 && coords.Item1 < Map.GetLength(1) && coords.Item2 < Map.GetLength(0);
+            coords.Item1 >= 0 && coords.Item2 >= 0 && coords.Item1 < Map.GetLength(0) && coords.Item2 < Map.GetLength(1);
 
         public SearchParameters((int, int) origin, Vector3Int target, bool[,] map, int maxDepth = -1)
         {
@@ -98,7 +98,7 @@ static public class GraphSearch
     {
         var (rows, cols) = searchParameters.Shape;
         var outString = $"{searchParameters.Origin} -> {searchParameters.Target} / Cache size{cache.Count}:\n";
-        for (int z = rows - 1; z>0; z--)
+        for (int z = rows - 1; z>=0; z--)
         {
             for (int x = 0; x< cols; x ++)
             {

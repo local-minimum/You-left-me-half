@@ -429,7 +429,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GridSwapPosition: {fileID: 1080903809}
   door: {fileID: 53200595}
-  openState: 3
+  openState: 4
 --- !u!1 &289089946
 GameObject:
   m_ObjectHideFlags: 0
@@ -959,6 +959,7 @@ GameObject:
   m_Component:
   - component: {fileID: 556127343}
   - component: {fileID: 556127344}
+  - component: {fileID: 556127345}
   m_Layer: 0
   m_Name: Level
   m_TagString: Untagged
@@ -994,6 +995,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerSpawnDirection: 1
+--- !u!114 &556127345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 556127342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d0075132adaabd4cb2950fb9b78fca1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   gizmoScale: 0.97
 --- !u!1 &631028820
 GameObject:
@@ -6820,7 +6833,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh24270
+  m_Name: pb_Mesh24188
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -7404,6 +7417,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selectionPriority: 1
+  stepTime: 0.15
 --- !u!4 &2044602864 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5995386734670710872, guid: 2b5e3c62275112245baa89a744fd328f, type: 3}

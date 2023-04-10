@@ -62,6 +62,6 @@ public class Button : WorldClickable
     void UpdateDoor(Vector3Int gridPosition)
     {
         var status = Level.instance.GridStatus(gridPosition.x, gridPosition.z);
-        door.SetActive(status == GridEntity.OutBound || status == GridEntity.VirtualOutBound);
+        door.SetActive(status == GridEntity.OutBound || status == GridEntity.VirtualSpace);
     }
 }
