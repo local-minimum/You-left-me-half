@@ -44,12 +44,31 @@ public static class GridEntityExtensions
     public static bool IsClaimable(this GridEntity entity, bool allowVirtual = false) =>
         entity == GridEntity.InBound || entity == GridEntity.PlayerSpawn || (allowVirtual && entity == GridEntity.VirtualSpace);
 
-    public static bool IsInbound(this GridEntity entity, bool allowVirtual = false) =>
-        entity != GridEntity.OutBound && (allowVirtual || entity != GridEntity.VirtualSpace);
+    public static bool BaseTypeIsInbound(this GridEntity entity, bool allowVirtual = false) =>
+         entity == GridEntity.InBound || (allowVirtual && entity == GridEntity.VirtualSpace);
 
     public static bool IsOccupied(this GridEntity entity) =>
         entity == GridEntity.Player || entity == GridEntity.Other;
 
-    public static bool IsBaseType(this GridEntity entity) =>
-        entity == GridEntity.OutBound || entity == GridEntity.InBound || entity == GridEntity.VirtualSpace;
+    public static bool ConvertableToBaseType(this GridEntity entity, bool allowVirtual) =>
+        entity == GridEntity.OutBound 
+        || entity == GridEntity.InBound 
+        || (allowVirtual && entity == GridEntity.VirtualSpace) 
+        || entity == GridEntity.PlayerSpawn;
+
+
+    public static GridEntity BaseType(this GridEntity entity, GridEntity fallback = GridEntity.None)
+    {
+        switch (entity)
+        {
+            case GridEntity.InBound:
+            case GridEntity.OutBound:
+            case GridEntity.VirtualSpace:
+                return entity;
+            case GridEntity.PlayerSpawn:
+                return GridEntity.InBound;
+            default:
+                return fallback;
+        }
+    }
 }

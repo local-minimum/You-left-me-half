@@ -120,26 +120,34 @@ abstract public class Level : MonoBehaviour
         get { return FirstGridPosition(e => e == GridEntity.Player); }
     }
 
-    Dictionary<(int, int), GridEntity[]> levelRestore = new Dictionary<(int, int), GridEntity[]>();
+    Dictionary<(int, int), GridEntity[]> gridRestore = new Dictionary<(int, int), GridEntity[]>();
 
-    public GridEntity GridBaseStatus(int x, int z, bool allowVirtual = false)
+    public GridEntity GridBaseStatus(int x, int z, bool allowVirtual = false) => GridBaseStatus((x, z), allowVirtual);
+
+    public GridEntity GridBaseStatus((int, int) coords, bool allowVirtual = false)
     {
-        var entity = grid[x, z];
-        if (entity.IsBaseType())
+        var (x, z) = coords;
+        if (x < 0 || z < 0) return GridEntity.None;
+
+        var current = grid[x, z];
+        if (current.ConvertableToBaseType(allowVirtual))
         {
-            return entity;
+            return current.BaseType();
         }
 
-        var original = GetPositionRestore(x, z, out int i);
-        if (i >= 0)
+        if (gridRestore.ContainsKey(coords))
         {
-            if (original.IsBaseType())
+            var restores = gridRestore[coords];
+            for (int i = 1; i>=0; i--)
             {
-                return original;
+                if (restores[i].ConvertableToBaseType(allowVirtual))
+                {
+                    return restores[i].BaseType();
+                }
             }
         }
 
-        return entity.IsInbound(allowVirtual) ? GridEntity.InBound : GridEntity.OutBound;
+        return GridEntity.None;        
     }
 
     public GridEntity GridStatus((int, int) coords) => grid[coords.Item1, coords.Item2];
@@ -148,13 +156,13 @@ abstract public class Level : MonoBehaviour
     private GridEntity GetPositionRestore(int x, int z, out int i)
     {
         var restorePosition = (x, z);
-        if (!levelRestore.ContainsKey(restorePosition))
+        if (!gridRestore.ContainsKey(restorePosition))
         {
             i = -1;
             return GridEntity.None;
         }
 
-        var restoreArr = levelRestore[restorePosition];
+        var restoreArr = gridRestore[restorePosition];
         for (i = 1; i >= 0; i--)
         {
             if (restoreArr[i] != GridEntity.None)
@@ -182,12 +190,12 @@ abstract public class Level : MonoBehaviour
         {
             var restorePosition = position.XZTuple();
             
-            if (!levelRestore.ContainsKey(restorePosition))
+            if (!gridRestore.ContainsKey(restorePosition))
             {
-                levelRestore[restorePosition] = new GridEntity[2] { current, GridEntity.None };                
+                gridRestore[restorePosition] = new GridEntity[2] { current, GridEntity.None };                
             } else
             {
-                var restoreArr = levelRestore[restorePosition];
+                var restoreArr = gridRestore[restorePosition];
                 bool hadEmptyRestoreSlot = false;
                 for (int i = 0; i < 2; i++)
                 {
@@ -219,7 +227,7 @@ abstract public class Level : MonoBehaviour
             var original = GetPositionRestore(position.x, position.z, out int i);
             if (i >= 0)
             {
-                levelRestore[restorePosition][i] = GridEntity.None;
+                gridRestore[restorePosition][i] = GridEntity.None;
             } else
             {
                 return false;
@@ -254,7 +262,6 @@ abstract public class Level : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        
     }
 
     private void OnDestroy()
@@ -297,12 +304,12 @@ abstract public class Level : MonoBehaviour
         args.Consumed = true;
     }
 
-    bool[,] CreateMapFilter(System.Func<GridEntity, bool> predicate)
+    bool[,] CreateMapFilter(System.Func<(int, int), bool> predicate)
     {
         var lookup = new HashSet<(int, int)>();
         System.Action<(int, int), GridEntity> callback = (coords, _) =>
         {
-            if (predicate(GridStatus(coords)))
+            if (predicate(coords))
             {
                 lookup.Add(coords);
             }
@@ -326,11 +333,11 @@ abstract public class Level : MonoBehaviour
         System.Func<GridEntity, bool> permissablePredicate,
         out List<(int, int)> path
     )
-    {        
+    {
         var searchParameters = new GraphSearch.SearchParameters(
             origin, 
             PlayerPosition, 
-            CreateMapFilter(permissablePredicate),
+            CreateMapFilter((coords) => permissablePredicate(GridBaseStatus(coords))),
             maxDepth
         );
 

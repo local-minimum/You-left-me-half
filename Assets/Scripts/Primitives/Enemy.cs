@@ -84,7 +84,7 @@ public class Enemy : MonoBehaviour
         if (!Level.instance.FindPathToPlayerFrom(
             movable.Position.XZTuple(), 
             GetAwareness(mode), 
-            (entity) => entity.IsInbound(SeeThroughVirtual),
+            (entity) => entity.BaseTypeIsInbound(SeeThroughVirtual),
             out path
         ))
         {

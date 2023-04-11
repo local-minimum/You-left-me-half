@@ -96,11 +96,12 @@ static public class GraphSearch
         (int, int) coordinates
     )
     {
-        var (rows, cols) = searchParameters.Shape;
-        var outString = $"{searchParameters.Origin} -> {searchParameters.Target} / Cache size{cache.Count}:\n";
+        var (cols, rows) = searchParameters.Shape;
+        var outString = $"{searchParameters.Origin} -> {searchParameters.Target} / {cols}x{rows} / Cache size{cache.Count}:\n";
+        
         for (int z = rows - 1; z>=0; z--)
         {
-            for (int x = 0; x< cols; x ++)
+            for (int x = 0; x < cols; x ++)
             {
                 var state = searchParameters.InBound(x, z);
                 var coords = (x, z);
