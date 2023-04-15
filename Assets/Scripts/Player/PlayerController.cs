@@ -171,6 +171,9 @@ public class PlayerController : MonoBehaviour
                 }
 
                 navInstructions.OnDone();
+            } else
+            {
+                break;
             }
 
             if (QueueMovesOnButton && GetKeyPress(true) == nav)
