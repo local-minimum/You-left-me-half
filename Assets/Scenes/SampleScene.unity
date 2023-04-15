@@ -943,7 +943,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selectionPriority: 1
   dynamicSentryPos: 0
-  setSentryFromMove: 0
+  setSentryFromMove: 1
   sentryPosition: {x: 0, y: 0, z: 0}
   LookDirections: 0200000003000000
   minLookTime: 2
