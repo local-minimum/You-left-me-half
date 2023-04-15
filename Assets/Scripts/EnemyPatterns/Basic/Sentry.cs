@@ -89,6 +89,8 @@ public class Sentry : EnemyPattern
             false
         );
 
+        enemy.LastRegisteredBasicPosition.Item = movable.Position;
+
         StartCoroutine(Move(instructions));
     }
 }

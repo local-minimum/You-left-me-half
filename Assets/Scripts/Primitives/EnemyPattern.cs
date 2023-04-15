@@ -8,6 +8,10 @@ public abstract class EnemyPattern : MonoBehaviour
     protected MovingEntity movable;
     protected bool playing = false;
 
+    public string Name
+    {
+        get => $"{enemy.name}: {name}";
+    }
 
     private void Awake()
     {
@@ -35,7 +39,7 @@ public abstract class EnemyPattern : MonoBehaviour
     {
         if (Eligible)
         {
-            Debug.Log(name);
+            Debug.Log(Name);
             playing = true;
         }
 

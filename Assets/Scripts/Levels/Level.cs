@@ -326,17 +326,25 @@ abstract public class Level : MonoBehaviour
         return map;
     }
 
-        
+
     public bool FindPathToPlayerFrom(
-        (int, int) origin, 
-        int maxDepth, 
+        (int, int) origin,
+        int maxDepth,
+        System.Func<GridEntity, bool> permissablePredicate,
+        out List<(int, int)> path
+    ) => FindPathFromTo(origin, PlayerPosition.XZTuple(), maxDepth, permissablePredicate, out path);
+
+    public bool FindPathFromTo(
+        (int, int) origin,
+        (int, int) target,
+        int maxDepth,
         System.Func<GridEntity, bool> permissablePredicate,
         out List<(int, int)> path
     )
     {
         var searchParameters = new GraphSearch.SearchParameters(
-            origin, 
-            PlayerPosition, 
+            origin,
+            target,
             CreateMapFilter((coords) => permissablePredicate(GridBaseStatus(coords))),
             maxDepth
         );
@@ -353,4 +361,5 @@ abstract public class Level : MonoBehaviour
 
         return GraphSearch.AStarSearch(searchParameters, out path);
     }
+
 }

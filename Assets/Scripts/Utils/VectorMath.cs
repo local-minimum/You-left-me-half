@@ -22,6 +22,8 @@ public static class VectorMath
 
     public static (int, int) XZTuple(this Vector3Int v) => (v.x, v.z);
 
+    public static Vector3Int XZVector3(this (int, int) t) => new Vector3Int(t.Item1, 0, t.Item2);
+
     public static int ManhattanDistance(this (int, int) a, (int, int) b) => 
         Mathf.Abs(a.Item1 - b.Item1) + Mathf.Abs(a.Item2 - b.Item2);
 
@@ -37,4 +39,9 @@ public static class VectorMath
         yield return c.StepSouth();
         yield return c.StepEast();
     }
+
+    public static (int, int) Add(this (int, int) left, (int, int) right) => (left.Item1 + right.Item1, left.Item2 + right.Item2);
+    public static (int, int) ADD(this (int, int) left, Vector3Int right) => (left.Item1 + right.x, left.Item2 + right.z);
+    public static (int, int) Subtract(this (int, int) left, (int, int) right) => (left.Item1 - right.Item1, left.Item2 - right.Item2);
+    public static (int, int) Subtract(this (int, int) left, Vector3Int right) => (left.Item1 - right.x, left.Item2 - right.z);
 }

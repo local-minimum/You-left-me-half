@@ -20,9 +20,11 @@ public class Enemy : MonoBehaviour
     int LOSAwareness = 5;
 
     [SerializeField]
-    public bool SeeThroughVirtual = true;
+    public bool AllowVirtualSpace = true;
 
     MovingEntity movable;
+
+    public readonly NullableItem<Vector3Int> LastRegisteredBasicPosition = new NullableItem<Vector3Int>();
 
     EnemyPattern RandomPattern
     {
@@ -88,7 +90,7 @@ public class Enemy : MonoBehaviour
         if (!Level.instance.FindPathToPlayerFrom(
             movable.Position.XZTuple(), 
             GetAwareness(mode), 
-            (entity) => entity.BaseTypeIsInbound(SeeThroughVirtual),
+            (entity) => entity.BaseTypeIsInbound(AllowVirtualSpace),
             out path
         ))
         {

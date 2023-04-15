@@ -12,7 +12,8 @@ public class Rush : EnemyPattern
     {
         if (GetAttackPlan(out attackPlan))
         {
-            Debug.Log("Rush");
+            Debug.Log(Name);
+            attackIdx = -1;
             playing = true;
             return true;
         }
@@ -24,7 +25,7 @@ public class Rush : EnemyPattern
     {
         if ((Level.instance.PlayerPosition - movable.Position).AsDirection() != movable.LookDirection)
         {
-            // Debug.Log($"{Level.instance.PlayerPosition} - {movable.Position} => {(Level.instance.PlayerPosition - movable.Position).AsDirection()} != {movable.LookDirection}");
+            // Debug.Log("Not looking at player");
             path = new List<(int, int)>();
             return false;
         }
@@ -42,7 +43,7 @@ public class Rush : EnemyPattern
                         case GridEntity.InBound:
                             return Level.instance.GridStatus(coords) != GridEntity.Other;
                         case GridEntity.VirtualSpace:
-                            return enemy.SeeThroughVirtual && Level.instance.GridStatus(coords) != GridEntity.Other;
+                            return enemy.AllowVirtualSpace && Level.instance.GridStatus(coords) != GridEntity.Other;
                         default:
                             return false;
                     }
@@ -56,7 +57,10 @@ public class Rush : EnemyPattern
         return eligable;
     }
 
-    public override bool Eligible => GetAttackPlan(out List<(int, int)> _);
+    public override bool Eligible => (!onlyFromBasicPosition || enemy.LastRegisteredBasicPosition.Equals(movable.Position)) && GetAttackPlan(out List<(int, int)> _);
+
+    [SerializeField]
+    bool onlyFromBasicPosition = true;
 
     [SerializeField]
     float stepTime = 0.2f;
