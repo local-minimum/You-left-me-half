@@ -48,7 +48,7 @@ public static class NavigationExtensions
 
     public static Navigation FromToRotation(FaceDirection from, FaceDirection to)
     {
-        if (from == to) return Navigation.None;
+        if (from == FaceDirection.Invalid || to == FaceDirection.Invalid || from == to) return Navigation.None;
 
         if (from.RotateCW() == to) return Navigation.TurnCW;
         var ccwFrom = from.RotateCCW();

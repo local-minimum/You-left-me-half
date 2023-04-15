@@ -6,24 +6,17 @@ public class Rush : EnemyPattern
 {
     public override bool Terminatable => true;
 
-    public override bool Resume() => Play();
-
     List<(int, int)> attackPlan;
 
     public override bool Play()
     {
-        Debug.Log("Rush");
         if (GetAttackPlan(out attackPlan))
         {
+            Debug.Log("Rush");
             playing = true;
             return true;
         }
         return false;
-    }
-
-    public override void Abort()
-    {
-        playing = false;
     }
 
 
@@ -31,7 +24,7 @@ public class Rush : EnemyPattern
     {
         if ((Level.instance.PlayerPosition - movable.Position).AsDirection() != movable.LookDirection)
         {
-            Debug.Log($"{Level.instance.PlayerPosition} - {movable.Position} => {(Level.instance.PlayerPosition - movable.Position).AsDirection()} != {movable.LookDirection}");
+            // Debug.Log($"{Level.instance.PlayerPosition} - {movable.Position} => {(Level.instance.PlayerPosition - movable.Position).AsDirection()} != {movable.LookDirection}");
             path = new List<(int, int)>();
             return false;
         }
@@ -42,12 +35,14 @@ public class Rush : EnemyPattern
                 Level.instance.PlayerPosition,
                 (coords) =>
                 {
-                    switch (Level.instance.GridStatus(coords))
+                    if (coords == movable.Position.XZTuple()) return true;
+
+                    switch (Level.instance.GridBaseStatus(coords))
                     {
-                        case GridEntity.Player:
                         case GridEntity.InBound:
-                        case GridEntity.PlayerSpawn:
-                            return true;
+                            return Level.instance.GridStatus(coords) != GridEntity.Other;
+                        case GridEntity.VirtualSpace:
+                            return enemy.SeeThroughVirtual && Level.instance.GridStatus(coords) != GridEntity.Other;
                         default:
                             return false;
                     }

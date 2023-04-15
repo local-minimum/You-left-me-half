@@ -19,14 +19,28 @@ public abstract class EnemyPattern : MonoBehaviour
     float selectionPriority = 1;
 
     public bool Playing => playing;
+    
+    public virtual bool Terminatable => !easing;
 
-    abstract public bool Terminatable { get;  }
     abstract public bool Eligible { get; }
-    abstract public void Abort();
 
-    abstract public bool Resume();
+    virtual public void Abort()
+    {
+        playing = false;
+    }
 
-    abstract public bool Play();
+    virtual public bool Resume() => Play();
+
+    virtual public bool Play()
+    {
+        if (Eligible)
+        {
+            Debug.Log(name);
+            playing = true;
+        }
+
+        return playing;
+    }
 
     protected bool easing = false;
 

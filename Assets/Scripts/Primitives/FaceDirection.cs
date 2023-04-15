@@ -31,7 +31,14 @@ public static class FaceExtentions
         return FaceDirection.Invalid;
 
     }
-    public static FaceDirection AsDirection(this Vector3Int globalDirection)
+
+    /// <summary>
+    /// Direction vector to a FaceDirection
+    /// </summary>
+    /// <param name="globalDirection"></param>
+    /// <param name="allowDiagonals">If true, will go for primary direction or when exact diagonals then NE will be N, NW be W and so on. Also disregards Y aspects</param>
+    /// <returns></returns>
+    public static FaceDirection AsDirection(this Vector3Int globalDirection, bool allowDiagonals = false)
     {
         var zeroX = globalDirection.x == 0;
         var zeroY = globalDirection.y == 0;
@@ -48,6 +55,42 @@ public static class FaceExtentions
         if (!zeroY && zeroX && zeroZ)
         {
             return globalDirection.x > 0 ? FaceDirection.Up : FaceDirection.Down;
+        }
+
+        if (allowDiagonals) {
+            if (!zeroX && !zeroZ)
+            {
+                if (Mathf.Abs(globalDirection.x) > Mathf.Abs(globalDirection.z))
+                {
+                    return globalDirection.x > 0 ? FaceDirection.East : FaceDirection.West;
+                } else if (Mathf.Abs(globalDirection.z) > Mathf.Abs(globalDirection.x))
+                {
+                    return globalDirection.z > 0 ? FaceDirection.North : FaceDirection.South;
+                }
+
+                var signX = Mathf.Sign(globalDirection.x);
+                var signZ = Mathf.Sign(globalDirection.z);
+
+                if (signX == 1 && signZ == 1)
+                {
+                    return FaceDirection.North;
+                } else if (signX == 1 && signZ == -1)
+                {
+                    return FaceDirection.East;
+                } else if (signX == -1 && signZ == -1)
+                {
+                    return FaceDirection.South;
+                } else
+                {
+                    return FaceDirection.West;
+                }
+            } else if (!zeroX && !zeroY && zeroZ)
+            {
+                return globalDirection.x > 0 ? FaceDirection.East : FaceDirection.West;
+            } else if (zeroX && !zeroY && !zeroZ)
+            {
+                return globalDirection.z > 0 ? FaceDirection.North : FaceDirection.South;
+            }
         }
 
         return FaceDirection.Invalid;

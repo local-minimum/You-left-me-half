@@ -20,7 +20,7 @@ public class Enemy : MonoBehaviour
     int LOSAwareness = 5;
 
     [SerializeField]
-    bool SeeThroughVirtual = true;
+    public bool SeeThroughVirtual = true;
 
     MovingEntity movable;
 
@@ -34,6 +34,10 @@ public class Enemy : MonoBehaviour
                 return options[Random.Range(0, options.Length)];
             }
             options = DefaultPatterns.Where(p => p.Eligible).ToArray();
+            if (options.Length == 0)
+            {
+                return null;
+            }
             return options[Random.Range(0, options.Length)];
         }
     }
@@ -122,7 +126,7 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
-        if (!activePattern.Playing)
+        if (activePattern == null || !activePattern.Playing)
         {
             activePattern = RandomPattern;
             activePattern?.Play();
@@ -143,7 +147,10 @@ public class Enemy : MonoBehaviour
     {
         if (type == EndingType.Death)
         {
-            activePattern.enabled = false;
+            if (activePattern)
+            {
+                activePattern.enabled = false;
+            }
             enabled = false;
         }
     }

@@ -117,6 +117,8 @@ public class MovingEntity : MonoBehaviour
         return true;
     }
 
+    static readonly bool InstaReleaseOnClaim = true;
+
     public NavInstructions Navigate(
         GridEntity entity,
         Navigation nav,
@@ -133,12 +135,19 @@ public class MovingEntity : MonoBehaviour
 
             if (ClaimSpot(entity, nav, gridTarget, allowEnterVirtualSpaces))
             {
+                if (InstaReleaseOnClaim)
+                {
+                    Level.instance.ReleasePosition(entity, Position);
+                }
 
                 Vector3 target = Level.AsWorldPosition(gridTarget);
 
                 System.Action<float> interpolate = (float progress) => { transform.position = Vector3.Lerp(origin, target, progress); };
                 System.Action onDone = () => {
-                    Level.instance.ReleasePosition(entity, Position);
+                    if (!InstaReleaseOnClaim)
+                    {
+                        Level.instance.ReleasePosition(entity, Position);
+                    }
                     SetNewGridPosition(gridTarget, LookDirection);
                     if (onComplete != null) onComplete(gridTarget, LookDirection);
                     

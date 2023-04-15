@@ -8,7 +8,7 @@ public class Sentry : EnemyPattern
     [SerializeField]
     bool dynamicSentryPos = false;
 
-    [SerializeField]
+    [SerializeField, Tooltip("If dynamic pos is true this allows sentry from any position, else only from first position")]
     bool setSentryFromMove = false;
 
     [SerializeField]
@@ -26,26 +26,8 @@ public class Sentry : EnemyPattern
     [SerializeField]
     float turnTime = 0.4f;
 
-    public override void Abort()
-    {
-        playing = false;
-    }
 
     public override bool Eligible => dynamicSentryPos || sentryPosition == movable.Position;
-
-    public override bool Play()
-    {
-        if (Eligible)
-        {
-            playing = true;
-        }
-
-        return playing;
-    }
-
-    public override bool Resume() => Play();    
-
-    public override bool Terminatable => !easing;
 
     private void OnEnable()
     {
@@ -66,6 +48,10 @@ public class Sentry : EnemyPattern
     private void Sentry_OnMove(string id, Vector3Int position, FaceDirection lookDirection)
     {
         sentryPosition = position;
+        if (!dynamicSentryPos)
+        {
+            movable.OnMove -= Sentry_OnMove;
+        }
     }
 
     Navigation GetNextNavigation()

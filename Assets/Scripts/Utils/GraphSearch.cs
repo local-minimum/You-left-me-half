@@ -266,6 +266,6 @@ static public class GraphSearch
 
         }
 
-        return lastCoords == searchParameters.Target;
+        return lastCoords == searchParameters.Target && path.All(coords => searchParameters.Predicate(coords));
     }
 }
