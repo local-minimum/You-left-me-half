@@ -6,6 +6,9 @@ public delegate void PlayerMove(Vector3Int position, FaceDirection lookDirection
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField]
+    bool QueueMovesOnButton = true;
+
     public static event PlayerMove OnPlayerMove;
     
     [SerializeField]
@@ -84,14 +87,16 @@ public class PlayerController : MonoBehaviour
         OnPlayerMove?.Invoke(position, lookDirection);
     }
 
-    Navigation GetKeyPress()
+    
+
+    Navigation GetKeyPress(bool alsoKey = false)
     {
-        if (Input.GetKeyDown(forwardKey)) return Navigation.Forward;
-        if (Input.GetKeyDown(backKey)) return Navigation.Backward;
-        if (Input.GetKeyDown(leftKey)) return Navigation.Left;
-        if (Input.GetKeyDown(rightKey)) return Navigation.Right;
-        if (Input.GetKeyDown(turnCWKey)) return Navigation.TurnCW;
-        if (Input.GetKeyDown(turnCCWKey)) return Navigation.TurnCCW;
+        if (Input.GetKeyDown(forwardKey) || alsoKey && Input.GetKey(forwardKey)) return Navigation.Forward;
+        if (Input.GetKeyDown(backKey) || alsoKey && Input.GetKey(backKey)) return Navigation.Backward;
+        if (Input.GetKeyDown(leftKey) || alsoKey && Input.GetKey(leftKey)) return Navigation.Left;
+        if (Input.GetKeyDown(rightKey) || alsoKey && Input.GetKey(rightKey)) return Navigation.Right;
+        if (Input.GetKeyDown(turnCWKey) || alsoKey && Input.GetKey(turnCWKey)) return Navigation.TurnCW;
+        if (Input.GetKeyDown(turnCCWKey) || alsoKey && Input.GetKey(turnCCWKey)) return Navigation.TurnCCW;
         return Navigation.None;
     }
 
@@ -168,7 +173,14 @@ public class PlayerController : MonoBehaviour
                 navInstructions.OnDone();
             }
 
-            moveIndex = 1;
+            if (QueueMovesOnButton && GetKeyPress(true) == nav)
+            {
+                // Repeat move
+                navigationQueue[moveIndex] = nav;
+            } else
+            {
+                moveIndex = 1;
+            }           
         }
 
         isMoving = false;
