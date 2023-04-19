@@ -1822,6 +1822,7 @@ MonoBehaviour:
   AttackPatterns:
   - {fileID: 2027370673}
   - {fileID: 523090789}
+  - {fileID: 1380164536}
   AreaAwareness: 1
   LOSAwareness: 15
   AllowVirtualSpace: 1
@@ -1857,6 +1858,63 @@ Transform:
   - {fileID: 377024628}
   m_Father: {fileID: 1189414891}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1380164535
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1380164537}
+  - component: {fileID: 1380164536}
+  m_Layer: 0
+  m_Name: Melee
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1380164536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1380164535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04d4fe2abd1500a478e124494dbfe329, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectionPriority: 1
+  reach: 1
+  mayAttackVirtualSpace: 1
+  attack:
+    attackRange: 1
+    minAttack: 4
+    maxAttack: 8
+    failChance: 0.05
+    critChance: 0.1
+    critFactor: 1.5
+    failFactor: 0.5
+    beforeCooldownSeconds: 0.5
+    cooldownSeconds: 1
+--- !u!4 &1380164537
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1380164535}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1909616539}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1420133359
 GameObject:
@@ -7466,6 +7524,7 @@ Transform:
   m_Children:
   - {fileID: 2027370672}
   - {fileID: 523090788}
+  - {fileID: 1380164537}
   m_Father: {fileID: 1189414891}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7514,6 +7573,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selectionPriority: 1
+  onlyFromBasicPosition: 1
   stepTime: 0.15
 --- !u!4 &2044602864 stripped
 Transform:

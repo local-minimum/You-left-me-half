@@ -35,12 +35,19 @@ public class Inventory : MonoBehaviour
     {
         Lootable.OnLoot += Lootable_OnLoot;
         PlayerController.OnPlayerMove += PlayerController_OnPlayerMove;
+        BattleMaster.OnHitPlayer += BattleMaster_OnHitPlayer;
     }
 
     private void OnDisable()
     {
         Lootable.OnLoot -= Lootable_OnLoot;
         PlayerController.OnPlayerMove -= PlayerController_OnPlayerMove;
+        BattleMaster.OnHitPlayer -= BattleMaster_OnHitPlayer;
+    }
+
+    private void BattleMaster_OnHitPlayer(int amount)
+    {
+        Withdraw(amount, CanisterType.Health);
     }
 
     private Vector3Int playerPosition;

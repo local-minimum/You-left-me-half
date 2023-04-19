@@ -38,16 +38,27 @@ public class BattleMaster : MonoBehaviour
 
     private void OnEnable()
     {
+        Enemy.OnAttackPlayer += Enemy_OnAttackPlayer;
         AttackInventoryHUD.OnAttack += AttackInventoryHUD_OnAttack;
         PlayerController.OnPlayerMove += PlayerController_OnPlayerMove;
     }
 
     private void OnDisable()
     {
+        Enemy.OnAttackPlayer -= Enemy_OnAttackPlayer;
         AttackInventoryHUD.OnAttack -= AttackInventoryHUD_OnAttack;
         PlayerController.OnPlayerMove -= PlayerController_OnPlayerMove;
     }
 
+    private void Enemy_OnAttackPlayer(AttackMode mode, int amount)
+    {
+        
+        OnHitPlayer?.Invoke(amount);
+
+        var hit = GetFreeHitUI();
+        hit.SetHit(amount, mode);
+        hit.gameObject.SetActive(true);
+    }
 
     Vector3Int playerPosition;
     FaceDirection playerLookDirection;
@@ -65,7 +76,7 @@ public class BattleMaster : MonoBehaviour
 
     private void AttackInventoryHUD_OnAttack(Attack attack)
     {
-        var type = attack.GetAttack(out int amount);
+        var mode = attack.attackStats.GetAttack(out int amount);
         var target = GetMonsterTarget(attack);
 
         if (target != null)
@@ -74,7 +85,7 @@ public class BattleMaster : MonoBehaviour
         }
         
         var hit = GetFreeHitUI();
-        hit.SetHit(amount, type);
+        hit.SetHit(amount, mode);
         hit.gameObject.SetActive(true);
     }
 }

@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+public delegate void AttackPlayer(AttackMode mode, int amount);
+
 public enum SightMode { Any, LOS, Area };
 
 public class Enemy : MonoBehaviour
 {
+    public static event AttackPlayer OnAttackPlayer;
+
     [SerializeField]
     EnemyPattern[] DefaultPatterns;
 
@@ -155,5 +159,11 @@ public class Enemy : MonoBehaviour
             }
             enabled = false;
         }
+    }
+
+    public void AttackPlayer(AttackStats attack)
+    {
+        var mode = attack.GetAttack(out int amount);
+        OnAttackPlayer?.Invoke(mode, amount);
     }
 }

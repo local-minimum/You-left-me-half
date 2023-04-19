@@ -52,7 +52,7 @@ public class AttackInventoryHUD : HUDProgressionIcon
     {
         get
         {
-            return Mathf.Clamp01((Time.timeSinceLevelLoad - lastAttack - attack.beforeCooldownSeconds) / attack.cooldownSeconds);
+            return Mathf.Clamp01((Time.timeSinceLevelLoad - lastAttack - attack.attackStats.beforeCooldownSeconds) / attack.attackStats.cooldownSeconds);
         }
     }
 
