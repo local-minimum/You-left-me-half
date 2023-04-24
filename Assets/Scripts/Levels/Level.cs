@@ -354,10 +354,12 @@ abstract public class Level : MonoBehaviour
             Debug.LogWarning($"Atempting to find player from out of bounds {searchParameters.Origin}");
         }
 
+        /*
         if (!searchParameters.InBound(searchParameters.Target))
         {
-            Debug.LogError($"Atempting to find player who is out of bounds {searchParameters.Origin}");
+            Debug.LogWarning($"Atempting to find player who is out of bounds {searchParameters.Origin}");
         }
+        */
 
         return GraphSearch.AStarSearch(searchParameters, out path);
     }

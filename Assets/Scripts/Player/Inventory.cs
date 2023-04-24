@@ -36,6 +36,7 @@ public class Inventory : MonoBehaviour
         Lootable.OnLoot += Lootable_OnLoot;
         PlayerController.OnPlayerMove += PlayerController_OnPlayerMove;
         BattleMaster.OnHitPlayer += BattleMaster_OnHitPlayer;
+        Enemy.OnKillEnemy += Enemy_OnKillEnemy;
     }
 
     private void OnDisable()
@@ -43,6 +44,12 @@ public class Inventory : MonoBehaviour
         Lootable.OnLoot -= Lootable_OnLoot;
         PlayerController.OnPlayerMove -= PlayerController_OnPlayerMove;
         BattleMaster.OnHitPlayer -= BattleMaster_OnHitPlayer;
+        Enemy.OnKillEnemy -= Enemy_OnKillEnemy;
+    }
+
+    private void Enemy_OnKillEnemy(Enemy enemy)
+    {
+        Receive(enemy.XPReward, CanisterType.XP);
     }
 
     private void BattleMaster_OnHitPlayer(int amount)

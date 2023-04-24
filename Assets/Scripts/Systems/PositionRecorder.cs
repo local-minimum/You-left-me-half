@@ -37,17 +37,17 @@ public class PositionRecorder : MonoBehaviour, StateSaver
     Dictionary<string, FaceDirection> lookDirections = new Dictionary<string, FaceDirection>();
     bool listening = true;
 
-    private static PositionRecorder recorder;
+    public static PositionRecorder instance { get; private set; }
 
     private void Awake()
     {        
-        if (recorder != null && recorder != this)
+        if (instance != null && instance != this)
         {
             Destroy(this);
             return;
         }
 
-        recorder = this;
+        instance = this;
 
         var entities = FindObjectsOfType<MovingEntity>();
         for (int i=0; i<entities.Length; i++)
@@ -55,6 +55,12 @@ public class PositionRecorder : MonoBehaviour, StateSaver
             entities[i].OnMove += PositionRecorder_OnMove;
         }
     }
+
+    public string[] GetEntities(Vector3Int position) => positions
+        .Where(kvp => kvp.Value == position)
+        .Select(kvp => kvp.Key)
+        .ToArray();
+    
 
     private void OnDestroy()
     {
@@ -119,8 +125,13 @@ public class PositionRecorder : MonoBehaviour, StateSaver
 
     private string debugPlayerPrefsKey = "save.debug";
 
+    [SerializeField]
+    bool hideDebugUI = false;
+
     private void OnGUI()
     {
+        if (hideDebugUI) return;
+
         if (GUILayout.Button("Debug Save"))
         {
             PlayerPrefs.SetString(debugPlayerPrefsKey, StringCompressor.CompressString(SerializeState()));                

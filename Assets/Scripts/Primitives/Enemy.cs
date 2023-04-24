@@ -4,12 +4,13 @@ using System.Linq;
 using UnityEngine;
 
 public delegate void AttackPlayer(AttackMode mode, int amount);
-
+public delegate void KillEnemy(Enemy enemy);
 public enum SightMode { Any, LOS, Area };
 
 public class Enemy : MonoBehaviour
 {
     public static event AttackPlayer OnAttackPlayer;
+    public static event KillEnemy OnKillEnemy;
 
     [SerializeField]
     EnemyPattern[] DefaultPatterns;
@@ -22,6 +23,14 @@ public class Enemy : MonoBehaviour
 
     [SerializeField]
     int LOSAwareness = 5;
+
+    [SerializeField]
+    int health = 10;
+
+    [SerializeField]
+    int xpReward = 16;
+
+    public int XPReward { get => xpReward; }
 
     [SerializeField]
     public bool AllowVirtualSpace = true;
@@ -142,11 +151,29 @@ public class Enemy : MonoBehaviour
     private void OnEnable()
     {
         MasterOfEndings.OnEnding += MasterOfEndings_OnEnding;
+        BattleMaster.OnHitMonster += BattleMaster_OnHitMonster;
     }
 
     private void OnDisable()
     {
         MasterOfEndings.OnEnding -= MasterOfEndings_OnEnding;
+        BattleMaster.OnHitMonster -= BattleMaster_OnHitMonster;
+    }
+    private void BattleMaster_OnHitMonster(string monsterId, int amount)
+    {
+        if (monsterId != movable.Id) return;
+
+        health -= amount;
+
+        if (health <= 0)
+        {
+            OnKillEnemy?.Invoke(this);
+
+            Level.instance.ReleasePosition(GridEntity.Other, movable.Position);
+
+            // TODO: Do something nicer for death
+            Destroy(gameObject);
+        }
     }
 
     private void MasterOfEndings_OnEnding(EndingType type, Ending ending)
