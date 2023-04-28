@@ -1291,7 +1291,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   pulseCharacterLength: 3
-  wobbleMagnitude: 100
+  wobbleMagnitude: 0.8
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -7555,6 +7555,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1824845014}
   - component: {fileID: 1824845015}
+  - component: {fileID: 1824845016}
   m_Layer: 5
   m_Name: EndingsScreen
   m_TagString: Untagged
@@ -7597,6 +7598,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Panel: {fileID: 1618429867}
   TextField: {fileID: 411621256}
+--- !u!114 &1824845016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1824845013}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2c09953ccd10cb4d8a290d4da849f29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  refreshRate: 0.1
+  textGUI: {fileID: 0}
+  pulseColorA:
+    serializedVersion: 2
+    rgba: 4278190080
+  pulseColorB:
+    serializedVersion: 2
+    rgba: 4294967295
+  pulseAnimation:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  pulseCharacterLength: 10
+  wobbleMagnitude: 0.9
 --- !u!1 &1909616538
 GameObject:
   m_ObjectHideFlags: 0

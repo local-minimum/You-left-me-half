@@ -112,12 +112,9 @@ public class TMProEffect : MonoBehaviour
 
                 if (meshManipulation)
                 {
-                    //mesh.SetVertices(vertices);                     
-                    //textGUI.canvasRenderer.SetMesh(mesh);
-                    //mesh.MarkModified();
-                    textGUI.SetVertices(vertices);
-                    textGUI.UpdateVertexData(TMPro.TMP_VertexDataUpdateFlags.Vertices);
-                } 
+                    mesh.SetVertices(vertices);
+                    textGUI.UpdateGeometry(mesh, 0);
+                }
                 // textGUI.UpdateVertexData(TMPro.TMP_VertexDataUpdateFlags.Colors32);
             }
             yield return new WaitForSeconds(refreshRate);
