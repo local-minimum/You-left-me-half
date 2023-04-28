@@ -1112,6 +1112,7 @@ GameObject:
   - component: {fileID: 631028821}
   - component: {fileID: 631028823}
   - component: {fileID: 631028822}
+  - component: {fileID: 631028824}
   m_Layer: 5
   m_Name: Timer
   m_TagString: Untagged
@@ -1182,7 +1183,7 @@ MonoBehaviour:
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
   m_TextStyleHashCode: -1183493901
-  m_overrideHtmlColors: 0
+  m_overrideHtmlColors: 1
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
@@ -1236,6 +1237,61 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 631028820}
   m_CullTransparentMesh: 1
+--- !u!114 &631028824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 631028820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2c09953ccd10cb4d8a290d4da849f29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  refreshRate: 0.05
+  textGUI: {fileID: 0}
+  pulseColorA:
+    serializedVersion: 2
+    rgba: 4294967295
+  pulseColorB:
+    serializedVersion: 2
+    rgba: 4278642665
+  pulseAnimation:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 2.3426213
+      value: 0.26337567
+      inSlope: 0.4059952
+      outSlope: 0.4059952
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.22609335
+    - serializedVersion: 3
+      time: 3
+      value: 1
+      inSlope: 0.1344701
+      outSlope: 0.1344701
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.28286487
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  pulseCharacterLength: 3
+  wobbleMagnitude: 100
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1359,6 +1415,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c6b6ef9908dde044869323c35c99d0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hideDebugUI: 1
 --- !u!4 &770052549
 Transform:
   m_ObjectHideFlags: 0
@@ -1869,6 +1926,8 @@ MonoBehaviour:
   - {fileID: 1380164536}
   AreaAwareness: 1
   LOSAwareness: 15
+  health: 10
+  xpReward: 16
   AllowVirtualSpace: 1
 --- !u!1 &1298018613
 GameObject:
@@ -7031,7 +7090,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh24188
+  m_Name: pb_Mesh24154
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
