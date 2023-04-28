@@ -81,14 +81,21 @@ public class TMProEffect : MonoBehaviour
     [SerializeField]
     float wobbleMagnitude = 0.1f;
     
-    private void Wobble(TMPro.TMP_CharacterInfo characterInfo, Vector3[] vertices)
-    {
-        var offset = new Vector3(
-            Random.Range(-wobbleMagnitude, wobbleMagnitude), 
+    private Vector3 RandomOffset(float magnitude) => new Vector3(
+            Random.Range(-wobbleMagnitude, wobbleMagnitude),
             Random.Range(-wobbleMagnitude, wobbleMagnitude)
         );
 
+    private void Wobble(TMPro.TMP_CharacterInfo characterInfo, Vector3[] vertices)
+    {
+        var offset = RandomOffset(wobbleMagnitude);
+
         ApplyMeshManipulation(characterInfo, vertices, (pos, _) => pos + offset);
+    }
+
+    private void DistortWobble(TMPro.TMP_CharacterInfo characterInfo, Vector3[] vertices)
+    {
+        ApplyMeshManipulation(characterInfo, vertices, (pos, _) => pos + RandomOffset(wobbleMagnitude));
     }
 
     IEnumerator<WaitForSeconds> Animate()
@@ -106,7 +113,8 @@ public class TMProEffect : MonoBehaviour
                     var character = textGUI.textInfo.characterInfo[i];
                     if (!character.isVisible) continue;
 
-                    Wobble(character, vertices);
+                    DistortWobble(character, vertices);
+                    // Wobble(character, vertices);
                     // PulseCharacterColor(character, textGUI.textInfo.meshInfo);
                 }
 
