@@ -39,12 +39,6 @@ public class LevelTracker : MonoBehaviour
         if (instance == this) instance = null;
     }
 
-    [SerializeField]
-    PlayerLevel levelPrefab;
-
-    [SerializeField]
-    Repair repairPrefab;
-
     private void Inventory_OnCanisterChange(CanisterType type, int stored, int capacity)
     {
         if (type != CanisterType.XP) return;
@@ -71,19 +65,13 @@ public class LevelTracker : MonoBehaviour
 
     void CreateLevelLoot()
     {
-        // TODO: LootTable doesn't know about players loot at start
-        var nextLevel = LootTable.instance.Count<PlayerLevel>() + 1;
-        var level = Instantiate(levelPrefab);
-        level.name = $"PlayerLevel {nextLevel}";
+        var level = LootTable.instance.First<PlayerLevel>();
         level.Loot(LootOwner.Player);
     }
 
     void CreateRepairLoot()
     {
-        // TODO: LootTable not usable
-        var nextRepairId = LootTable.instance.Count<Repair>() + 1;
-        var repair = Instantiate(repairPrefab);
-        repair.name = $"InventoryRepair {nextRepairId}";
+        var repair = LootTable.instance.First<Repair>();
         repair.Loot(LootOwner.Player);
     }
 }

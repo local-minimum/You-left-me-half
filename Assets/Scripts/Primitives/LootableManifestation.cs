@@ -19,9 +19,6 @@ public class LootableManifestation : WorldClickable
 
     protected override void OnClick()
     {
-        if (!lootable.Loot(LootOwner.Player))
-        {
-            Debug.Log($"Player failed to pick up {lootable.Id}");
-        }
+        lootable.Loot(LootOwner.Player);
     }
 }

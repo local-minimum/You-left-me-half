@@ -84,12 +84,20 @@ public class Lootable : MonoBehaviour
             manifestation.gameObject.SetActive(args.Owner == LootOwner.Level);
             Owner = args.Owner;
             Coordinates = args.Coordinates;
+        } else if (args.Owner == LootOwner.Player)
+        {
+            // If player can't hold it player drops it on ground
+            Loot(LootOwner.Level, PlayerController.instance.Position);
+        } else
+        {
+            // If level can't hold it, it goes back to the loot table
+            Loot(LootOwner.None);
         }
         return args.Consumed;
     }
     public bool Loot(LootOwner owner) => Loot(new LootEventArgs(owner));    
     public bool Loot(LootOwner owner, Vector3Int coordnates) => Loot(new LootEventArgs(owner, coordnates));
-
+    
     private void Awake()
     {
         if (InventoryShape.Length == 0)

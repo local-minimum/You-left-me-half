@@ -18,6 +18,11 @@ public class LootTable : MonoBehaviour, StateSaver
         DontDestroyOnLoad(this);
     }
 
+    private void Start()
+    {
+        AvailableLootables.ToList().ForEach(l => l.Loot(LootOwner.None));
+    }
+
     private void OnDestroy()
     {
         if (instance == this)
@@ -116,8 +121,39 @@ public class LootTable : MonoBehaviour, StateSaver
         return false;
     }
 
+    public T First<T>() where T : Lootable => AvailableLootables
+        .Where(l => l.GetType() == typeof(T))
+        .FirstOrDefault() as T;
+
+
     public int Count<T>() where T : Lootable => AvailableLootables
         .Where(l => l.GetType() == typeof(T))
-        .Count();    
+        .Count();
 
+
+    private void OnEnable()
+    {
+        Lootable.OnLoot += Lootable_OnLoot;
+    }
+
+    private void OnDisable()
+    {
+        Lootable.OnLoot -= Lootable_OnLoot;
+    }
+
+    private void Lootable_OnLoot(Lootable loot, LootEventArgs args)
+    {
+        if (args.Owner == LootOwner.None)
+        {
+            args.Consumed = true;
+
+            loot.transform.SetParent(transform);
+            loot.transform.localPosition = Vector3.zero;
+
+            args.Coordinates = Vector3Int.zero;
+            args.DefinedPosition = true;
+
+            
+        }
+    }
 }

@@ -27,10 +27,7 @@ public class AutoBootLooter : MonoBehaviour
 
         for (int i = 0; i < candidates.Length; i++)
         {
-            if (!candidates[i].Loot(OwnerType))
-            {
-                Debug.LogWarning($"No-one wanted {candidates[i].Id}");
-            }
+            candidates[i].Loot(OwnerType);
         }
     }
 
