@@ -115,4 +115,9 @@ public class LootTable : MonoBehaviour, StateSaver
         loot = null;
         return false;
     }
+
+    public int Count<T>() where T : Lootable => AvailableLootables
+        .Where(l => l.GetType() == typeof(T))
+        .Count();    
+
 }

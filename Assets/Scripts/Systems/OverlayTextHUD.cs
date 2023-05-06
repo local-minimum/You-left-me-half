@@ -10,6 +10,8 @@ public class OverlayTextHUD : MonoBehaviour
     [SerializeField]
     TMPro.TextMeshProUGUI TextField;
 
+    bool started = false;
+
     void Start()
     {
         Panel.SetActive(false);
@@ -18,22 +20,39 @@ public class OverlayTextHUD : MonoBehaviour
     private void OnEnable()
     {
         MasterOfEndings.OnEnding += MasterOfEndings_OnEnding;
-        LevelTracker.OnLevelUp += LevelTracker_OnLevelUp;
+        Inventory.OnInventoryChange += Inventory_OnInventoryChange;
     }
 
     private void OnDisable()
     {
         MasterOfEndings.OnEnding -= MasterOfEndings_OnEnding;
-        LevelTracker.OnLevelUp -= LevelTracker_OnLevelUp;
+        Inventory.OnInventoryChange -= Inventory_OnInventoryChange;
     }
 
     [SerializeField, Range(0, 3)]
     float levelUpTime = 1f;
 
-    private void LevelTracker_OnLevelUp(int level)
+    int playerLevel = 0;
+
+    private void Inventory_OnInventoryChange(Lootable loot, InventoryEvent inventoryEvent, Vector3Int placement)
     {
-        TextField.text = $"Level {level}";
-        StartCoroutine(Splash(levelUpTime));
+        if (loot.GetType() == typeof(PlayerLevel))
+        {
+            if (inventoryEvent == InventoryEvent.PickUp)
+            {
+                playerLevel++;
+            } else if (inventoryEvent == InventoryEvent.Drop)
+            {
+                playerLevel--;
+            }
+
+            if (started)
+            {
+                TextField.text = $"Level {playerLevel}";
+                StartCoroutine(Splash(levelUpTime));
+            }
+        }
+        
     }
 
     IEnumerator<WaitForSecondsRealtime> Splash(float duration)
@@ -63,5 +82,10 @@ public class OverlayTextHUD : MonoBehaviour
             }
             Panel.SetActive(true);
         }
+    }
+
+    private void Update()
+    {
+        started = true;
     }
 }

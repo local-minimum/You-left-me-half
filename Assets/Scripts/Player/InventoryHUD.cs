@@ -64,7 +64,20 @@ public class InventoryHUD : MonoBehaviour
 
     private void InventorySlotHUD_OnClickSlot(InventorySlotHUD slot)
     {
-        if (inventory.RemoveOneCorruption(slot.Coordinates.XY(), () => LevelTracker.ConsumeToken(), out int  remaining))
+        if (
+            inventory.Repairs > 0 && 
+            inventory.RemoveOneCorruption(
+                slot.Coordinates.XY(), 
+                () => { 
+                    if (inventory.Has(l => l.GetType() == typeof(Repair), out Lootable repair)) {
+                        repair.Loot(LootOwner.None);
+                        return true;
+                    }
+                    return false;
+                }, 
+                out int remaining      
+            )
+        )
         {
             if (remaining == 0)
             {
@@ -168,7 +181,7 @@ public class InventoryHUD : MonoBehaviour
         else if (slot.LootId != null)
         {
             ApplyOverLootSlots(slot.LootId, coordinates => { Slots[coordinates].Hover = true; });
-        } else if (slot.State == InventorySlotHUDState.Corrupted && LevelTracker.Tokens > 0)
+        } else if (slot.State == InventorySlotHUDState.Corrupted && inventory.Repairs > 0)
         {
             slot.PulseCorruption();
         }

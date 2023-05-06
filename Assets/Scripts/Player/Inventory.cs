@@ -240,10 +240,10 @@ public class Inventory : MonoBehaviour
         return false;
     }
 
-    public bool Has(System.Func<Lootable, bool> predicate, out Lootable loot)
+    public bool Has(System.Func<Lootable, bool> predicate, out Lootable firstMatch)
     {
-        loot = Loots.Where(predicate).FirstOrDefault();
-        return loot != null;
+        firstMatch = Loots.Where(predicate).FirstOrDefault();
+        return firstMatch != null;
     }
 
     private IEnumerable<T> GetLoot<T>() where T : Lootable => Loots
@@ -260,8 +260,10 @@ public class Inventory : MonoBehaviour
 
     public int XP { get => GetXPCanisters().Sum(canister => canister.Stored); }
     public int Health { get => GetHealthCanisters().Sum(canister => canister.Stored); }
+  
+    public int PlayerLevel { get => GetLoot<PlayerLevel>().Count(); }
+    public int Repairs { get => GetLoot<Repair>().Count();  }
 
-    
     public void InvokeCanisterChange(CanisterType type)
     {
         var (stored, capacity) = GetCanisters(type)

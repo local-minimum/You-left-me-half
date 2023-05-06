@@ -5,43 +5,51 @@ using UnityEngine.UI;
 
 public class InfoboxHUD : MonoBehaviour
 {
-    int level = 1;
-    int tokens;
-
     [SerializeField]
     TMPro.TextMeshProUGUI ui;
 
     private void OnEnable()
     {
-        LevelTracker.OnLevelUp += LevelTracker_OnLevelUp;
-        LevelTracker.OnLevelTokenChange += LevelTracker_OnLevelTokenChange;
+        Inventory.OnInventoryChange += Inventory_OnInventoryChange;
     }
 
     private void OnDisable()
     {
-        LevelTracker.OnLevelUp -= LevelTracker_OnLevelUp;
-        LevelTracker.OnLevelTokenChange -= LevelTracker_OnLevelTokenChange;
+        Inventory.OnInventoryChange -= Inventory_OnInventoryChange;
     }
 
-    private void Start()
+    private int level = 0;
+    private int tokens = 0;
+
+    private void Inventory_OnInventoryChange(Lootable loot, InventoryEvent inventoryEvent, Vector3Int placement)
     {
-        ui.text = InfoText;
+        if (loot.GetType() == typeof(PlayerLevel))
+        {
+            if (inventoryEvent == InventoryEvent.PickUp)
+            {
+                level++;
+            } else if (inventoryEvent == InventoryEvent.Drop)
+            {
+                level--;
+            }
+
+            ui.text = InfoText;
+        } else if (loot.GetType() == typeof(Repair))
+        {
+            if (inventoryEvent == InventoryEvent.PickUp)
+            {
+                tokens++;
+            } else if (inventoryEvent == InventoryEvent.Drop)
+            {
+                tokens--;
+            }
+            ui.text = InfoText;
+        }
     }
 
-    private void LevelTracker_OnLevelTokenChange(int tokens)
-    {
-        this.tokens = tokens;
-        ui.text = InfoText;
-    }
-
-    private void LevelTracker_OnLevelUp(int level)
-    {
-        this.level = level;
-        ui.text = InfoText;
-    }
 
     string InfoText
     {
-        get => $"Lvl: {level}\nInventory Repairs: {tokens}";
+        get => $"Level: {level}\nInventory Repairs: {tokens}";
     }
 }

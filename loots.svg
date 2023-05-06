@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4"
-     inkscape:cx="285.17978"
-     inkscape:cy="1002.7041"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="182.57321"
+     inkscape:cy="925.85907"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -94,7 +94,10 @@
        height="14.967093"
        width="14.967093"
        id="rect4530"
-       style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+       style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="C:\Users\Admin\Documents\Unity\You left me half\Assets\Sprites\UI - Lootable\Level.png"
+       inkscape:export-xdpi="104.99"
+       inkscape:export-ydpi="104.99" />
     <rect
        style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect4532"
@@ -223,7 +226,10 @@
        width="14.967093"
        height="14.967093"
        x="70.291885"
-       y="36.278576" />
+       y="36.278576"
+       inkscape:export-filename="C:\Users\Admin\Documents\Unity\You left me half\Assets\Sprites\UI - Lootable\Repair.png"
+       inkscape:export-xdpi="104.99"
+       inkscape:export-ydpi="104.99" />
     <rect
        y="36.278576"
        x="85.25898"
@@ -323,6 +329,67 @@
   </g>
   <g
      inkscape:groupmode="layer"
+     id="layer14"
+     inkscape:label="Repair"
+     sodipodi:insensitive="true">
+    <path
+       style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 71.962318,38.015827 h 9.621705 l 1.9377,2.138157 v 9.354434 H 71.962318 Z"
+       id="rect912"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccc" />
+    <g
+       id="g923"
+       transform="matrix(0.54283611,0.56702373,-0.56702373,0.54283611,50.99979,-32.380334)">
+      <path
+         sodipodi:nodetypes="cccccccccccccc"
+         inkscape:connector-curvature="0"
+         id="path917"
+         d="m 94.4468,49.898064 c -0.598463,0.692961 -1.165428,0.692951 -1.700895,0 v -9.21317 L 90.95052,38.889508 v -2.315104 c 0.532647,-0.69798 0.880165,-0.346894 1.228423,0 v 1.653646 l 1.393785,1.393788 1.441035,-1.441035 v -1.653646 c 0.383872,-0.468687 0.805233,-0.412511 1.252048,0 v 2.409598 L 94.4468,40.708519 Z"
+         style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+      <circle
+         r="0.72612506"
+         cy="49.319286"
+         cx="93.560913"
+         id="path919"
+         style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-width:0.04153701;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer15"
+     inkscape:label="Level"
+     sodipodi:insensitive="true">
+    <path
+       sodipodi:type="star"
+       style="opacity:1;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.08627648;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path926"
+       sodipodi:sides="10"
+       sodipodi:cx="92.536667"
+       sodipodi:cy="13.799351"
+       sodipodi:r1="6.8578935"
+       sodipodi:r2="4.5763273"
+       sodipodi:arg1="1.0752447"
+       sodipodi:arg2="1.389404"
+       inkscape:flatsided="false"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="m 95.797712,19.832284 -2.435479,-1.531688 -1.733395,2.296295 -1.07004,-2.670701 -2.752074,0.838878 0.704118,-2.789596 -2.719554,-0.938962 2.209326,-1.842961 -1.648257,-2.35815 2.870647,-0.192377 0.05262,-2.876605 2.435479,1.5316881 1.733395,-2.2962943 1.07004,2.6707002 2.752073,-0.8388773 -0.704117,2.7895953 2.719554,0.938963 -2.209326,1.84296 1.648257,2.358151 -2.870647,0.192377 z"
+       inkscape:transform-center-x="4.5891563e-06" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888855px;line-height:1.25;font-family:Verdana;-inkscape-font-specification:Verdana;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#00ffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="89.438622"
+       y="17.344866"
+       id="text930"><tspan
+         sodipodi:role="line"
+         id="tspan928"
+         x="89.438622"
+         y="17.344866"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:11.28888893px;font-family:Cambria;-inkscape-font-specification:'Cambria Bold';fill:#00ffff;fill-opacity:1;stroke-width:0.26458332">L</tspan></text>
+  </g>
+  <g
+     inkscape:groupmode="layer"
      id="layer10"
      inkscape:label="MeleAttack Bot"
      sodipodi:insensitive="true"
@@ -352,7 +419,7 @@
      id="layer12"
      inkscape:label="MeleAttack Cover"
      sodipodi:insensitive="true"
-     style="display:inline">
+     style="display:none">
     <path
        style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 12.294398,38.216279 h 22.317006 l 3.665227,3.401455 -1.839668,22.590507 H 14.411065 Z"
@@ -364,7 +431,7 @@
      inkscape:groupmode="layer"
      id="layer13"
      inkscape:label="MeleAttack Icon 1"
-     style="display:inline"
+     style="display:none"
      sodipodi:insensitive="true">
     <path
        style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
