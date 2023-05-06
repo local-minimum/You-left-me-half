@@ -626,6 +626,7 @@ GameObject:
   - component: {fileID: 1346296668}
   - component: {fileID: 1346296669}
   - component: {fileID: 1346296670}
+  - component: {fileID: 7213755288295939462}
   m_Layer: 7
   m_Name: Inventory
   m_TagString: Untagged
@@ -681,6 +682,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OnlyDirectDecendants: 1
   OwnerType: 1
+--- !u!114 &7213755288295939462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1346296667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29ac123b36df5d54faf006b2773187c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allowRepeatLastLevelConditions: 1
+  xpNeededForLevel: 0a0000001e00000064000000c8000000f401000084030000
+  tokensPerLevel: 020000000300000002000000030000000200000003000000
 --- !u!1 &1407947555
 GameObject:
   m_ObjectHideFlags: 0
@@ -832,15 +848,16 @@ MonoBehaviour:
   textureProgress: {fileID: 2800000, guid: 5c7c13f61ca4f274e90e55c48b8b518f, type: 3}
   textureOverlay: {fileID: 2800000, guid: 73ac66714031bc1479a6272d85fd7ce2, type: 3}
   fillMethod: 4
-  attackRange: 1
-  minAttack: 4
-  maxAttack: 8
-  failChance: 0.05
-  critChance: 0.1
-  critFactor: 1.5
-  failFactor: 0.5
-  beforeCooldownSeconds: 0.5
-  cooldownSeconds: 1
+  attackStats:
+    attackRange: 1
+    minAttack: 4
+    maxAttack: 8
+    failChance: 0.05
+    critChance: 0.1
+    critFactor: 1.5
+    failFactor: 0.5
+    beforeCooldownSeconds: 0.5
+    cooldownSeconds: 1
 --- !u!1 &7213755286500190349
 GameObject:
   m_ObjectHideFlags: 0
@@ -973,6 +990,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8da0605e03851884b8ef65530fb6c913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  QueueMovesOnButton: 1
   forwardKey: 119
   backKey: 115
   leftKey: 97

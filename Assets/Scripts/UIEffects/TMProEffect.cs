@@ -98,7 +98,7 @@ public class TMProEffect : MonoBehaviour
         ApplyMeshManipulation(characterInfo, vertices, (pos, _) => pos + RandomOffset(wobbleMagnitude));
     }
 
-    IEnumerator<WaitForSeconds> Animate()
+    IEnumerator<WaitForSecondsRealtime> Animate()
     {
         while (true)
         {
@@ -125,7 +125,7 @@ public class TMProEffect : MonoBehaviour
                 }
                 // textGUI.UpdateVertexData(TMPro.TMP_VertexDataUpdateFlags.Colors32);
             }
-            yield return new WaitForSeconds(refreshRate);
+            yield return new WaitForSecondsRealtime(refreshRate);
         }
     }
 }
