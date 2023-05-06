@@ -64,15 +64,15 @@ public class InventoryHUD : MonoBehaviour
 
     private void InventorySlotHUD_OnClickSlot(InventorySlotHUD slot)
     {
-        // TODO This doesn't ensure token is used
-        // also state is set to free but HUD doesn't reflect it for some reason
-
-        if (inventory.RemoveOneCorruption(slot.Coordinates.XY(), () => LevelTracker.ConsumeToken(), out bool cleard))
+        if (inventory.RemoveOneCorruption(slot.Coordinates.XY(), () => LevelTracker.ConsumeToken(), out int  remaining))
         {
-            if (cleard)
+            if (remaining == 0)
             {
                 slot.State = InventorySlotHUDState.Free;
-                
+                slot.CorruptionCount = 0;
+            } else if (remaining > 0)
+            {
+                slot.CorruptionCount = remaining;
             }
         }
     }
@@ -293,12 +293,15 @@ public class InventoryHUD : MonoBehaviour
                 if (rack.Occupied[localY, x])
                 {
                     slot.State = InventorySlotHUDState.Occupied;
+                    slot.CorruptionCount = 0;
                 } else if (rack.Corruption[localY, x] > 0)
                 {
                     slot.State = InventorySlotHUDState.Corrupted;
+                    slot.CorruptionCount = rack.Corruption[localY, x];
                 } else 
                 {
                     slot.State = InventorySlotHUDState.Free;
+                    slot.CorruptionCount = 0;
                 }
 
                 SlotPosition(new Vector3Int(x, y), new RectInt(0, 0, 1, 1), slot.GetComponent<RectTransform>());

@@ -87,6 +87,18 @@ public class InventorySlotHUD : MonoBehaviour
 
     private InventorySlotHUDState state = InventorySlotHUDState.Free;
 
+    [SerializeField]
+    TMPro.TextMeshProUGUI text;
+
+    public int CorruptionCount
+    {
+        set
+        {
+            text.text = value.ToRomanNumerals();
+        }
+    }
+
+
     public InventorySlotHUDState State
     {
         get

@@ -109,12 +109,12 @@ public abstract class InventoryRack : MonoBehaviour
         }
     }
 
-    public bool ClearOneCorruption(Vector3Int coordinates, System.Func<bool> effect, out bool cleared)
+    public bool ClearOneCorruption(Vector3Int coordinates, System.Func<bool> effect, out int remaining)
     {
         var slots = TransformToInternalCoordinates(coordinates, new Vector2Int[] { Vector2Int.zero }).ToArray();
         if (slots.Length == 0)
         {
-            cleared = false;
+            remaining = -1;
             return false;
         }
         var slot = slots[0];
@@ -123,13 +123,13 @@ public abstract class InventoryRack : MonoBehaviour
             if (effect())
             {
                 Corruption[slot.y, slot.x]--;
-                cleared = Corruption[slot.y, slot.x] == 0;
+                remaining = Corruption[slot.y, slot.x];
                 return true;
             }
-            cleared = false;
+            remaining = -1;
             return false;
         }
-        cleared = false;
+        remaining = -1;
         return false;
     }
 }

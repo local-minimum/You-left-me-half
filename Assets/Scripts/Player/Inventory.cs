@@ -225,18 +225,18 @@ public class Inventory : MonoBehaviour
 
     }
 
-    public bool RemoveOneCorruption(Vector3Int coordinates, System.Func<bool> effect, out bool cleared)
+    public bool RemoveOneCorruption(Vector3Int coordinates, System.Func<bool> effect, out int remaining)
     {
         for (int i = 0, l = Racks.Count; i<l; i++)
         {
             var rack = Racks[i];
-            if (rack.ClearOneCorruption(coordinates, effect, out cleared))
+            if (rack.ClearOneCorruption(coordinates, effect, out remaining))
             {
                 return true;
             }
         }
 
-        cleared = false;
+        remaining = -1;
         return false;
     }
 
