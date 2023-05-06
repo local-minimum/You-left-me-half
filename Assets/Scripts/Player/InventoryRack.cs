@@ -108,4 +108,24 @@ public abstract class InventoryRack : MonoBehaviour
             Occupied[slot.y, slot.x] = value;
         }
     }
+
+    public bool ClearOneCorruption(Vector3Int coordinates, out bool cleared)
+    {
+        var slots = TransformToInternalCoordinates(coordinates, new Vector2Int[] { Vector2Int.zero }).ToArray();
+        if (slots.Length == 0)
+        {
+            cleared = false;
+            return false;
+        }
+        var slot = slots[0];
+        if (Corruption[slot.y, slot.x] > 0)
+        {
+            Corruption[slot.y, slot.x]--;
+            cleared = Corruption[slot.y, slot.x] == 0;
+            Debug.Log(Corruption[slot.y, slot.x]);
+            return true;
+        }
+        cleared = false;
+        return false;
+    }
 }

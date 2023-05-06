@@ -7,6 +7,7 @@ public enum InventorySlotHUDState { Corrupted, Free, Occupied };
 
 public delegate void BeginHoverSlot(InventorySlotHUD slot);
 public delegate void EndHoverSlot(InventorySlotHUD slot);
+public delegate void ClickSlot(InventorySlotHUD slot);
 public delegate void BeginDragLoot(string lootId);
 public delegate void DragLoot(string lootId);
 public delegate void EndDragLoot(string lootId);
@@ -18,6 +19,7 @@ public class InventorySlotHUD : MonoBehaviour
     public static event BeginDragLoot OnBeginDragLoot;
     public static event DragLoot OnDragLoot;
     public static event EndDragLoot OnEndDragLoot;
+    public static event ClickSlot OnClickSlot;
 
     private static string DraggedLoot { get; set; }
     public Vector2Int Coordinates { get; set; }
@@ -51,6 +53,12 @@ public class InventorySlotHUD : MonoBehaviour
 
     [SerializeField]
     Color hoverColor;
+
+    [SerializeField]
+    Color pulseColor;
+
+    [SerializeField]
+    AnimationCurve pulse;
 
     private void Start()
     {
@@ -90,6 +98,23 @@ public class InventorySlotHUD : MonoBehaviour
         {
             state = value;
             Hover = false;
+            UpdateBaseColor();
+        }
+    }
+
+    void UpdateBaseColor()
+    {
+        switch (state)
+        {
+            case InventorySlotHUDState.Free:
+                image.color = freeColor;
+                break;
+            case InventorySlotHUDState.Occupied:
+                image.color = occupiedColor;
+                break;
+            case InventorySlotHUDState.Corrupted:
+                image.color = corruptionColor;
+                break;
         }
     }
 
@@ -101,22 +126,37 @@ public class InventorySlotHUD : MonoBehaviour
             {
                 image.color = hoverColor;
             } else {
-                switch (state)
-                {
-                    case InventorySlotHUDState.Free:
-                        image.color = freeColor;
-                        break;
-                    case InventorySlotHUDState.Occupied:
-                        image.color = occupiedColor;
-                        break;
-                    case InventorySlotHUDState.Corrupted:
-                        image.color = corruptionColor;
-                        break;
-                }
+                UpdateBaseColor();
             }
         }
     }
 
+    bool pulsing = false;
+
+    public void PulseCorruption()
+    {
+        StartCoroutine(AnimatePulse(corruptionColor));
+    }
+
+    IEnumerator<WaitForSeconds> AnimatePulse(Color baseColor)
+    {
+        pulsing = true;
+        float t0 = Time.timeSinceLevelLoad;
+        while (pulsing)
+        {
+            float t = (Time.timeSinceLevelLoad - t0) % pulse.keys[pulse.keys.Length - 1].time;
+            image.color = Color.Lerp(baseColor, pulseColor, t);
+            yield return new WaitForSeconds(0.02f);
+        }
+        image.color = baseColor;
+    }
+
+    public void StopPulsing()
+    {
+        pulsing = false;
+    }
+
+    public bool Pulsing { get => pulsing; }
 
     public void OnPointerEnter()
     {
@@ -142,6 +182,11 @@ public class InventorySlotHUD : MonoBehaviour
     public void OnDrag()
     {
         if (DraggedLoot == LootId && LootId != null) OnDragLoot?.Invoke(DraggedLoot);
+    }
+
+    public void OnClick()
+    {
+        if (DraggedLoot == null) OnClickSlot?.Invoke(this);
     }
 
     public void OnDragEnd()

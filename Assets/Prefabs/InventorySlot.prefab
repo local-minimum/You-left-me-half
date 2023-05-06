@@ -95,6 +95,31 @@ MonoBehaviour:
   freeColor: {r: 0.990566, g: 0.990566, b: 0.990566, a: 0.34901962}
   occupiedColor: {r: 0.34718758, g: 0.8867924, b: 0.8478719, a: 0.34901962}
   hoverColor: {r: 0.9150943, g: 0.64315593, b: 0.7871574, a: 0.5019608}
+  pulseColor: {r: 0.9528302, g: 0.8428961, b: 0.23820755, a: 0.8784314}
+  pulse:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.5
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &8704608875920758817
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -179,6 +204,22 @@ MonoBehaviour:
         - m_Target: {fileID: 1775396644917281067}
           m_TargetAssemblyTypeName: InventorySlotHUD, Assembly-CSharp
           m_MethodName: OnDrag
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 4
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1775396644917281067}
+          m_TargetAssemblyTypeName: InventorySlotHUD, Assembly-CSharp
+          m_MethodName: OnClick
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}

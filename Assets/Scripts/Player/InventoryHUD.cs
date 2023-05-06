@@ -4,9 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 
+public delegate void ClearCorruption(Vector2Int coordinates);
 
 public class InventoryHUD : MonoBehaviour
 {
+    public static event ClearCorruption OnClearCorruption;
+
     public static InventoryHUD instance { get; private set; }
 
     Dictionary<string, Lootable> Loots = new Dictionary<string, Lootable>();
@@ -14,6 +17,9 @@ public class InventoryHUD : MonoBehaviour
 
     [SerializeField]
     InventorySlotHUD slotPrefab;
+
+    [SerializeField]
+    Inventory inventory;
 
     Dictionary<Vector2Int, InventorySlotHUD> Slots = new Dictionary<Vector2Int, InventorySlotHUD>();
 
@@ -40,6 +46,7 @@ public class InventoryHUD : MonoBehaviour
         InventorySlotHUD.OnBeginDragLoot += InventorySlotHUD_OnBeginDragLoot;
         InventorySlotHUD.OnDragLoot += InventorySlotHUD_OnDragLoot;
         InventorySlotHUD.OnEndDragLoot += InventorySlotHUD_OnEndDragLoot;
+        InventorySlotHUD.OnClickSlot += InventorySlotHUD_OnClickSlot;
         MasterOfEndings.OnEnding += MasterOfEndings_OnEnding;
     }
 
@@ -51,7 +58,23 @@ public class InventoryHUD : MonoBehaviour
         InventorySlotHUD.OnBeginDragLoot -= InventorySlotHUD_OnBeginDragLoot;
         InventorySlotHUD.OnDragLoot -= InventorySlotHUD_OnDragLoot;
         InventorySlotHUD.OnEndDragLoot -= InventorySlotHUD_OnEndDragLoot;
+        InventorySlotHUD.OnClickSlot -= InventorySlotHUD_OnClickSlot;
         MasterOfEndings.OnEnding -= MasterOfEndings_OnEnding;
+    }
+
+    private void InventorySlotHUD_OnClickSlot(InventorySlotHUD slot)
+    {
+        // TODO This doesn't ensure token is used
+        // also state is set to free but HUD doesn't reflect it for some reason
+
+        if (LevelTracker.ConsumeToken(1) && inventory.RemoveOneCorruption(slot.Coordinates.XY(), out bool cleard))
+        {
+            if (cleard)
+            {
+                slot.State = InventorySlotHUDState.Free;
+                
+            }
+        }
     }
 
     private void MasterOfEndings_OnEnding(EndingType type, Ending ending)
@@ -84,7 +107,7 @@ public class InventoryHUD : MonoBehaviour
         if (dragged != null)
         {
             var slotsOffset = hoverSlot - dragSlotStart;
-            ApplyOverInventorySlots(dragged, coordinates =>
+            ApplyOverLootSlots(dragged, coordinates =>
             {
                 var offsetCoordinates = coordinates + slotsOffset;
                 if (Slots.ContainsKey(offsetCoordinates))
@@ -113,7 +136,12 @@ public class InventoryHUD : MonoBehaviour
         }
     }
 
-    void ApplyOverInventorySlots(string lootId, System.Action<Vector2Int> action)
+    /// <summary>
+    /// Invokes an action over all slots occupied by an inventory loot
+    /// </summary>
+    /// <param name="lootId">The loot in question</param>
+    /// <param name="action">The action to perform</param>
+    void ApplyOverLootSlots(string lootId, System.Action<Vector2Int> action)
     {
         var coordinates = Loots[lootId].InventorySlots().ToArray();
         for (int i = 0; i < coordinates.Length; i++)
@@ -129,7 +157,7 @@ public class InventoryHUD : MonoBehaviour
         if (dragged != null)
         {
             var slotsOffset = slot.Coordinates - dragSlotStart;
-            ApplyOverInventorySlots(dragged, coordinates => {
+            ApplyOverLootSlots(dragged, coordinates => {
                 var offsetCoordinates = coordinates + slotsOffset;
                 if (Slots.ContainsKey(offsetCoordinates))
                 {
@@ -139,7 +167,10 @@ public class InventoryHUD : MonoBehaviour
         }
         else if (slot.LootId != null)
         {
-            ApplyOverInventorySlots(slot.LootId, coordinates => { Slots[coordinates].Hover = true; });
+            ApplyOverLootSlots(slot.LootId, coordinates => { Slots[coordinates].Hover = true; });
+        } else if (slot.State == InventorySlotHUDState.Corrupted && LevelTracker.Tokens > 0)
+        {
+            slot.PulseCorruption();
         }
     }
 
@@ -149,7 +180,7 @@ public class InventoryHUD : MonoBehaviour
         if (dragged != null)
         {
             var slotsOffset = slot.Coordinates - dragSlotStart;
-            ApplyOverInventorySlots(dragged, coordinates => {
+            ApplyOverLootSlots(dragged, coordinates => {
                 var offsetCoordinates = coordinates + slotsOffset;
                 if (Slots.ContainsKey(offsetCoordinates))
                 {
@@ -159,7 +190,10 @@ public class InventoryHUD : MonoBehaviour
         }
         else if (slot.LootId != null)
         {
-            ApplyOverInventorySlots(slot.LootId, coordinates => { Slots[coordinates].Hover = false; });
+            ApplyOverLootSlots(slot.LootId, coordinates => { Slots[coordinates].Hover = false; });
+        } else if (slot.Pulsing)
+        {
+            slot.StopPulsing();
         }
     }
 

@@ -225,6 +225,21 @@ public class Inventory : MonoBehaviour
 
     }
 
+    public bool RemoveOneCorruption(Vector3Int coordinates, out bool cleared)
+    {
+        for (int i = 0, l = Racks.Count; i<l; i++)
+        {
+            var rack = Racks[i];
+            if (rack.ClearOneCorruption(coordinates, out cleared))
+            {
+                return true;
+            }
+        }
+
+        cleared = false;
+        return false;
+    }
+
     public bool Has(System.Func<Lootable, bool> predicate, out Lootable loot)
     {
         loot = Loots.Where(predicate).FirstOrDefault();

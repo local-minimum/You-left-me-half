@@ -14,7 +14,7 @@ public class LevelTracker : MonoBehaviour
     bool allowRepeatLastLevelConditions = true;
 
     int level;
-    int tokens;
+    int tokens = 1;
 
     [SerializeField]
     int[] xpNeededForLevel;
@@ -37,6 +37,8 @@ public class LevelTracker : MonoBehaviour
         return false;
     }
 
+    public static int Tokens { get => instance.tokens;  }
+
     private void Awake()
     {
         if (instance == null) { instance = this; }
@@ -46,6 +48,8 @@ public class LevelTracker : MonoBehaviour
     private void Start()
     {
         inventory = GetComponent<Inventory>();
+        if (tokens > 0) OnLevelTokenChange?.Invoke(tokens);
+        if (level > 0) OnLevelUp?.Invoke(level + 1);
     }
 
     private void OnEnable()

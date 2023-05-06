@@ -7692,6 +7692,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotPrefab: {fileID: 1775396644917281067, guid: df4cd4c0ec21cb0498a676975571edb4, type: 3}
+  inventory: {fileID: 7213755288295939465}
 --- !u!1 &1723078669
 GameObject:
   m_ObjectHideFlags: 0
@@ -8212,3 +8213,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5b4d966a1ab203d43b9e8f5ef6d8a1d0, type: 3}
+--- !u!114 &7213755288295939465 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1346296669, guid: 5b4d966a1ab203d43b9e8f5ef6d8a1d0, type: 3}
+  m_PrefabInstance: {fileID: 7213755288295939460}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0ce2d4bc0419c44f9ca1c61da0880a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
