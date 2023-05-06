@@ -225,12 +225,12 @@ public class Inventory : MonoBehaviour
 
     }
 
-    public bool RemoveOneCorruption(Vector3Int coordinates, out bool cleared)
+    public bool RemoveOneCorruption(Vector3Int coordinates, System.Func<bool> effect, out bool cleared)
     {
         for (int i = 0, l = Racks.Count; i<l; i++)
         {
             var rack = Racks[i];
-            if (rack.ClearOneCorruption(coordinates, out cleared))
+            if (rack.ClearOneCorruption(coordinates, effect, out cleared))
             {
                 return true;
             }

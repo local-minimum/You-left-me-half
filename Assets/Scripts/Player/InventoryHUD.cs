@@ -67,7 +67,7 @@ public class InventoryHUD : MonoBehaviour
         // TODO This doesn't ensure token is used
         // also state is set to free but HUD doesn't reflect it for some reason
 
-        if (LevelTracker.ConsumeToken(1) && inventory.RemoveOneCorruption(slot.Coordinates.XY(), out bool cleard))
+        if (inventory.RemoveOneCorruption(slot.Coordinates.XY(), () => LevelTracker.ConsumeToken(), out bool cleard))
         {
             if (cleard)
             {

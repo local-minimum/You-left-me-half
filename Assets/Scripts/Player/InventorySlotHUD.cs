@@ -96,13 +96,18 @@ public class InventorySlotHUD : MonoBehaviour
 
         set
         {
+            if (state == InventorySlotHUDState.Corrupted && value != InventorySlotHUDState.Corrupted && pulsing)
+            {
+                StopPulsing();
+            }
             state = value;
             Hover = false;
-            UpdateBaseColor();
+            
+            SetBaseColor();
         }
     }
 
-    void UpdateBaseColor()
+    void SetBaseColor()
     {
         switch (state)
         {
@@ -126,7 +131,7 @@ public class InventorySlotHUD : MonoBehaviour
             {
                 image.color = hoverColor;
             } else {
-                UpdateBaseColor();
+                SetBaseColor();
             }
         }
     }
@@ -148,7 +153,7 @@ public class InventorySlotHUD : MonoBehaviour
             image.color = Color.Lerp(baseColor, pulseColor, t);
             yield return new WaitForSeconds(0.02f);
         }
-        image.color = baseColor;
+        SetBaseColor();
     }
 
     public void StopPulsing()
