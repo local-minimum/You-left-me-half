@@ -58,7 +58,7 @@ public class PlayerController : MonoBehaviour
     private void MovableEntity_OnMove(string id, Vector3Int position, CardinalDirection lookDirection)
     {
         Position = position;
-        transform.position = Level.AsWorldPosition(position);
+        transform.position = Level.instance.AsWorldPosition(position);
         transform.rotation = Quaternion.LookRotation(lookDirection.AsVector());
     }
 

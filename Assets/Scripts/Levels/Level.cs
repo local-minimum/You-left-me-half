@@ -2,8 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using DeCrawl.Utils;
 using DeCrawl.Primitives;
+using DeCrawl.World;
 
-abstract public class Level : MonoBehaviour
+abstract public class Level : MonoBehaviour, ILevel<GridEntity, bool>
 {
     public static int GridScale = 3;
 
@@ -181,7 +182,8 @@ abstract public class Level : MonoBehaviour
         return !(position.z < 0 || position.z >= maxZ || position.x < 0 || position.x >= maxX);
     }
 
-    public bool ClaimPosition(GridEntity entity, Vector3Int position, bool allowVirtualPositions, bool allowOutOfBounds = false)
+    public bool ClaimPosition(GridEntity entity, Vector3Int position, bool allowVirtualPositions) => ClaimPosition(entity, position, allowVirtualPositions, false);
+    public bool ClaimPosition(GridEntity entity, Vector3Int position, bool allowVirtualPositions, bool allowOutOfBounds)
     {
         if (!IsValidPosition(position)) return false;
 
@@ -241,8 +243,8 @@ abstract public class Level : MonoBehaviour
         return false;
     }
 
-    public static Vector3Int AsWorldPosition(Vector3Int gridPosition) => gridPosition * GridScale;
-    public static Vector3Int AsGridPosition(Vector3 worldPosition) => new Vector3Int(Mathf.FloorToInt(worldPosition.x / GridScale), 0, Mathf.FloorToInt(worldPosition.z / GridScale));
+    public Vector3Int AsWorldPosition(Vector3Int gridPosition) => gridPosition * GridScale;
+    public Vector3Int AsGridPosition(Vector3 worldPosition) => new Vector3Int(Mathf.FloorToInt(worldPosition.x / GridScale), 0, Mathf.FloorToInt(worldPosition.z / GridScale));
 
     private static Level _instance;
     public static Level instance { 

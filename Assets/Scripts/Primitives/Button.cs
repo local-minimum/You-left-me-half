@@ -32,7 +32,7 @@ public class Button : WorldClickable
 
     Vector3Int GridPosition
     {
-        get => Level.AsGridPosition(GridSwapPosition.position);
+        get => Level.instance.AsGridPosition(GridSwapPosition.position);
     }
 
     void UpdateDoor() => UpdateDoor(GridPosition);

@@ -65,8 +65,8 @@ public class MovingEntity : IdentifiableEntity
 
     public void SetNewGridPosition(Vector3Int position, CardinalDirection lookDirection)
     {
-        this.Position = position;
-        this.LookDirection = lookDirection;
+        Position = position;
+        LookDirection = lookDirection;
         OnMove?.Invoke(Id, position, lookDirection);
     }
 
@@ -128,7 +128,7 @@ public class MovingEntity : IdentifiableEntity
                     Level.instance.ReleasePosition(entity, Position);
                 }
 
-                Vector3 target = Level.AsWorldPosition(gridTarget);
+                Vector3 target = Level.instance.AsWorldPosition(gridTarget);
 
                 System.Action<float> interpolate = (float progress) => { transform.position = Vector3.Lerp(origin, target, progress); };
                 System.Action onDone = () => {

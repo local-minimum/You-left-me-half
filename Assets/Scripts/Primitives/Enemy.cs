@@ -63,7 +63,7 @@ public class Enemy : MonoBehaviour
     private void Start()
     {
         movable = GetComponent<MovingEntity>();
-        movable.SetNewGridPosition(Level.AsGridPosition(transform.position), transform.forward.AsDirection());
+        movable.SetNewGridPosition(Level.instance.AsGridPosition(transform.position), transform.forward.AsDirection());
         activePattern = RandomPattern;
         if (!(activePattern?.Play() ?? false))
         {

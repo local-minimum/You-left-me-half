@@ -37,7 +37,7 @@ public class GriddedEntity : MonoBehaviour
     {
         if (!Application.isPlaying)
         {
-            transform.position = Level.AsWorldPosition(gridPosition);
+            transform.position = Level.instance.AsWorldPosition(gridPosition);
         }
     }
 
