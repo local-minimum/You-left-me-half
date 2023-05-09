@@ -1,6 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using DeCrawl.Utils;
 
 public class Retreat : EnemyPattern
 {
@@ -62,7 +61,7 @@ public class Retreat : EnemyPattern
 
         var nextPosition = retreatPath[pathIndex + 1];
 
-        var neededDirection = nextPosition.Subtract(movable.Position).XZVector3().AsDirection();
+        var neededDirection = nextPosition.Subtract(movable.Position).XZVector3Int().AsDirection();
         
         if (neededDirection != movable.LookDirection)
         {

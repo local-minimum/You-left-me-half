@@ -1,6 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DeCrawl.Utils;
 
 public class Rush : EnemyPattern
 {
@@ -30,8 +30,8 @@ public class Rush : EnemyPattern
             return false;
         }
 
-        var eligable = GraphSearch.LineSearch(
-            new GraphSearch.LineSearchParameters(
+        var eligable = LineSearch.Search(
+            new LineSearch.SearchParameters(
                 movable.Position.XZTuple(),
                 Level.instance.PlayerPosition,
                 (coords) =>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using DeCrawl.Utils;
 
 public delegate void ClearCorruption(Vector2Int coordinates);
 
@@ -67,7 +68,7 @@ public class InventoryHUD : MonoBehaviour
         if (
             inventory.Repairs > 0 && 
             inventory.RemoveOneCorruption(
-                slot.Coordinates.XY(), 
+                slot.Coordinates.XYVector3Int(), 
                 () => { 
                     if (inventory.Has(l => l.GetType() == typeof(Repair), out Lootable repair)) {
                         repair.Loot(LootOwner.None);
@@ -142,8 +143,8 @@ public class InventoryHUD : MonoBehaviour
             return;
         }
 
-        var newSlot = loot.Coordinates.XY() + (hoverSlot - dragSlotStart);
-        if (!loot.Loot(LootOwner.Player, newSlot.XY()))
+        var newSlot = loot.Coordinates.XYVector2Int() + (hoverSlot - dragSlotStart);
+        if (!loot.Loot(LootOwner.Player, newSlot.XYVector3Int()))
         {            
             SlotPosition(loot.Coordinates, loot.UIShape, rt);
         }

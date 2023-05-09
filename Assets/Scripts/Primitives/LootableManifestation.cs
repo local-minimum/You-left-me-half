@@ -1,6 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using DeCrawl.Utils;
 
 public class LootableManifestation : WorldClickable
 {
@@ -15,7 +13,7 @@ public class LootableManifestation : WorldClickable
 
     protected override bool RefuseClick() =>
         lootable.Owner != LootOwner.Level ||
-        (PlayerController.instance.Position - lootable.Coordinates).CheckerDitsance() > 1;
+        (PlayerController.instance.Position - lootable.Coordinates).CheckerMagnitude() > 1;
 
     protected override void OnClick()
     {

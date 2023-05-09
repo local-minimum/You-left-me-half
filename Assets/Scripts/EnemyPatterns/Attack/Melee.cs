@@ -1,6 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DeCrawl.Utils;
 
 public class Melee : EnemyPattern
 {
@@ -17,8 +17,8 @@ public class Melee : EnemyPattern
             if (offset.AsDirection() != movable.LookDirection) return false;
             if (reach == 1) return true;
 
-            return GraphSearch.LineSearch(
-                new GraphSearch.LineSearchParameters(
+            return LineSearch.Search(
+                new LineSearch.SearchParameters(
                     movable.Position.XZTuple(),
                     Level.instance.PlayerPosition,
                     (coords) =>

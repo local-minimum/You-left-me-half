@@ -1,7 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using DeCrawl.Utils;
 
 public delegate void AttackPlayer(AttackMode mode, int amount);
 public delegate void KillEnemy(Enemy enemy);

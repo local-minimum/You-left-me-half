@@ -1,4 +1,6 @@
-﻿public enum GridEntity
+﻿using DeCrawl.Utils;
+
+public enum GridEntity
 {        
     None,
     [StringValue("Pp")]

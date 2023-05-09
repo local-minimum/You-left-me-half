@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
+using DeCrawl.Utils;
 
 abstract public class Level : MonoBehaviour
 {
@@ -342,7 +342,7 @@ abstract public class Level : MonoBehaviour
         out List<(int, int)> path
     )
     {
-        var searchParameters = new GraphSearch.SearchParameters(
+        var searchParameters = new AStarSearch.SearchParameters(
             origin,
             target,
             CreateMapFilter((coords) => permissablePredicate(GridBaseStatus(coords))),
@@ -361,7 +361,7 @@ abstract public class Level : MonoBehaviour
         }
         */
 
-        return GraphSearch.AStarSearch(searchParameters, out path);
+        return AStarSearch.Search(searchParameters, out path);
     }
 
 }

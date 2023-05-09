@@ -3,7 +3,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 
-namespace CompressString
+namespace DeCrawl.Utils
 {
     internal static class StringCompressor
     {
@@ -11,7 +11,7 @@ namespace CompressString
         /// Compresses the string.
         /// </summary>
         /// <param name="text">The text.</param>
-        /// <returns></returns>
+        /// <returns>Compressed text</returns>
         public static string CompressString(string text)
         {
             byte[] buffer = Encoding.UTF8.GetBytes(text);
@@ -36,7 +36,7 @@ namespace CompressString
         /// Decompresses the string.
         /// </summary>
         /// <param name="compressedText">The compressed text.</param>
-        /// <returns></returns>
+        /// <returns>Decompressed string</returns>
         public static string DecompressString(string compressedText)
         {
             byte[] gZipBuffer = Convert.FromBase64String(compressedText);

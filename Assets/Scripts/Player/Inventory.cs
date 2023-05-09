@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using DeCrawl.Utils;
 
 public enum InventoryEvent { PickUp, Drop, Move };
 
@@ -74,7 +75,7 @@ public class Inventory : MonoBehaviour
 
         int shapeHeight = loot.InventoryShape.Max(offset => offset.y) + 1;
         var inventorySlots = loot.InventorySlots();
-        var originXY = origin.XY();
+        var originXY = origin.XYVector2Int();
 
         if (MaxRowForShape(shapeHeight) < origin.y) return false;
 
@@ -100,7 +101,7 @@ public class Inventory : MonoBehaviour
             for (var x = 0; x<RackWidth; x++)
             {
                 var anchor = new Vector3Int(x, y);
-                var anchorXY = anchor.XY();
+                var anchorXY = anchor.XYVector2Int();
 
                 if (Racks.All(rack => {
                     if (rack.IsOutsideRack(anchor, shapeHeight)) return true;

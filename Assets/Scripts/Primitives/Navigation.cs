@@ -1,4 +1,6 @@
-﻿public enum Navigation
+﻿using DeCrawl.Utils;
+
+public enum Navigation
 {
     [StringValue("forward")]
     Forward,
