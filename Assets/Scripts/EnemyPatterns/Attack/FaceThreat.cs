@@ -1,6 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DeCrawl.Primitives;
 
 public class FaceThreat : EnemyPattern
 {
@@ -18,7 +18,7 @@ public class FaceThreat : EnemyPattern
 
     float nextTurn = 0f;
 
-    FaceDirection FacePlayer
+    CardinalDirection FacePlayer
     {
         get
         {

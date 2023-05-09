@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
+using DeCrawl.Primitives;
 
 /// <summary>
 /// Utility class for things that exists on the level grid
@@ -29,7 +27,7 @@ public class GriddedEntity : MonoBehaviour
         }
     }
 
-    private void GriddedEntity_OnMove(string id, Vector3Int position, FaceDirection lookDirection)
+    private void GriddedEntity_OnMove(string id, Vector3Int position, CardinalDirection lookDirection)
     {
         gridPosition = position;
     }

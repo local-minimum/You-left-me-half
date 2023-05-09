@@ -1,7 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using DeCrawl.Primitives;
 
 public class LootEventArgs: System.EventArgs
 {
@@ -28,27 +28,16 @@ public delegate void  LootEvent(Lootable loot, LootEventArgs args);
 
 public enum LootOwner { None, Player, Level };
 
-public class Lootable : MonoBehaviour
+public class Lootable : IdentifiableEntity
 {
     public static event LootEvent OnLoot;
 
     private LootableManifestation manifestation;
-
-    [SerializeField, Tooltip("Leave empty to use game object name")]
-    string id;
-
-    public string Id
-    {
-        get
-        {
-            return string.IsNullOrEmpty(id) ? name : id;
-        }
-    }
     
     public Vector3Int Coordinates { get; set; }
     public LootOwner Owner { get; set; }
 
-    public FaceDirection ManifestSide { get; set; }
+    public CardinalDirection ManifestSide { get; set; }
 
     [SerializeField]
     public Vector2Int[] InventoryShape;

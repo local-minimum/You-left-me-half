@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using DeCrawl.Primitives;
 
 
 public delegate void HitPlayer(int amount);
@@ -61,9 +62,9 @@ public class BattleMaster : MonoBehaviour
     }
 
     Vector3Int playerPosition;
-    FaceDirection playerLookDirection;
+    CardinalDirection playerLookDirection;
 
-    private void PlayerController_OnPlayerMove(Vector3Int position, FaceDirection lookDirection)
+    private void PlayerController_OnPlayerMove(Vector3Int position, CardinalDirection lookDirection)
     {
         playerPosition = position;
         playerLookDirection = lookDirection;

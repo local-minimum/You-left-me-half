@@ -1,4 +1,5 @@
 ﻿using DeCrawl.Utils;
+using DeCrawl.Primitives;
 
 public enum Navigation
 {
@@ -33,7 +34,7 @@ public static class NavigationExtensions
 
     public static bool Rotates(this Navigation navigation) => navigation == Navigation.TurnCW || navigation == Navigation.TurnCCW || navigation == Navigation.Turn180;
 
-    public static FaceDirection asDirection(this Navigation navigation, FaceDirection lookDirection)
+    public static CardinalDirection asDirection(this Navigation navigation, CardinalDirection lookDirection)
     {
         switch (navigation)
         {
@@ -48,9 +49,9 @@ public static class NavigationExtensions
         }
     }
 
-    public static Navigation FromToRotation(FaceDirection from, FaceDirection to)
+    public static Navigation FromToRotation(CardinalDirection from, CardinalDirection to)
     {
-        if (from == FaceDirection.Invalid || to == FaceDirection.Invalid || from == to) return Navigation.None;
+        if (from == CardinalDirection.Invalid || to == CardinalDirection.Invalid || from == to) return Navigation.None;
 
         if (from.RotateCW() == to) return Navigation.TurnCW;
         var ccwFrom = from.RotateCCW();

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using DeCrawl.Utils;
+using DeCrawl.Primitives;
 
 public class Retreat : EnemyPattern
 {

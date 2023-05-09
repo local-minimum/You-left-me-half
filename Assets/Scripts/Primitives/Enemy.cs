@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using DeCrawl.Utils;
+using DeCrawl.Primitives;
 
 public delegate void AttackPlayer(AttackMode mode, int amount);
 public delegate void KillEnemy(Enemy enemy);
@@ -84,13 +85,13 @@ public class Enemy : MonoBehaviour
             
     }
 
-    bool DirectionTo((int, int) coords, out FaceDirection direction)
+    bool DirectionTo((int, int) coords, out CardinalDirection direction)
     {
         var offset = new Vector3Int(coords.Item1, 0, coords.Item2) - movable.Position;
 
         if ((offset.x == 0) == (offset.z == 0))
         {
-            direction = FaceDirection.Down;
+            direction = CardinalDirection.Down;
             return false;
         }
 
@@ -118,7 +119,7 @@ public class Enemy : MonoBehaviour
 
         var isLOS = (path.GroupBy(coords => coords.Item1).Count() == 1 || path.GroupBy(coords => coords.Item2).Count() == 1) &&
             path.All(coords => {
-                if (DirectionTo(coords, out FaceDirection dir)) {
+                if (DirectionTo(coords, out CardinalDirection dir)) {
                     return dir == movable.LookDirection;
                 } 
                 return false; 

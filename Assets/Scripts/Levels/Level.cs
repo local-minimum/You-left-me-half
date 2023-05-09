@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DeCrawl.Utils;
+using DeCrawl.Primitives;
 
 abstract public class Level : MonoBehaviour
 {
@@ -46,7 +47,7 @@ abstract public class Level : MonoBehaviour
 
     (int, int) GridShape => (grid.GetLength(0), grid.GetLength(1));
 
-    public FaceDirection PlayerSpawnDirection;
+    public CardinalDirection PlayerSpawnDirection;
 
     private char getChar(int x, int z) => charGrid[charGrid.Length - z - 1][x];
 
@@ -281,9 +282,9 @@ abstract public class Level : MonoBehaviour
         PlayerController.OnPlayerMove -= PlayerController_OnPlayerMove;
     }
 
-    FaceDirection playerLookDirection;
+    CardinalDirection playerLookDirection;
 
-    private void PlayerController_OnPlayerMove(Vector3Int position, FaceDirection lookDirection)
+    private void PlayerController_OnPlayerMove(Vector3Int position, CardinalDirection lookDirection)
     {
         playerLookDirection = lookDirection;
     }

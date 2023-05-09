@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using DeCrawl.Primitives;
 
 public class Sentry : EnemyPattern
 {
@@ -15,7 +16,7 @@ public class Sentry : EnemyPattern
     Vector3Int sentryPosition;
 
     [SerializeField]
-    private FaceDirection[] LookDirections;
+    private CardinalDirection[] LookDirections;
 
     [SerializeField]
     float minLookTime = 1;
@@ -45,7 +46,7 @@ public class Sentry : EnemyPattern
         }
     }
 
-    private void Sentry_OnMove(string id, Vector3Int position, FaceDirection lookDirection)
+    private void Sentry_OnMove(string id, Vector3Int position, CardinalDirection lookDirection)
     {
         sentryPosition = position;
         if (!dynamicSentryPos)

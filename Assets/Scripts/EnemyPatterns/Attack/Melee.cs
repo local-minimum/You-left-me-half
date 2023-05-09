@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DeCrawl.Utils;
+using DeCrawl.Primitives;
 
 public class Melee : EnemyPattern
 {

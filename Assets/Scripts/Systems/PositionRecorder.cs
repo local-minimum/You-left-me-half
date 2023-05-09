@@ -1,8 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using DeCrawl.Utils;
+using DeCrawl.Primitives;
 
 public class PositionRecorder : MonoBehaviour, StateSaver
 {
@@ -23,9 +23,9 @@ public class PositionRecorder : MonoBehaviour, StateSaver
     {
         public string id;
         public Vector3Int position;
-        public FaceDirection lookDirection;
+        public CardinalDirection lookDirection;
 
-        public PositionRecordDto(string id, Vector3Int position, FaceDirection lookDirection)
+        public PositionRecordDto(string id, Vector3Int position, CardinalDirection lookDirection)
         {
             this.id = id;
             this.position = position;
@@ -34,7 +34,7 @@ public class PositionRecorder : MonoBehaviour, StateSaver
     }
 
     Dictionary<string, Vector3Int> positions = new Dictionary<string, Vector3Int>();
-    Dictionary<string, FaceDirection> lookDirections = new Dictionary<string, FaceDirection>();
+    Dictionary<string, CardinalDirection> lookDirections = new Dictionary<string, CardinalDirection>();
     bool listening = true;
 
     public static PositionRecorder instance { get; private set; }
@@ -71,7 +71,7 @@ public class PositionRecorder : MonoBehaviour, StateSaver
         }
     }
 
-    private void PositionRecorder_OnMove(string id, Vector3Int position, FaceDirection lookDirection)
+    private void PositionRecorder_OnMove(string id, Vector3Int position, CardinalDirection lookDirection)
     {
         if (!listening) return;
 

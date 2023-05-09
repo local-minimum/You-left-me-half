@@ -1,4 +1,6 @@
-﻿public class NullableItem<T>
+﻿using DeCrawl.Primitives;
+
+public class NullableItem<T>
 {
     private bool itemSet = false;
     private T item;

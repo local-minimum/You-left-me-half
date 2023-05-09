@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DeCrawl.Primitives;
 
-public delegate void PlayerMove(Vector3Int position, FaceDirection lookDirection);
+public delegate void PlayerMove(Vector3Int position, CardinalDirection lookDirection);
 
 public class PlayerController : MonoBehaviour
 {
@@ -54,7 +55,7 @@ public class PlayerController : MonoBehaviour
         movableEntity.OnMove -= MovableEntity_OnMove;
     }
 
-    private void MovableEntity_OnMove(string id, Vector3Int position, FaceDirection lookDirection)
+    private void MovableEntity_OnMove(string id, Vector3Int position, CardinalDirection lookDirection)
     {
         Position = position;
         transform.position = Level.AsWorldPosition(position);

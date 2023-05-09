@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using DeCrawl.Utils;
+using DeCrawl.Primitives;
 
 public enum InventoryEvent { PickUp, Drop, Move };
 
@@ -59,7 +60,7 @@ public class Inventory : MonoBehaviour
     }
 
     private Vector3Int playerPosition;
-    private void PlayerController_OnPlayerMove(Vector3Int position, FaceDirection lookDirection)
+    private void PlayerController_OnPlayerMove(Vector3Int position, CardinalDirection lookDirection)
     {
         playerPosition = position;
     }

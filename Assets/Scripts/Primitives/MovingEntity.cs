@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using DeCrawl.Primitives;
 
 public struct NavInstructions
 {
@@ -10,14 +9,14 @@ public struct NavInstructions
     public System.Action OnDone;
     public float duration;
     public Vector3Int targetPosition;
-    public FaceDirection targetLookDirection;
+    public CardinalDirection targetLookDirection;
 
     public NavInstructions(
         System.Action<float> interpolate, 
         System.Action onDone, 
         float duration, 
         Vector3Int targetPosition,
-        FaceDirection targetLookDirection
+        CardinalDirection targetLookDirection
     )
     {
         enabled = true;
@@ -52,7 +51,7 @@ public struct NavInstructions
 }
 
 
-public delegate void MoveEvent(string id, Vector3Int position, FaceDirection lookDirection);
+public delegate void MoveEvent(string id, Vector3Int position, CardinalDirection lookDirection);
 
 /// <summary>
 /// Component for all things moving about on a level grid
@@ -73,9 +72,9 @@ public class MovingEntity : MonoBehaviour
     }
 
     public Vector3Int Position { get; private set; }
-    public FaceDirection LookDirection { get; private set; }
+    public CardinalDirection LookDirection { get; private set; }
 
-    public void SetNewGridPosition(Vector3Int position, FaceDirection lookDirection)
+    public void SetNewGridPosition(Vector3Int position, CardinalDirection lookDirection)
     {
         this.Position = position;
         this.LookDirection = lookDirection;
@@ -124,7 +123,7 @@ public class MovingEntity : MonoBehaviour
         Navigation nav,
         float moveTime, 
         float turnTime,
-        System.Action<Vector3Int, FaceDirection> onComplete,
+        System.Action<Vector3Int, CardinalDirection> onComplete,
         bool allowEnterVirtualSpaces
     )
     {
