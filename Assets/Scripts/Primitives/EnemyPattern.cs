@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DeCrawl.World;
 
 public abstract class EnemyPattern : MonoBehaviour
 {
