@@ -56,20 +56,9 @@ public delegate void MoveEvent(string id, Vector3Int position, CardinalDirection
 /// <summary>
 /// Component for all things moving about on a level grid
 /// </summary>
-public class MovingEntity : MonoBehaviour
+public class MovingEntity : IdentifiableEntity
 {
-    [SerializeField, Tooltip("Leave empty to use game object name")]
-    string id;
-
     public event MoveEvent OnMove;
-
-    public string Id
-    {
-        get
-        {
-            return string.IsNullOrEmpty(id) ? name : id;
-        }
-    }
 
     public Vector3Int Position { get; private set; }
     public CardinalDirection LookDirection { get; private set; }
@@ -163,7 +152,7 @@ public class MovingEntity : MonoBehaviour
         {
             Quaternion originRotation = transform.rotation;
 
-            var targetLookDirection = nav.asDirection(LookDirection);
+            var targetLookDirection = nav.AsDirection(LookDirection);
             var targetRotation = targetLookDirection.AsRotation();
 
             System.Action<float> interpolate = (float progress) => { transform.rotation = Quaternion.Lerp(originRotation, targetRotation, progress); };
