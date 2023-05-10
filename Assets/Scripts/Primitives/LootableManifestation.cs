@@ -8,6 +8,17 @@ public class LootableManifestation : WorldClickable
     private void Awake()
     {
         lootable = GetComponentInParent<Lootable>();
+        lootable.OnManifestChange += Lootable_OnManifestChange;
+    }
+
+    private void OnDestroy()
+    {
+        lootable.OnManifestChange -= Lootable_OnManifestChange;
+    }
+
+    private void Lootable_OnManifestChange(bool visible)
+    {
+        gameObject.SetActive(visible);
     }
 
     protected override bool PreClickCheckRefusal() => !lootable.enabled;

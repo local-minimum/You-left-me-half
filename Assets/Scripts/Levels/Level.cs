@@ -48,7 +48,11 @@ abstract public class Level : MonoBehaviour, ILevel<GridEntity, bool>
 
     (int, int) GridShape => (grid.GetLength(0), grid.GetLength(1));
 
-    public CardinalDirection PlayerSpawnDirection;
+    [SerializeField]
+    private CardinalDirection playerFirstSpawnDirection;
+
+    public CardinalDirection PlayerFirstSpawnDirection => playerFirstSpawnDirection;
+
 
     private char getChar(int x, int z) => charGrid[charGrid.Length - z - 1][x];
 

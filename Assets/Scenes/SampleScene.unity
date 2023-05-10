@@ -1087,7 +1087,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7602a30e0ed3164abb3e53f6be515b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerSpawnDirection: 1
+  playerFirstSpawnDirection: 1
 --- !u!114 &556127345
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1875,7 +1875,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 724217e690c64c249b57d39309f9db26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 
+  overrideNameId: 
 --- !u!4 &1189414891
 Transform:
   m_ObjectHideFlags: 0

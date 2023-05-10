@@ -2,6 +2,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using DeCrawl.Primitives;
+// Specifics:
+// PlayerController
+// InventoryRack to silence warning
+// The idea of XY inventory from Coordinates...
 
 public class LootEventArgs: System.EventArgs
 {
@@ -24,15 +28,15 @@ public class LootEventArgs: System.EventArgs
     }
 }
 
-public delegate void  LootEvent(Lootable loot, LootEventArgs args);
+public delegate void LootEvent(Lootable loot, LootEventArgs args);
+public delegate void ManifestChangeEvent(bool visible);
 
 public enum LootOwner { None, Player, Level };
 
 public class Lootable : IdentifiableEntity
 {
     public static event LootEvent OnLoot;
-
-    private LootableManifestation manifestation;
+    public event ManifestChangeEvent OnManifestChange;
     
     public Vector3Int Coordinates { get; set; }
     public LootOwner Owner { get; set; }
@@ -40,7 +44,7 @@ public class Lootable : IdentifiableEntity
     public CardinalDirection ManifestSide { get; set; }
 
     [SerializeField]
-    public Vector2Int[] InventoryShape;
+    public Vector2Int[] InventoryShape = new Vector2Int[] { Vector2Int.zero };
 
     public IEnumerable<Vector2Int> InventorySlots() => InventorySlots(Coordinates);
 
@@ -70,7 +74,7 @@ public class Lootable : IdentifiableEntity
         OnLoot?.Invoke(this, args);
         if (args.Consumed)
         {
-            manifestation.gameObject.SetActive(args.Owner == LootOwner.Level);
+            OnManifestChange?.Invoke(args.Owner == LootOwner.Level);
             Owner = args.Owner;
             Coordinates = args.Coordinates;
         } else if (args.Owner == LootOwner.Player)
@@ -84,6 +88,7 @@ public class Lootable : IdentifiableEntity
         }
         return args.Consumed;
     }
+
     public bool Loot(LootOwner owner) => Loot(new LootEventArgs(owner));    
     public bool Loot(LootOwner owner, Vector3Int coordnates) => Loot(new LootEventArgs(owner, coordnates));
     
@@ -104,8 +109,6 @@ public class Lootable : IdentifiableEntity
             Debug.LogWarning($"{Id} inventory shape has duplicate coordinates");
         }
 
-
-        manifestation = GetComponentInChildren<LootableManifestation>();
     }
 
     private void OnEnable()

@@ -4,9 +4,9 @@ namespace DeCrawl.Primitives
 {
     public class FindingSingleton<T> : MonoBehaviour where T : MonoBehaviour
     {
-        private FindingSingleton<T> _instance;
+        private static FindingSingleton<T> _instance;
 
-        public FindingSingleton<T> instance
+        public static T instance
         {
             get
             {
@@ -14,11 +14,11 @@ namespace DeCrawl.Primitives
                 {
                     _instance = FindObjectOfType<FindingSingleton<T>>();
                 }
-                return _instance;
+                return _instance as T;
             }
         }
 
-        private void Awake()
+        protected void Awake()
         {
             if (_instance == null)
             {
@@ -30,7 +30,7 @@ namespace DeCrawl.Primitives
             }
         }
 
-        private void OnDestroy()
+        protected void OnDestroy()
         {
             if (_instance == this)
             {

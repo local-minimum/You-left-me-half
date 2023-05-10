@@ -1,4 +1,5 @@
 using UnityEngine;
+using DeCrawl.Primitives;
 
 namespace DeCrawl.World
 {    public interface ILevel<Entity, ClaimCondition>
@@ -8,7 +9,10 @@ namespace DeCrawl.World
         public Vector3Int AsWorldPosition(Vector3Int gridPosition);
         public Vector3Int AsGridPosition(Vector3 worldPosition);
 
-        public bool ReleasePosition(Entity owner, Vector3Int position);       
+        public bool ReleasePosition(Entity owner, Vector3Int position);
+
+        public CardinalDirection PlayerFirstSpawnDirection { get; }
+        public Vector3Int PlayerFirstSpawnPosition { get; }
     }
 
 }
