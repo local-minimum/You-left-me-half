@@ -1,5 +1,6 @@
 using DeCrawl.Utils;
 using DeCrawl.World;
+using DeCrawl.Primitives;
 
 public class LootableManifestation : WorldClickable
 {

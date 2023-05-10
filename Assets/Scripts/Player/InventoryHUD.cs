@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 using DeCrawl.Utils;
+using DeCrawl.Primitives;
 
 public delegate void ClearCorruption(Vector2Int coordinates);
 

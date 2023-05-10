@@ -289,9 +289,11 @@ abstract public class Level : MonoBehaviour, ILevel<GridEntity, bool>
     }
 
     CardinalDirection playerLookDirection;
+    Vector3Int playerPosition;
 
     private void PlayerController_OnPlayerMove(Vector3Int position, CardinalDirection lookDirection)
     {
+        playerPosition = position;
         playerLookDirection = lookDirection;
     }
 
@@ -299,14 +301,15 @@ abstract public class Level : MonoBehaviour, ILevel<GridEntity, bool>
     {
         if (args.Owner != LootOwner.Level) return;
 
-        if (!args.DefinedPosition)
+        if (args.DefinedPosition)
+        {            
+            loot.transform.position = GridScale * (args.Coordinates + 0.5f * playerLookDirection.AsVector());
+        } else
         {
-            Debug.LogWarning($"Random placement of loot {loot.Id} attempted, not yet implemented");
-            return;
+            loot.transform.position = GridScale * (playerPosition + 0.5f * playerLookDirection.AsVector());
         }
 
         loot.transform.SetParent(transform);
-        loot.transform.position = GridScale * (args.Coordinates + 0.5f * playerLookDirection.AsVector());
         loot.ManifestSide = playerLookDirection;
         args.Consumed = true;
     }

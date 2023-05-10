@@ -1,38 +1,17 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DeCrawl.Primitives;
+using DeCrawl.Systems;
 
 public enum EndingType { Death };
 public enum Ending { NoHealth, NoHealthCanister, LostConnection }
 
 public delegate void EndingEvent(EndingType type, Ending ending);
 
-public class MasterOfEndings : MonoBehaviour
+public class MasterOfEndings : FindingSingleton<MasterOfEndings>
 {    
-    public static MasterOfEndings Instance { get; private set; }
-
 
     public static event EndingEvent OnEnding;
-
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-        } else if (Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-    }
-
-    private void OnDestroy()
-    {
-        if (Instance == this)
-        {
-            Instance = null;
-        }
-    }
 
     private void OnEnable()
     {
@@ -50,14 +29,18 @@ public class MasterOfEndings : MonoBehaviour
         if (capacity == 0)
         {
             OnEnding?.Invoke(EndingType.Death, Ending.NoHealthCanister);
+            Game.Status = GameStatus.GameOver;
+            
         } else if (stored == 0)
         {
             OnEnding?.Invoke(EndingType.Death, Ending.NoHealth);
+            Game.Status = GameStatus.GameOver;
         }
     }
 
     public void TriggerDisconnect()
     {
         OnEnding?.Invoke(EndingType.Death, Ending.LostConnection);
+        Game.Status = GameStatus.GameOver;
     }
 }

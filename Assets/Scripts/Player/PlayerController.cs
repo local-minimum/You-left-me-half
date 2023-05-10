@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using DeCrawl.World;
+using DeCrawl.Primitives;
 
 public class PlayerController : AbstractPlayerController<GridEntity, bool>
 {

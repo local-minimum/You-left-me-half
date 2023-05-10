@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DeCrawl.Primitives;
 
 public class ConnectionTimer : MonoBehaviour
 {
@@ -84,7 +85,7 @@ public class ConnectionTimer : MonoBehaviour
 
         if (remaining == 0)
         {
-            MasterOfEndings.Instance.TriggerDisconnect();
+            MasterOfEndings.instance.TriggerDisconnect();
         }
     }
 }
