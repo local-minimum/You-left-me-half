@@ -1,35 +1,12 @@
-using DeCrawl.Utils;
 using DeCrawl.World;
-using DeCrawl.Primitives;
 
-public class LootableManifestation : WorldClickable
+/// <summary>
+/// A simple manifestation of loot in the world that activates the gameobject
+/// when visibile and allows for pickup if the player is one tile away
+/// no matter where on the tile the loot is.
+/// </summary>
+public class LootableManifestation : AbstractLootableManifestation<GridEntity, bool>
 {
-    Lootable lootable;
-
-    private void Awake()
-    {
-        lootable = GetComponentInParent<Lootable>();
-        lootable.OnManifestChange += Lootable_OnManifestChange;
-    }
-
-    private void OnDestroy()
-    {
-        lootable.OnManifestChange -= Lootable_OnManifestChange;
-    }
-
-    private void Lootable_OnManifestChange(bool visible)
-    {
-        gameObject.SetActive(visible);
-    }
-
-    protected override bool PreClickCheckRefusal() => !lootable.enabled;
-
-    protected override bool RefuseClick() =>
-        lootable.Owner != LootOwner.Level ||
-        (PlayerController.instance.Position - lootable.Coordinates).CheckerMagnitude() > 1;
-
-    protected override void OnClick()
-    {
-        lootable.Loot(LootOwner.Player);
-    }
+    protected override float MaxWorldPickupDistance => 4f;
+    protected override float IgnoreHightDistanceThreshold => 1.5f;
 }
