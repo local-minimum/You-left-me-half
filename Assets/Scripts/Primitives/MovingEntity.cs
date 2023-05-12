@@ -1,19 +1,22 @@
 using DeCrawl.World;
 
-/// <summary>
-/// Component for all things moving about on a level grid
-/// </summary>
-public class MovingEntity : AbstractMovingEntity<GridEntity, bool>
+namespace YLHalf
 {
-    private ILevel<GridEntity, bool> level;
-
-    public override ILevel<GridEntity, bool> Level
+    /// <summary>
+    /// Component for all things moving about on a level grid
+    /// </summary>
+    public class MovingEntity : AbstractMovingEntity<GridEntity, bool>
     {
-        get
+        private ILevel<GridEntity, bool> level;
+
+        public override ILevel<GridEntity, bool> Level
         {
-            if (level != null) return level;
-            level = FindObjectOfType<Level>();
-            return level;
+            get
+            {
+                if (level != null) return level;
+                level = FindObjectOfType<Level>();
+                return level;
+            }
         }
     }
 }

@@ -4,43 +4,45 @@ using UnityEngine;
 using UnityEditor;
 using System.Linq;
 
-[CustomEditor(typeof(InventoryRack), true)]
-public class InventoryRackEditor : Editor
+namespace YLHalf
 {
-
-    public bool showCorruption = true;
-    public bool showOccupancy = true;
-
-    public override void OnInspectorGUI()
+    [CustomEditor(typeof(InventoryRack), true)]
+    public class InventoryRackEditor : Editor
     {
-        DrawDefaultInspector();
 
-        InventoryRack rack = (InventoryRack)target;
-        EditorGUILayout.Space();
+        public bool showCorruption = true;
+        public bool showOccupancy = true;
 
-        showCorruption = EditorGUILayout.Foldout(showCorruption, "Corruption");
-        if (showCorruption)
+        public override void OnInspectorGUI()
         {
-            EditorGUI.indentLevel++;
-            var corruption = rack.CorruptionAsStrings.ToArray();
-            for (int i=0; i<corruption.Length; i++)
-            {
-                EditorGUILayout.LabelField(corruption[i]);
-            }
-            EditorGUI.indentLevel--;
-        }
+            DrawDefaultInspector();
 
-        showOccupancy = EditorGUILayout.Foldout(showCorruption, "Occupied");
-        if (showCorruption)
-        {
-            EditorGUI.indentLevel++;
-            var occupancy = rack.OccupancyAsStrings.ToArray();
-            for (int i = 0; i < occupancy.Length; i++)
-            {
-                EditorGUILayout.LabelField(occupancy[i]);
-            }
-            EditorGUI.indentLevel--;
-        }
+            InventoryRack rack = (InventoryRack)target;
+            EditorGUILayout.Space();
 
+            showCorruption = EditorGUILayout.Foldout(showCorruption, "Corruption");
+            if (showCorruption)
+            {
+                EditorGUI.indentLevel++;
+                var corruption = rack.CorruptionAsStrings.ToArray();
+                for (int i = 0; i < corruption.Length; i++)
+                {
+                    EditorGUILayout.LabelField(corruption[i]);
+                }
+                EditorGUI.indentLevel--;
+            }
+
+            showOccupancy = EditorGUILayout.Foldout(showCorruption, "Occupied");
+            if (showCorruption)
+            {
+                EditorGUI.indentLevel++;
+                var occupancy = rack.OccupancyAsStrings.ToArray();
+                for (int i = 0; i < occupancy.Length; i++)
+                {
+                    EditorGUILayout.LabelField(occupancy[i]);
+                }
+                EditorGUI.indentLevel--;
+            }
+        }
     }
 }

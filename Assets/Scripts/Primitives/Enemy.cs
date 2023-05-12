@@ -3,52 +3,55 @@ using UnityEngine;
 using DeCrawl.Enemies.PatternEnemy;
 using DeCrawl.World;
 
-public class Enemy : AbstractPatternEnemy<GridEntity, bool>
+namespace YLHalf
 {
-    // Move to implementation of abstract thing
-    [SerializeField]    
-    public bool AllowVirtualSpace = true;
-
-    public override bool claimCondition => AllowVirtualSpace;
-    protected override ILevel<GridEntity, bool> level => Level.instance;
-
-    protected override bool PermissableSearchPosition(GridEntity entity) => entity.BaseTypeIsInbound(claimCondition);
-
-    private void OnEnable()
+    public class Enemy : AbstractPatternEnemy<GridEntity, bool>
     {
-        MasterOfEndings.OnEnding += MasterOfEndings_OnEnding;
-        BattleMaster.OnHitMonster += BattleMaster_OnHitMonster;
-    }
+        // Move to implementation of abstract thing
+        [SerializeField]
+        public bool AllowVirtualSpace = true;
 
-    private void OnDisable()
-    {
-        MasterOfEndings.OnEnding -= MasterOfEndings_OnEnding;
-        BattleMaster.OnHitMonster -= BattleMaster_OnHitMonster;
-    }
+        public override bool claimCondition => AllowVirtualSpace;
+        protected override ILevel<GridEntity, bool> level => Level.instance;
 
-    private void BattleMaster_OnHitMonster(string monsterId, int amount)
-    {
-        if (monsterId != movable.Id) return;
+        protected override bool PermissableSearchPosition(GridEntity entity) => entity.BaseTypeIsInbound(claimCondition);
 
-        health -= amount;
-
-        if (health <= 0)
+        private void OnEnable()
         {
-            Kill();
-
-            Level.instance.ReleasePosition(GridEntity.Other, movable.Position);
+            MasterOfEndings.OnEnding += MasterOfEndings_OnEnding;
+            BattleMaster.OnHitMonster += BattleMaster_OnHitMonster;
         }
-    }
 
-    private void MasterOfEndings_OnEnding(EndingType type, Ending ending)
-    {
-        if (type == EndingType.Death)
+        private void OnDisable()
         {
-            if (activePattern)
+            MasterOfEndings.OnEnding -= MasterOfEndings_OnEnding;
+            BattleMaster.OnHitMonster -= BattleMaster_OnHitMonster;
+        }
+
+        private void BattleMaster_OnHitMonster(string monsterId, int amount)
+        {
+            if (monsterId != movable.Id) return;
+
+            health -= amount;
+
+            if (health <= 0)
             {
-                activePattern.enabled = false;
+                Kill();
+
+                Level.instance.ReleasePosition(GridEntity.Other, movable.Position);
             }
-            enabled = false;
+        }
+
+        private void MasterOfEndings_OnEnding(EndingType type, Ending ending)
+        {
+            if (type == EndingType.Death)
+            {
+                if (activePattern)
+                {
+                    activePattern.enabled = false;
+                }
+                enabled = false;
+            }
         }
     }
 }

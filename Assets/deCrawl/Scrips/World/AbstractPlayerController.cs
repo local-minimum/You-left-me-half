@@ -42,21 +42,6 @@ namespace DeCrawl.World
             transform.rotation = Quaternion.LookRotation(lookDirection.AsVector());
         }
 
-        protected void OnEnable()
-        {
-            MasterOfEndings.OnEnding += MasterOfEndings_OnEnding;
-        }
-
-        protected void OnDisable()
-        {
-            MasterOfEndings.OnEnding -= MasterOfEndings_OnEnding;
-        }
-
-        private void MasterOfEndings_OnEnding(EndingType type, Ending ending)
-        {
-            enabled = false;
-        }
-
         protected void Start()
         {
             movableEntity = GetComponent<AbstractMovingEntity<Entity, ClaimCondition>>();            

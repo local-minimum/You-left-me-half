@@ -1,27 +1,46 @@
 using DeCrawl.World;
 using DeCrawl.Primitives;
 
-public class PlayerController : AbstractPlayerController<GridEntity, bool>
+namespace YLHalf
 {
-    protected override GridEntity PlayerEntity => GridEntity.Player;
-    protected override bool ClaimCond  => !inventory.Has(loot => loot.GetType() == typeof(Uplink), out Lootable loot);
-
-    private ILevel<GridEntity, bool> level;
-    public override ILevel<GridEntity, bool> Level
+    public class PlayerController : AbstractPlayerController<GridEntity, bool>
     {
-        get
+        protected override GridEntity PlayerEntity => GridEntity.Player;
+        protected override bool ClaimCond => !inventory.Has(loot => loot.GetType() == typeof(Uplink), out Lootable loot);
+
+        private ILevel<GridEntity, bool> level;
+        public override ILevel<GridEntity, bool> Level
         {
-            if (level != null) return level;
-            level = FindObjectOfType<Level>();
-            return level;
+            get
+            {
+                if (level != null) return level;
+                level = FindObjectOfType<Level>();
+                return level;
+            }
         }
-    }
 
-    private Inventory inventory;
+        private Inventory inventory;
 
-    private new void Start()
-    {
-        inventory = GetComponentInChildren<Inventory>();
-        base.Start();
+        private new void Start()
+        {
+            inventory = GetComponentInChildren<Inventory>();
+            base.Start();
+        }
+
+        protected void OnEnable()
+        {
+            MasterOfEndings.OnEnding += MasterOfEndings_OnEnding;
+        }
+
+        protected void OnDisable()
+        {
+            MasterOfEndings.OnEnding -= MasterOfEndings_OnEnding;
+        }
+
+        private void MasterOfEndings_OnEnding(EndingType type, Ending ending)
+        {
+            enabled = false;
+        }
+
     }
 }

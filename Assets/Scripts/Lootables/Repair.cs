@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using DeCrawl.Primitives;
 
-public class Repair : Lootable
+namespace YLHalf
 {
+    public class Repair : Lootable
+    {
+    }
 }

@@ -3,20 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CanisterHUD : HUDProgressionIcon
+namespace YLHalf
 {
-    public Canister canister;
-    
-
-    private void Start()
+    public class CanisterHUD : HUDProgressionIcon
     {
-        Configure();    
-    }
+        public Canister canister;
 
-    void Configure() => Configure(canister.textureProgress, canister.textureOverlay, canister.fillMethod, canister.Fill);
 
-    private void Update()
-    {
-        progressImage.fillAmount = canister.Fill;
+        private void Start()
+        {
+            Configure();
+        }
+
+        void Configure() => Configure(canister.textureProgress, canister.textureOverlay, canister.fillMethod, canister.Fill);
+
+        private void Update()
+        {
+            progressImage.fillAmount = canister.Fill;
+        }
     }
 }

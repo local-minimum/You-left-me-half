@@ -3,44 +3,48 @@ using UnityEngine;
 using DeCrawl.Primitives;
 using DeCrawl.Systems;
 
-public enum EndingType { Death };
-public enum Ending { NoHealth, NoHealthCanister, LostConnection }
+namespace YLHalf
+{
+    public enum EndingType { Death };
+    public enum Ending { NoHealth, NoHealthCanister, LostConnection }
 
-public delegate void EndingEvent(EndingType type, Ending ending);
+    public delegate void EndingEvent(EndingType type, Ending ending);
 
-public class MasterOfEndings : FindingSingleton<MasterOfEndings>
-{    
-
-    public static event EndingEvent OnEnding;
-
-    private void OnEnable()
+    public class MasterOfEndings : FindingSingleton<MasterOfEndings>
     {
-        Inventory.OnCanisterChange += Inventory_OnCanisterChange;
-    }
 
-    private void OnDisable()
-    {
-        Inventory.OnCanisterChange -= Inventory_OnCanisterChange;
-    }
+        public static event EndingEvent OnEnding;
 
-    private void Inventory_OnCanisterChange(CanisterType type, int stored, int capacity)
-    {
-        if (type != CanisterType.Health) return;
-        if (capacity == 0)
+        private void OnEnable()
         {
-            OnEnding?.Invoke(EndingType.Death, Ending.NoHealthCanister);
-            Game.Status = GameStatus.GameOver;
-            
-        } else if (stored == 0)
+            Inventory.OnCanisterChange += Inventory_OnCanisterChange;
+        }
+
+        private void OnDisable()
         {
-            OnEnding?.Invoke(EndingType.Death, Ending.NoHealth);
+            Inventory.OnCanisterChange -= Inventory_OnCanisterChange;
+        }
+
+        private void Inventory_OnCanisterChange(CanisterType type, int stored, int capacity)
+        {
+            if (type != CanisterType.Health) return;
+            if (capacity == 0)
+            {
+                OnEnding?.Invoke(EndingType.Death, Ending.NoHealthCanister);
+                Game.Status = GameStatus.GameOver;
+
+            }
+            else if (stored == 0)
+            {
+                OnEnding?.Invoke(EndingType.Death, Ending.NoHealth);
+                Game.Status = GameStatus.GameOver;
+            }
+        }
+
+        public void TriggerDisconnect()
+        {
+            OnEnding?.Invoke(EndingType.Death, Ending.LostConnection);
             Game.Status = GameStatus.GameOver;
         }
-    }
-
-    public void TriggerDisconnect()
-    {
-        OnEnding?.Invoke(EndingType.Death, Ending.LostConnection);
-        Game.Status = GameStatus.GameOver;
     }
 }

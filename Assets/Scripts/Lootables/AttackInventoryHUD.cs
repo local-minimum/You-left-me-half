@@ -3,72 +3,75 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public delegate void AttackEvent(Attack attack);
-
-public class AttackInventoryHUD : HUDProgressionIcon
+namespace YLHalf
 {
-    public static event AttackEvent OnAttack;
-    public Attack attack;
-    public bool IsActionHud = false;
+    public delegate void AttackEvent(Attack attack);
 
-    float lastAttack;
-
-    private void Start()
+    public class AttackInventoryHUD : HUDProgressionIcon
     {
-        Configure();
-        if (IsActionHud) SetupActionInteractions();
-    }
+        public static event AttackEvent OnAttack;
+        public Attack attack;
+        public bool IsActionHud = false;
 
-    private void OnEnable()
-    {
-        MasterOfEndings.OnEnding += MasterOfEndings_OnEnding;
-    }
+        float lastAttack;
 
-    private void OnDisable()
-    {
-        MasterOfEndings.OnEnding -= MasterOfEndings_OnEnding;
-    }
-
-    private void MasterOfEndings_OnEnding(EndingType type, Ending ending)
-    {
-        enabled = false;
-    }
-
-    void Configure() => Configure(attack.textureProgress, attack.textureOverlay, attack.fillMethod);
-
-
-    void SetupActionInteractions()
-    {
-        var trigger = gameObject.AddComponent<EventTrigger>();
-        var entry = new EventTrigger.Entry();
-        entry.eventID = EventTriggerType.PointerClick;
-        entry.callback.AddListener(_ => HandleClick());
-        trigger.triggers.Add(entry);
-
-        lastAttack = Time.timeSinceLevelLoad;
-    }
-
-    float ActionStatus
-    {
-        get
+        private void Start()
         {
-            return Mathf.Clamp01((Time.timeSinceLevelLoad - lastAttack - attack.attackStats.beforeCooldownSeconds) / attack.attackStats.cooldownSeconds);
+            Configure();
+            if (IsActionHud) SetupActionInteractions();
         }
-    }
 
-    void HandleClick()
-    {
-        if (ActionStatus == 1)
+        private void OnEnable()
         {
+            MasterOfEndings.OnEnding += MasterOfEndings_OnEnding;
+        }
+
+        private void OnDisable()
+        {
+            MasterOfEndings.OnEnding -= MasterOfEndings_OnEnding;
+        }
+
+        private void MasterOfEndings_OnEnding(EndingType type, Ending ending)
+        {
+            enabled = false;
+        }
+
+        void Configure() => Configure(attack.textureProgress, attack.textureOverlay, attack.fillMethod);
+
+
+        void SetupActionInteractions()
+        {
+            var trigger = gameObject.AddComponent<EventTrigger>();
+            var entry = new EventTrigger.Entry();
+            entry.eventID = EventTriggerType.PointerClick;
+            entry.callback.AddListener(_ => HandleClick());
+            trigger.triggers.Add(entry);
+
             lastAttack = Time.timeSinceLevelLoad;
-            OnAttack?.Invoke(attack);
         }
-    }
 
-    private void Update()
-    {
-        if (!IsActionHud) return;
+        float ActionStatus
+        {
+            get
+            {
+                return Mathf.Clamp01((Time.timeSinceLevelLoad - lastAttack - attack.attackStats.beforeCooldownSeconds) / attack.attackStats.cooldownSeconds);
+            }
+        }
 
-        progressImage.fillAmount = ActionStatus;
+        void HandleClick()
+        {
+            if (ActionStatus == 1)
+            {
+                lastAttack = Time.timeSinceLevelLoad;
+                OnAttack?.Invoke(attack);
+            }
+        }
+
+        private void Update()
+        {
+            if (!IsActionHud) return;
+
+            progressImage.fillAmount = ActionStatus;
+        }
     }
 }

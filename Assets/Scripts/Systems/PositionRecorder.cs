@@ -4,150 +4,154 @@ using System.Linq;
 using DeCrawl.Utils;
 using DeCrawl.Primitives;
 
-public class PositionRecorder : MonoBehaviour, StateSaver
+namespace YLHalf
 {
-    [System.Serializable]
-    private struct StateDto
+    public class PositionRecorder : MonoBehaviour, StateSaver
     {
-        public PositionRecordDto[] records;
-
-        public StateDto(PositionRecordDto[] records)
+        [System.Serializable]
+        private struct StateDto
         {
-            this.records = records;
-        }
-    }
+            public PositionRecordDto[] records;
 
-
-    [System.Serializable]
-    private struct PositionRecordDto
-    {
-        public string id;
-        public Vector3Int position;
-        public CardinalDirection lookDirection;
-
-        public PositionRecordDto(string id, Vector3Int position, CardinalDirection lookDirection)
-        {
-            this.id = id;
-            this.position = position;
-            this.lookDirection = lookDirection;
-        }
-    }
-
-    Dictionary<string, Vector3Int> positions = new Dictionary<string, Vector3Int>();
-    Dictionary<string, CardinalDirection> lookDirections = new Dictionary<string, CardinalDirection>();
-    bool listening = true;
-
-    public static PositionRecorder instance { get; private set; }
-
-    private void Awake()
-    {        
-        if (instance != null && instance != this)
-        {
-            Destroy(this);
-            return;
+            public StateDto(PositionRecordDto[] records)
+            {
+                this.records = records;
+            }
         }
 
-        instance = this;
 
-        var entities = FindObjectsOfType<MovingEntity>();
-        for (int i=0; i<entities.Length; i++)
+        [System.Serializable]
+        private struct PositionRecordDto
         {
-            entities[i].OnMove += PositionRecorder_OnMove;
+            public string id;
+            public Vector3Int position;
+            public CardinalDirection lookDirection;
+
+            public PositionRecordDto(string id, Vector3Int position, CardinalDirection lookDirection)
+            {
+                this.id = id;
+                this.position = position;
+                this.lookDirection = lookDirection;
+            }
         }
-    }
 
-    public string[] GetEntities(Vector3Int position) => positions
-        .Where(kvp => kvp.Value == position)
-        .Select(kvp => kvp.Key)
-        .ToArray();
-    
+        Dictionary<string, Vector3Int> positions = new Dictionary<string, Vector3Int>();
+        Dictionary<string, CardinalDirection> lookDirections = new Dictionary<string, CardinalDirection>();
+        bool listening = true;
 
-    private void OnDestroy()
-    {
-        var entities = FindObjectsOfType<MovingEntity>();
-        for (int i = 0; i < entities.Length; i++)
+        public static PositionRecorder instance { get; private set; }
+
+        private void Awake()
         {
-            entities[i].OnMove -= PositionRecorder_OnMove;
+            if (instance != null && instance != this)
+            {
+                Destroy(this);
+                return;
+            }
+
+            instance = this;
+
+            var entities = FindObjectsOfType<MovingEntity>();
+            for (int i = 0; i < entities.Length; i++)
+            {
+                entities[i].OnMove += PositionRecorder_OnMove;
+            }
         }
-    }
 
-    private void PositionRecorder_OnMove(string id, Vector3Int position, CardinalDirection lookDirection)
-    {
-        if (!listening) return;
-
-        positions[id] = position;
-        lookDirections[id] = lookDirection;
-    }
-
-    public void ResetStored()
-    {
-        positions.Clear();
-        lookDirections.Clear();
-    }
-
-    public string SerializeState()
-    {
-        var records = positions.Keys
-            .Select(id => new PositionRecordDto(id, positions[id], lookDirections[id]))
+        public string[] GetEntities(Vector3Int position) => positions
+            .Where(kvp => kvp.Value == position)
+            .Select(kvp => kvp.Key)
             .ToArray();
 
-        return JsonUtility.ToJson(new StateDto(records));
-    }
 
-    public void DeserializeState(string json)
-    {
-        var records = JsonUtility.FromJson<StateDto>(json).records;
-        for (int i=0; i<records.Length; i++)
+        private void OnDestroy()
         {
-            var state = records[i];
-            positions[state.id] = state.position;
-            lookDirections[state.id] = state.lookDirection;
-        }
-    }
-
-    public void RestorePositions()
-    {
-        listening = false;
-
-        var entities = FindObjectsOfType<MovingEntity>();
-        for (int i = 0; i < entities.Length; i++)
-        {
-            var entity = entities[i];
-            var id = entity.Id;
-            if (positions.ContainsKey(id))
+            var entities = FindObjectsOfType<MovingEntity>();
+            for (int i = 0; i < entities.Length; i++)
             {
-                entity.SetNewGridPosition(positions[id], lookDirections[id]);
+                entities[i].OnMove -= PositionRecorder_OnMove;
             }
         }
 
-        listening = true;
-    }
-
-    private string debugPlayerPrefsKey = "save.debug";
-
-    [SerializeField]
-    bool hideDebugUI = false;
-
-    private void OnGUI()
-    {
-        if (hideDebugUI) return;
-
-        if (GUILayout.Button("Debug Save"))
+        private void PositionRecorder_OnMove(string id, Vector3Int position, CardinalDirection lookDirection)
         {
-            PlayerPrefs.SetString(debugPlayerPrefsKey, StringCompressor.CompressString(SerializeState()));                
+            if (!listening) return;
+
+            positions[id] = position;
+            lookDirections[id] = lookDirection;
         }
-        if (GUILayout.Button("Debug Load"))
+
+        public void ResetStored()
         {
-            var data = PlayerPrefs.GetString(debugPlayerPrefsKey);
-            if (string.IsNullOrEmpty(data))
+            positions.Clear();
+            lookDirections.Clear();
+        }
+
+        public string SerializeState()
+        {
+            var records = positions.Keys
+                .Select(id => new PositionRecordDto(id, positions[id], lookDirections[id]))
+                .ToArray();
+
+            return JsonUtility.ToJson(new StateDto(records));
+        }
+
+        public void DeserializeState(string json)
+        {
+            var records = JsonUtility.FromJson<StateDto>(json).records;
+            for (int i = 0; i < records.Length; i++)
             {
-                Debug.LogWarning($"Nothing stored at {debugPlayerPrefsKey} yet");
-            } else
-            {
-                DeserializeState(StringCompressor.DecompressString(data));                
-                RestorePositions();
+                var state = records[i];
+                positions[state.id] = state.position;
+                lookDirections[state.id] = state.lookDirection;
             }
-                
+        }
+
+        public void RestorePositions()
+        {
+            listening = false;
+
+            var entities = FindObjectsOfType<MovingEntity>();
+            for (int i = 0; i < entities.Length; i++)
+            {
+                var entity = entities[i];
+                var id = entity.Id;
+                if (positions.ContainsKey(id))
+                {
+                    entity.SetNewGridPosition(positions[id], lookDirections[id]);
+                }
+            }
+
+            listening = true;
+        }
+
+        private string debugPlayerPrefsKey = "save.debug";
+
+        [SerializeField]
+        bool hideDebugUI = false;
+
+        private void OnGUI()
+        {
+            if (hideDebugUI) return;
+
+            if (GUILayout.Button("Debug Save"))
+            {
+                PlayerPrefs.SetString(debugPlayerPrefsKey, StringCompressor.CompressString(SerializeState()));
+            }
+            if (GUILayout.Button("Debug Load"))
+            {
+                var data = PlayerPrefs.GetString(debugPlayerPrefsKey);
+                if (string.IsNullOrEmpty(data))
+                {
+                    Debug.LogWarning($"Nothing stored at {debugPlayerPrefsKey} yet");
+                }
+                else
+                {
+                    DeserializeState(StringCompressor.DecompressString(data));
+                    RestorePositions();
+                }
+
+            }
         }
     }
 }

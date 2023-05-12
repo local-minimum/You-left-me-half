@@ -4,11 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using DeCrawl.Primitives;
 
-public class Attack : Lootable
+namespace YLHalf
 {
-    public Texture2D textureProgress;
-    public Texture2D textureOverlay;
-    public Image.FillMethod fillMethod = Image.FillMethod.Radial360;
-    public AttackStats attackStats;
+    public class Attack : Lootable
+    {
+        public Texture2D textureProgress;
+        public Texture2D textureOverlay;
+        public Image.FillMethod fillMethod = Image.FillMethod.Radial360;
+        public AttackStats attackStats;
 
+    }
 }

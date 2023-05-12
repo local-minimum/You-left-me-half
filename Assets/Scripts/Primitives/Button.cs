@@ -1,69 +1,72 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 using DeCrawl.World;
 
-public class Button : WorldClickable
+namespace YLHalf
 {
-    [SerializeField]
-    Transform GridSwapPosition;
-
-    [SerializeField]
-    GameObject door;
-
-    [SerializeField]
-    GridEntity openState = GridEntity.InBound;
-    
-    private void Start()
+    public class Button : WorldClickable
     {
-        UpdateDoor();
-    }
+        [SerializeField]
+        Transform GridSwapPosition;
 
-    protected override bool PreClickCheckRefusal() => false;
+        [SerializeField]
+        GameObject door;
 
-    // TODO: Require player inventory keys, where needed
-    protected override bool RefuseClick() => false;
+        [SerializeField]
+        GridEntity openState = GridEntity.InBound;
 
-    protected override void OnClick()
-    {
-        UpdateDoor(door.activeSelf);
-    }
-
-    Vector3Int GridPosition
-    {
-        get => Level.instance.AsGridPosition(GridSwapPosition.position);
-    }
-
-    void UpdateDoor() => UpdateDoor(GridPosition);
-    
-
-    void UpdateDoor(bool toOpen)
-    {
-        var gridPosition = GridPosition;
-
-        if (toOpen)
+        private void Start()
         {
-            if (!Level.instance.ClaimPosition(openState, gridPosition, true, true))
-            {
-                Debug.Log($"Could not open door {name}");
-                return;
-            }
-        } else
-        {
-            if (!Level.instance.ReleasePosition(openState, gridPosition))
-            {
-                Debug.Log($"Could not close door {name}");
-                return;
-            }
+            UpdateDoor();
         }
 
-        UpdateDoor(gridPosition);
-    }
+        protected override bool PreClickCheckRefusal() => false;
 
-    void UpdateDoor(Vector3Int gridPosition)
-    {
-        var status = Level.instance.GridStatus(gridPosition.x, gridPosition.z);
-        door.SetActive(status == GridEntity.OutBound || status == GridEntity.VirtualSpace);
+        // TODO: Require player inventory keys, where needed
+        protected override bool RefuseClick() => false;
+
+        protected override void OnClick()
+        {
+            UpdateDoor(door.activeSelf);
+        }
+
+        Vector3Int GridPosition
+        {
+            get => Level.instance.AsGridPosition(GridSwapPosition.position);
+        }
+
+        void UpdateDoor() => UpdateDoor(GridPosition);
+
+
+        void UpdateDoor(bool toOpen)
+        {
+            var gridPosition = GridPosition;
+
+            if (toOpen)
+            {
+                if (!Level.instance.ClaimPosition(openState, gridPosition, true, true))
+                {
+                    Debug.Log($"Could not open door {name}");
+                    return;
+                }
+            }
+            else
+            {
+                if (!Level.instance.ReleasePosition(openState, gridPosition))
+                {
+                    Debug.Log($"Could not close door {name}");
+                    return;
+                }
+            }
+
+            UpdateDoor(gridPosition);
+        }
+
+        void UpdateDoor(Vector3Int gridPosition)
+        {
+            var status = Level.instance.GridStatus(gridPosition.x, gridPosition.z);
+            door.SetActive(status == GridEntity.OutBound || status == GridEntity.VirtualSpace);
+        }
     }
 }

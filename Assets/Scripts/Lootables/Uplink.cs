@@ -1,6 +1,9 @@
 using DeCrawl.Primitives;
 
-public class Uplink : Lootable
+namespace YLHalf
 {
-    public int GraceSeconds = 60;
+    public class Uplink : Lootable
+    {
+        public int GraceSeconds = 60;
+    }
 }
