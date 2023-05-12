@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
+using DeCrawl.Primitives;
 
 [System.Serializable]
-public class AttackStats
+public class AttackStats: IAttackStats
 {
     [Range(1, 10)]
     public int attackRange = 1;

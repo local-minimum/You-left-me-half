@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DeCrawl.Primitives;
+using DeCrawl.Enemies;
 
 public class FaceThreat : EnemyPattern
 {
@@ -12,8 +13,8 @@ public class FaceThreat : EnemyPattern
     [SerializeField]
     float maxTimeBetweenTurns = 0.5f;
 
-    public override bool Eligible => !enemy.SeesPlayer(SightMode.LOS, out List<(int, int)> _)
-        && enemy.SeesPlayer(SightMode.Area, out List<(int, int)> _)
+    public override bool Eligible => !enemy.SeesPlayer(EnemyBase.SightMode.LOS, out List<(int, int)> _)
+        && enemy.SeesPlayer(EnemyBase.SightMode.Area, out List<(int, int)> _)
         && NavigationExtensions.FromToRotation(movable.LookDirection, FacePlayer) != Navigation.None;
 
     float nextTurn = 0f;

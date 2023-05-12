@@ -32,7 +32,7 @@ public class Retreat : EnemyPattern
             movable.Position.XZTuple(),
             coords.XZTuple(),
             -1,
-            (entity) => entity.IsClaimable(enemy.AllowVirtualSpace),
+            (entity) => entity.IsClaimable(enemy.claimCondition),
             out path
         );
     }
@@ -72,7 +72,7 @@ public class Retreat : EnemyPattern
                 walkDuration,
                 turnDuration,
                 (_, _) => { },
-                enemy.AllowVirtualSpace
+                enemy.claimCondition
             );
             StartCoroutine(Move(instructions));
         } else
@@ -83,7 +83,7 @@ public class Retreat : EnemyPattern
                 walkDuration,
                 turnDuration,
                 (_, _) => { },
-                enemy.AllowVirtualSpace
+                enemy.claimCondition
             );
             StartCoroutine(Move(instructions));
         }

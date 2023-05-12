@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using DeCrawl.Primitives;
 
@@ -13,6 +14,13 @@ namespace DeCrawl.World
 
         public CardinalDirection PlayerFirstSpawnDirection { get; }
         public Vector3Int PlayerFirstSpawnPosition { get; }
+
+        public bool FindPathToPlayerFrom(
+            (int, int) origin,
+            int maxDepth,
+            System.Func<Entity, bool> permissablePredicate,
+            out List<(int, int)> path
+        );
     }
 
 }

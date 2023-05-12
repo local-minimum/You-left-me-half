@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Linq;
 using DeCrawl.Utils;
 using DeCrawl.Primitives;
+using DeCrawl.Enemies;
 
 public enum InventoryEvent { PickUp, Drop, Move };
 
@@ -38,7 +39,7 @@ public class Inventory : MonoBehaviour
         Lootable.OnLoot += Lootable_OnLoot;
         PlayerController.OnPlayerMove += PlayerController_OnPlayerMove;
         BattleMaster.OnHitPlayer += BattleMaster_OnHitPlayer;
-        Enemy.OnKillEnemy += Enemy_OnKillEnemy;
+        EnemyBase.OnKillEnemy += Enemy_OnKillEnemy;
     }
 
     private void OnDisable()
@@ -46,12 +47,12 @@ public class Inventory : MonoBehaviour
         Lootable.OnLoot -= Lootable_OnLoot;
         PlayerController.OnPlayerMove -= PlayerController_OnPlayerMove;
         BattleMaster.OnHitPlayer -= BattleMaster_OnHitPlayer;
-        Enemy.OnKillEnemy -= Enemy_OnKillEnemy;
+        EnemyBase.OnKillEnemy -= Enemy_OnKillEnemy;
     }
 
-    private void Enemy_OnKillEnemy(Enemy enemy)
+    private void Enemy_OnKillEnemy(GameObject enemy, int xpReward)
     {
-        Receive(enemy.XPReward, CanisterType.XP);
+        Receive(xpReward, CanisterType.XP);
     }
 
     private void BattleMaster_OnHitPlayer(int amount)

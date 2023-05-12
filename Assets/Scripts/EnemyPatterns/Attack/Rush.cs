@@ -44,7 +44,7 @@ public class Rush : EnemyPattern
                         case GridEntity.InBound:
                             return Level.instance.GridStatus(coords) != GridEntity.Other;
                         case GridEntity.VirtualSpace:
-                            return enemy.AllowVirtualSpace && Level.instance.GridStatus(coords) != GridEntity.Other;
+                            return enemy.claimCondition && Level.instance.GridStatus(coords) != GridEntity.Other;
                         default:
                             return false;
                     }

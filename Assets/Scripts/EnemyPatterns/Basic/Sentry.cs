@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using DeCrawl.Primitives;
+using DeCrawl.Enemies;
 
 public class Sentry : EnemyPattern
 {
@@ -70,7 +71,7 @@ public class Sentry : EnemyPattern
     {
         if (!playing || easing) return;
 
-        if (enemy.SeesPlayer(SightMode.LOS, out List<(int, int)> path))
+        if (enemy.SeesPlayer(EnemyBase.SightMode.LOS, out List<(int, int)> path))
         {
             Debug.Log("Spotted");
             playing = false;
