@@ -3,63 +3,10 @@ using DeCrawl.Primitives;
 
 namespace DeCrawl.World
 {
-    public struct NavInstructions
-    {
-        public bool enabled;
-        public bool failed;
-        public System.Action<float> Interpolate;
-        public System.Action OnDone;
-        public float duration;
-        public Vector3Int targetPosition;
-        public CardinalDirection targetLookDirection;
-
-        public NavInstructions(
-            System.Action<float> interpolate,
-            System.Action onDone,
-            float duration,
-            Vector3Int targetPosition,
-            CardinalDirection targetLookDirection
-        )
-        {
-            enabled = true;
-            failed = false;
-            Interpolate = interpolate;
-            OnDone = onDone;
-            this.duration = duration;
-            this.targetPosition = targetPosition;
-            this.targetLookDirection = targetLookDirection;
-        }
-
-        public static NavInstructions NoNavigation
-        {
-            get
-            {
-                var intructions = new NavInstructions();
-                intructions.enabled = false;
-                return intructions;
-            }
-        }
-
-        public static NavInstructions FailedMove
-        {
-            get
-            {
-                var intructions = new NavInstructions();
-                intructions.enabled = false;
-                intructions.failed = true;
-                return intructions;
-            }
-        }
-
-    }
-
-
-    public delegate void MoveEvent(string id, Vector3Int position, CardinalDirection lookDirection);
-
     /// <summary>
     /// Component for all things moving about on a level grid
     /// </summary>
-    public abstract class AbstractMovingEntity<Entity, ClaimCondition> : IdentifiableEntity
+    public abstract class AbstractMovingEntity<Entity, ClaimCondition> : IdentifiableEntity, IMovingEntity
     {
         abstract public ILevel<Entity, ClaimCondition> Level { get; }
 
@@ -97,11 +44,11 @@ namespace DeCrawl.World
         /// </summary>
         /// <param name="navigation">Relative navigation</param>
         /// <returns></returns>
-        bool ClaimSpot(Entity entity, Navigation navigation, Vector3Int target, ClaimCondition allowEnterVirtualSpaces)
+        bool ClaimSpot(Entity entity, Navigation navigation, Vector3Int target, ClaimCondition claimCondition)
         {
             if (navigation.Translates())
             {
-                if (Level.ClaimPosition(entity, target, allowEnterVirtualSpaces))
+                if (Level.ClaimPosition(entity, target, claimCondition))
                 {
                     return true;
                 }
@@ -118,7 +65,7 @@ namespace DeCrawl.World
             float moveTime,
             float turnTime,
             System.Action<Vector3Int, CardinalDirection> onComplete,
-            ClaimCondition allowEnterVirtualSpaces
+            ClaimCondition claimCondition
         )
         {
             if (nav.Translates())
@@ -126,7 +73,7 @@ namespace DeCrawl.World
                 Vector3 origin = transform.position;
                 Vector3Int gridTarget = GetNavigationTraget(nav);
 
-                if (ClaimSpot(entity, nav, gridTarget, allowEnterVirtualSpaces))
+                if (ClaimSpot(entity, nav, gridTarget, claimCondition))
                 {
                     if (InstaReleaseOnClaim)
                     {

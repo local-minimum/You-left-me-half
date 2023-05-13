@@ -4,9 +4,9 @@ using System.Linq;
 using DeCrawl.Utils;
 using DeCrawl.Primitives;
 
-namespace YLHalf
+namespace DeCrawl.Systems
 {
-    public class PositionRecorder : MonoBehaviour, StateSaver
+    public class PositionRecorder : FindingSingleton<PositionRecorder>, StateSaver
     {
         [System.Serializable]
         private struct StateDto
@@ -38,23 +38,17 @@ namespace YLHalf
         Dictionary<string, Vector3Int> positions = new Dictionary<string, Vector3Int>();
         Dictionary<string, CardinalDirection> lookDirections = new Dictionary<string, CardinalDirection>();
         bool listening = true;
-
-        public static PositionRecorder instance { get; private set; }
-
-        private void Awake()
+ 
+        private new void Awake()
         {
-            if (instance != null && instance != this)
-            {
-                Destroy(this);
-                return;
-            }
+            base.Awake();
 
-            instance = this;
-
-            var entities = FindObjectsOfType<MovingEntity>();
-            for (int i = 0; i < entities.Length; i++)
+            if (instance == this)
             {
-                entities[i].OnMove += PositionRecorder_OnMove;
+                foreach (var entity in InterfaceFinder.FindMonoBehavioursWithIMovingEntity())
+                {
+                    entity.OnMove += PositionRecorder_OnMove;
+                }
             }
         }
 
@@ -64,13 +58,13 @@ namespace YLHalf
             .ToArray();
 
 
-        private void OnDestroy()
+        private new void OnDestroy()
         {
-            var entities = FindObjectsOfType<MovingEntity>();
-            for (int i = 0; i < entities.Length; i++)
+            foreach (var entity in InterfaceFinder.FindMonoBehavioursWithIMovingEntity())
             {
-                entities[i].OnMove -= PositionRecorder_OnMove;
+                entity.OnMove -= PositionRecorder_OnMove;
             }
+            base.OnDestroy();
         }
 
         private void PositionRecorder_OnMove(string id, Vector3Int position, CardinalDirection lookDirection)
@@ -111,10 +105,8 @@ namespace YLHalf
         {
             listening = false;
 
-            var entities = FindObjectsOfType<MovingEntity>();
-            for (int i = 0; i < entities.Length; i++)
+            foreach (var entity in InterfaceFinder.FindMonoBehavioursWithIMovingEntity())
             {
-                var entity = entities[i];
                 var id = entity.Id;
                 if (positions.ContainsKey(id))
                 {
@@ -150,7 +142,6 @@ namespace YLHalf
                     DeserializeState(StringCompressor.DecompressString(data));
                     RestorePositions();
                 }
-
             }
         }
     }
