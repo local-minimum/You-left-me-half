@@ -190,6 +190,7 @@ namespace YLHalf
         }
 
         public bool ClaimPosition(GridEntity entity, Vector3Int position, bool allowVirtualPositions) => ClaimPosition(entity, position, allowVirtualPositions, false);
+        public bool ClaimPositionForced(GridEntity entity, Vector3Int position) => ClaimPosition(entity, position, true, true);
         public bool ClaimPosition(GridEntity entity, Vector3Int position, bool allowVirtualPositions, bool allowOutOfBounds)
         {
             if (!IsValidPosition(position)) return false;

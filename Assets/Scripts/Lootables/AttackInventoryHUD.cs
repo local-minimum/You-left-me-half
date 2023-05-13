@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using DeCrawl.UI;
 
 namespace YLHalf
 {
     public delegate void AttackEvent(Attack attack);
 
-    public class AttackInventoryHUD : HUDProgressionIcon
+    public class AttackInventoryHUD : ProgressionIcon
     {
         public static event AttackEvent OnAttack;
         public Attack attack;

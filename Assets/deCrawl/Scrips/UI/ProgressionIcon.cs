@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace YLHalf
+namespace DeCrawl.UI
 {
-    public class HUDProgressionIcon : MonoBehaviour
+    public class ProgressionIcon : MonoBehaviour
     {
         protected Image progressImage;
 

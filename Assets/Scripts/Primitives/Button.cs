@@ -18,7 +18,7 @@ namespace YLHalf
 
         private void Start()
         {
-            UpdateDoor();
+            UpdateDoor(GridPosition);
         }
 
         protected override bool PreClickCheckRefusal() => false;
@@ -36,16 +36,13 @@ namespace YLHalf
             get => Level.instance.AsGridPosition(GridSwapPosition.position);
         }
 
-        void UpdateDoor() => UpdateDoor(GridPosition);
-
-
         void UpdateDoor(bool toOpen)
         {
             var gridPosition = GridPosition;
 
             if (toOpen)
             {
-                if (!Level.instance.ClaimPosition(openState, gridPosition, true, true))
+                if (!Level.instance.ClaimPositionForced(openState, gridPosition))
                 {
                     Debug.Log($"Could not open door {name}");
                     return;
