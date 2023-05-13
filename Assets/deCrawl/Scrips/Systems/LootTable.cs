@@ -4,34 +4,21 @@ using UnityEngine;
 using System.Linq;
 using DeCrawl.Primitives;
 
-namespace YLHalf
+namespace DeCrawl.Systems
 {
-    public class LootTable : MonoBehaviour, StateSaver
+    public class LootTable : FindingSingleton<LootTable>, StateSaver
     {
-        public static LootTable instance { get; private set; }
-
-        private void Awake()
+        private new void Awake()
         {
-            if (instance != null && instance != this)
+            if (instance == this)
             {
-                Destroy(gameObject);
-                return;
+                DontDestroyOnLoad(this);
             }
-            instance = this;
-            DontDestroyOnLoad(this);
         }
 
         private void Start()
         {
             AvailableLootables.ToList().ForEach(l => l.Loot(LootOwner.None));
-        }
-
-        private void OnDestroy()
-        {
-            if (instance == this)
-            {
-                instance = null;
-            }
         }
 
         [System.Serializable]

@@ -9,6 +9,7 @@ namespace YLHalf
     {
         List<Attack> Attacks = new List<Attack>();
         List<GameObject> AttackUI = new List<GameObject>();
+
         [SerializeField]
         private int MaxAttacks = 8;
 
