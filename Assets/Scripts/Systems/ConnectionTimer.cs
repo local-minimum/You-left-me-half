@@ -1,30 +1,12 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DeCrawl.Primitives;
+using DeCrawl.UI;
 
 namespace YLHalf
 {
-    public class ConnectionTimer : MonoBehaviour
+    public class ConnectionTimer : CountDownTimer
     {
-        [SerializeField]
-        TMPro.TextMeshProUGUI TextField;
-
-        [SerializeField]
-        Color startColor;
-
-        [SerializeField]
-        Color endColor;
-
-        [SerializeField]
-        float blinkLastSeconds = 5;
-
-        [SerializeField]
-        float blinkDuration = 0.5f;
-
-        [SerializeField]
-        int blinkShowRatio = 3;
-
         private void Start()
         {
             HandleUplink(null, InventoryEvent.PickUp);
@@ -34,12 +16,19 @@ namespace YLHalf
         {
             Inventory.OnInventoryChange += Inventory_OnInventoryChange;
             MasterOfEndings.OnEnding += MasterOfEndings_OnEnding;
+            OnTimesUp += ConnectionTimer_OnTimesUp;
         }
 
         private void OnDisable()
         {
             Inventory.OnInventoryChange -= Inventory_OnInventoryChange;
             MasterOfEndings.OnEnding -= MasterOfEndings_OnEnding;
+            OnTimesUp -= ConnectionTimer_OnTimesUp;
+        }
+
+        private void ConnectionTimer_OnTimesUp()
+        {
+            MasterOfEndings.instance.TriggerDisconnect();
         }
 
         private void MasterOfEndings_OnEnding(EndingType type, Ending ending)
@@ -47,50 +36,21 @@ namespace YLHalf
             enabled = false;
         }
 
-        float timerStart;
-        float duration;
-        bool disconnected = false;
-
         void HandleUplink(Uplink uplink, InventoryEvent evt)
         {
             if (evt == InventoryEvent.Drop)
             {
-                timerStart = Time.timeSinceLevelLoad;
-                duration = uplink.GraceSeconds;
-                disconnected = true;
-                TextField.gameObject.SetActive(true);
-                TextField.enabled = true;
+                StartCountDown(uplink.GraceSeconds);
             }
             else if (evt == InventoryEvent.PickUp)
             {
-                disconnected = false;
-                TextField.gameObject.SetActive(false);
+                StopCountDown(true);                
             }
         }
 
         private void Inventory_OnInventoryChange(Lootable loot, InventoryEvent inventoryEvent, Vector3Int placement)
         {
             if (loot is Uplink) HandleUplink((Uplink)loot, inventoryEvent);
-        }
-
-        private void Update()
-        {
-            if (!disconnected) return;
-
-            var remaining = Mathf.Max(0, duration - (Time.timeSinceLevelLoad - timerStart));
-
-            TextField.text = remaining.ToString("00.0");
-            TextField.color = Color.Lerp(startColor, endColor, 1 - remaining / duration);
-
-            if (remaining < blinkLastSeconds)
-            {
-                TextField.enabled = (Mathf.FloorToInt(blinkShowRatio * remaining / blinkDuration) % blinkShowRatio) != 0;
-            }
-
-            if (remaining == 0)
-            {
-                MasterOfEndings.instance.TriggerDisconnect();
-            }
         }
     }
 }

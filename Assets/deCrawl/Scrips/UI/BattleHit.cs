@@ -1,10 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DeCrawl.Utils;
 using DeCrawl.Primitives;
 
-namespace YLHalf
+namespace DeCrawl.UI
 {
     public class BattleHit : MonoBehaviour
     {
