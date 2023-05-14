@@ -40,8 +40,6 @@ namespace DeCrawl.World
             {
                 offset.y = 0;
             }
-            Debug.Log(offset);
-            Debug.Log(offset.magnitude);
             return offset.magnitude > MaxWorldPickupDistance;
         }
 

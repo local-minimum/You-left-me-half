@@ -1,8 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using DeCrawl.Utils;
+using DeCrawl.UI;
 
 namespace DeCrawl.Primitives
 {
@@ -10,7 +10,7 @@ namespace DeCrawl.Primitives
     /// This bag type, when used in an inventory, allows for holding part of a loot
     /// and letting another bag hold the other part.
     /// </summary>
-    public abstract class InventoryBagJoinable : MonoBehaviour
+    public abstract class InventoryBagJoinable : MonoBehaviour, IInventoryBag
     {
         public bool[,] Occupied { get; private set; }
         
@@ -63,7 +63,7 @@ namespace DeCrawl.Primitives
         /// <param name="localOrigin"></param>
         /// <param name="shapeHeight"></param>
         /// <returns></returns>
-        public bool IsOutsideAfter(Vector3Int localOrigin, int shapeHeight)
+        public bool IsOutsideAfter(Vector3Int localOrigin)
         {
             return localOrigin.y >= Rows;
         }
@@ -84,7 +84,8 @@ namespace DeCrawl.Primitives
                 .Where(coords => coords.y >= 0 && coords.y < maxY && coords.x >= 0 && coords.x < maxX);
         }
 
-        abstract protected bool ExtraConditionAllowsSlotting(Vector2Int localCoords);
+        abstract public bool IsSpecial(int y, int x);
+        abstract public void ApplySlotState(InventorySlotUI slot, int localY, int localX);
 
         /// <summary>
         /// Reports how many of the offsets can be slotted in the current bag
@@ -103,7 +104,7 @@ namespace DeCrawl.Primitives
             int slotable = 0;
             foreach(var coords in ContainedCoordinates(localOrigin, offsets))
             {
-                var valid = !Occupied[coords.y, coords.x] && ExtraConditionAllowsSlotting(coords);
+                var valid = !Occupied[coords.y, coords.x] && IsSpecial(coords.y, coords.x);
                 if (valid)
                 {
                     slotable++;

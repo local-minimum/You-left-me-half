@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using DeCrawl.Primitives;
+using DeCrawl.UI;
 
 namespace YLHalf
 {
@@ -15,7 +16,6 @@ namespace YLHalf
             InitOccupancy(Inventory.RackHeight, Inventory.RackWidth);
             ParseInitialCorruption();
         }
-
 
         public IEnumerable<string> CorruptionAsStrings
         {
@@ -74,6 +74,25 @@ namespace YLHalf
             return false;
         }
 
-        override protected bool ExtraConditionAllowsSlotting(Vector2Int localCoords) => Corruption[localCoords.y, localCoords.x] == 0;        
+        override public bool IsSpecial(int y, int x) => Corruption[y, x] == 0;
+
+        public override void ApplySlotState(InventorySlotUI slot, int localY, int localX)
+        {            
+            if (Occupied[localY, localX])
+            {
+                slot.State = InventorySlotUIState.Occupied;
+                slot.RomanNumeralCount = 0;
+            }
+            else if (Corruption[localY, localX] > 0)
+            {
+                slot.State = InventorySlotUIState.Special;
+                slot.RomanNumeralCount = Corruption[localY, localX];
+            }
+            else
+            {
+                slot.State = InventorySlotUIState.Free;
+                slot.RomanNumeralCount = 0;
+            }
+        }
     }
 }

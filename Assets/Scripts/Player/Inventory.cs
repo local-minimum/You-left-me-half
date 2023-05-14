@@ -8,7 +8,6 @@ using DeCrawl.Systems;
 
 namespace YLHalf
 {
-    public enum InventoryEvent { PickUp, Drop, Move };
 
     public delegate void InventoryChange(Lootable loot, InventoryEvent inventoryEvent, Vector3Int placement);
 
@@ -85,7 +84,7 @@ namespace YLHalf
             {
                 // Not in the rack
                 if (rack.IsOutsideBefore(localOrigin, shapeHeight)) return 0;
-                if (rack.IsOutsideAfter(localOrigin, shapeHeight))
+                if (rack.IsOutsideAfter(localOrigin))
                 {
                     localOrigin.y -= rack.Rows;
                     return 0;
@@ -99,7 +98,7 @@ namespace YLHalf
                     {
                         return slots + violators.Count();
                     }
-                    Debug.Log($"{violators.Count} violators");
+                    // Debug.Log($"{violators.Count} violators");
                     return 0;
                 }
                 return slots;
@@ -112,7 +111,7 @@ namespace YLHalf
             int shapeHeight = shape.Max(offset => offset.y) + 1;
             var maxY = MaxRowForShape(shapeHeight);
             var inventorySlots = loot.InventorySlots();
-            Debug.Log($"{loot.Id}: {maxY} x {RackWidth}");
+
             for (var y = 0; y <= maxY; y++)
             {
                 for (var x = 0; x < RackWidth; x++)
@@ -123,7 +122,7 @@ namespace YLHalf
                         var anchor = new Vector3Int(x, y - racksOffset);
 
                         if (rack.IsOutsideBefore(anchor, shapeHeight)) return 0;
-                        if (rack.IsOutsideAfter(anchor, shapeHeight))
+                        if (rack.IsOutsideAfter(anchor))
                         {
                             racksOffset -= rack.Rows;
                             return 0;
@@ -135,9 +134,6 @@ namespace YLHalf
                     {
                         origin = new Vector3Int(x, y);
                         return true;
-                    } else
-                    {
-                        Debug.Log($"{loot.Id}: ({y}, {x}) = {slottable} / {loot.InventoryShape.Length}");
                     }
                 }
             }
