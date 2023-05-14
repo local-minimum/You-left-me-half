@@ -79,16 +79,31 @@ namespace YLHalf
 
             if (MaxRowForShape(shapeHeight) < origin.y) return false;
 
-            return Racks.All(rack =>
+            var localOrigin = new Vector3Int(origin.x, origin.y, origin.z);
+
+            return Racks.Sum(rack =>
             {
-                if (rack.IsOutsideRack(origin, shapeHeight)) return true;
-                if (!rack.IsSlotable(origin, loot.InventoryShape, out List<Vector2Int> offsets))
+                // Not in the rack
+                if (rack.IsOutsideBefore(localOrigin, shapeHeight)) return 0;
+                if (rack.IsOutsideAfter(localOrigin, shapeHeight))
                 {
-                    Debug.Log($"{offsets.Count} violators");
-                    return offsets.All(offset => inventorySlots.Contains(offset + originXY));
+                    localOrigin.y -= rack.Rows;
+                    return 0;
                 }
-                return true;
-            });
+
+                // Fully or partially in rack
+                var slots = rack.Slotable(localOrigin, loot.InventoryShape, out List<Vector2Int> violators);
+                if (slots != loot.InventoryShape.Length)
+                {
+                    if (violators.All(violator => inventorySlots.Contains(violator + originXY)))
+                    {
+                        return slots + violators.Count();
+                    }
+                    Debug.Log($"{violators.Count} violators");
+                    return 0;
+                }
+                return slots;
+            }) == loot.InventoryShape.Length;
         }
 
         private bool CanPickupShape(Lootable loot, out Vector3Int origin)
@@ -97,22 +112,32 @@ namespace YLHalf
             int shapeHeight = shape.Max(offset => offset.y) + 1;
             var maxY = MaxRowForShape(shapeHeight);
             var inventorySlots = loot.InventorySlots();
-
+            Debug.Log($"{loot.Id}: {maxY} x {RackWidth}");
             for (var y = 0; y <= maxY; y++)
             {
                 for (var x = 0; x < RackWidth; x++)
                 {
-                    var anchor = new Vector3Int(x, y);
-                    var anchorXY = anchor.XYVector2Int();
+                    int racksOffset = 0;
+                    int slottable = Racks.Sum(rack =>
+                    {
+                        var anchor = new Vector3Int(x, y - racksOffset);
 
-                    if (Racks.All(rack =>
+                        if (rack.IsOutsideBefore(anchor, shapeHeight)) return 0;
+                        if (rack.IsOutsideAfter(anchor, shapeHeight))
+                        {
+                            racksOffset -= rack.Rows;
+                            return 0;
+                        }
+                        return rack.Slotable(anchor, loot.InventoryShape, out List<Vector2Int> violators);
+                    });
+
+                    if (slottable == loot.InventoryShape.Length)
                     {
-                        if (rack.IsOutsideRack(anchor, shapeHeight)) return true;
-                        return rack.IsSlotable(anchor, loot.InventoryShape, out List<Vector2Int> offsets);
-                    }))
-                    {
-                        origin = anchor;
+                        origin = new Vector3Int(x, y);
                         return true;
+                    } else
+                    {
+                        Debug.Log($"{loot.Id}: ({y}, {x}) = {slottable} / {loot.InventoryShape.Length}");
                     }
                 }
             }
@@ -132,14 +157,22 @@ namespace YLHalf
 
         private void Drop(Lootable lootable)
         {
-            Racks.ForEach(rack => rack.SetOccupancy(lootable.Coordinates, lootable.InventoryShape, false));
+            int offsetRows = 0;
+            Racks.ForEach(rack => {
+                rack.SetOccupancy(lootable.Coordinates, offsetRows, lootable.InventoryShape, false);
+                offsetRows += rack.Rows;
+            });
             Loots.Remove(lootable);
         }
 
 
         private void Pickup(Lootable lootable, Vector3Int placement)
         {
-            Racks.ForEach(rack => rack.SetOccupancy(placement, lootable.InventoryShape, true));
+            int offsetRows = 0;
+            Racks.ForEach(rack => {
+                rack.SetOccupancy(placement, offsetRows, lootable.InventoryShape, true);
+                offsetRows += rack.Rows;
+            });
             Loots.Add(lootable);
         }
 
@@ -176,7 +209,7 @@ namespace YLHalf
                 var racks = Racks.Count();
                 if (racks < MaxRacks)
                 {
-                    inventoryRack.RackIndex = racks;
+                    inventoryRack.BagIndex = racks;
                     args.Coordinates = new Vector3Int(0, racks);
                     args.DefinedPosition = true;
                     Racks.Add(inventoryRack);
@@ -240,13 +273,15 @@ namespace YLHalf
 
         public bool RemoveOneCorruption(Vector3Int coordinates, System.Func<bool> effect, out int remaining)
         {
+            int rackHeightsOffset = 0;
             for (int i = 0, l = Racks.Count; i < l; i++)
             {
                 var rack = Racks[i];
-                if (rack.ClearOneCorruption(coordinates, effect, out remaining))
+                if (rack.ClearOneCorruption(coordinates + new Vector3Int(0, -rackHeightsOffset), effect, out remaining))
                 {
                     return true;
                 }
+                rackHeightsOffset += rack.Rows;
             }
 
             remaining = -1;

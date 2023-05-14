@@ -369,7 +369,7 @@ namespace YLHalf
             {
                 var slot = Slots[coordinates[i]];
                 slot.State = state;
-                slot.LootId = state == InventorySlotUIState.Free ? null : loot.Id;
+                    slot.LootId = state == InventorySlotUIState.Free ? null : loot.Id;
             }
 
         }
