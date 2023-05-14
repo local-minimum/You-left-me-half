@@ -6,7 +6,7 @@ using DeCrawl.Systems;
 
 namespace YLHalf
 {
-    public class LevelTracker : MonoBehaviour
+    public class LevelTracker : FindingSingleton<LevelTracker>
     {
         [SerializeField]
         bool allowRepeatLastLevelConditions = true;
@@ -20,41 +20,28 @@ namespace YLHalf
         [SerializeField]
         Inventory inventory;
 
-        static LevelTracker instance { get; set; }
-
-        private void Awake()
-        {
-            if (instance == null) { instance = this; }
-            else if (instance != this) Destroy(this);
-        }
-
         private void OnEnable()
         {
-            Inventory.OnCanisterChange += Inventory_OnCanisterChange;
+            CurrencyTracker.OnChange += CurrencyTracker_OnChange;
         }
 
         private void OnDisable()
         {
-            Inventory.OnCanisterChange -= Inventory_OnCanisterChange;
+            CurrencyTracker.OnChange -= CurrencyTracker_OnChange;
         }
 
-        private void OnDestroy()
+        private void CurrencyTracker_OnChange(CurrencyType type, int available, int capacity)
         {
-            if (instance == this) instance = null;
-        }
-
-        private void Inventory_OnCanisterChange(CanisterType type, int stored, int capacity)
-        {
-            if (type != CanisterType.XP) return;
+            if (type != CurrencyType.XP) return;
             var levelIndex = Mathf.Max(0, inventory.PlayerLevel - 1);
 
             if (levelIndex >= xpNeededForLevel.Length && !allowRepeatLastLevelConditions) return;
 
             var refLevel = Mathf.Min(levelIndex, xpNeededForLevel.Length - 1);
 
-            if (stored < xpNeededForLevel[refLevel]) return;
+            if (available < xpNeededForLevel[refLevel]) return;
 
-            inventory.Withdraw(xpNeededForLevel[refLevel], CanisterType.XP);
+            inventory.Withdraw(xpNeededForLevel[refLevel], CurrencyType.XP);
 
             CreateLevelLoot();
 

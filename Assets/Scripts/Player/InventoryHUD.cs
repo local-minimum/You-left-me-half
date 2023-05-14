@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using System.Linq;
 using DeCrawl.Utils;
 using DeCrawl.Primitives;
+using DeCrawl.UI;
 
 namespace YLHalf
 {
@@ -20,12 +21,12 @@ namespace YLHalf
         Dictionary<string, RectTransform> Transforms = new Dictionary<string, RectTransform>();
 
         [SerializeField]
-        InventorySlotHUD slotPrefab;
+        InventorySlotUI slotPrefab;
 
         [SerializeField]
         Inventory inventory;
 
-        Dictionary<Vector2Int, InventorySlotHUD> Slots = new Dictionary<Vector2Int, InventorySlotHUD>();
+        Dictionary<Vector2Int, InventorySlotUI> Slots = new Dictionary<Vector2Int, InventorySlotUI>();
 
         private void Awake()
         {
@@ -45,28 +46,28 @@ namespace YLHalf
         private void OnEnable()
         {
             Inventory.OnInventoryChange += Inventory_OnInventoryChange;
-            InventorySlotHUD.OnBeginHoverSlot += InventorySlotHUD_OnBeginHoverSlot;
-            InventorySlotHUD.OnEndHoverSlot += InventorySlotHUD_OnEndHoverSlot;
-            InventorySlotHUD.OnBeginDragLoot += InventorySlotHUD_OnBeginDragLoot;
-            InventorySlotHUD.OnDragLoot += InventorySlotHUD_OnDragLoot;
-            InventorySlotHUD.OnEndDragLoot += InventorySlotHUD_OnEndDragLoot;
-            InventorySlotHUD.OnClickSlot += InventorySlotHUD_OnClickSlot;
+            InventorySlotUI.OnBeginHoverSlot += InventorySlotHUD_OnBeginHoverSlot;
+            InventorySlotUI.OnEndHoverSlot += InventorySlotHUD_OnEndHoverSlot;
+            InventorySlotUI.OnBeginDragLoot += InventorySlotHUD_OnBeginDragLoot;
+            InventorySlotUI.OnDragLoot += InventorySlotHUD_OnDragLoot;
+            InventorySlotUI.OnEndDragLoot += InventorySlotHUD_OnEndDragLoot;
+            InventorySlotUI.OnClickSlot += InventorySlotHUD_OnClickSlot;
             MasterOfEndings.OnEnding += MasterOfEndings_OnEnding;
         }
 
         private void OnDisable()
         {
             Inventory.OnInventoryChange -= Inventory_OnInventoryChange;
-            InventorySlotHUD.OnBeginHoverSlot -= InventorySlotHUD_OnBeginHoverSlot;
-            InventorySlotHUD.OnEndHoverSlot -= InventorySlotHUD_OnEndHoverSlot;
-            InventorySlotHUD.OnBeginDragLoot -= InventorySlotHUD_OnBeginDragLoot;
-            InventorySlotHUD.OnDragLoot -= InventorySlotHUD_OnDragLoot;
-            InventorySlotHUD.OnEndDragLoot -= InventorySlotHUD_OnEndDragLoot;
-            InventorySlotHUD.OnClickSlot -= InventorySlotHUD_OnClickSlot;
+            InventorySlotUI.OnBeginHoverSlot -= InventorySlotHUD_OnBeginHoverSlot;
+            InventorySlotUI.OnEndHoverSlot -= InventorySlotHUD_OnEndHoverSlot;
+            InventorySlotUI.OnBeginDragLoot -= InventorySlotHUD_OnBeginDragLoot;
+            InventorySlotUI.OnDragLoot -= InventorySlotHUD_OnDragLoot;
+            InventorySlotUI.OnEndDragLoot -= InventorySlotHUD_OnEndDragLoot;
+            InventorySlotUI.OnClickSlot -= InventorySlotHUD_OnClickSlot;
             MasterOfEndings.OnEnding -= MasterOfEndings_OnEnding;
         }
 
-        private void InventorySlotHUD_OnClickSlot(InventorySlotHUD slot)
+        private void InventorySlotHUD_OnClickSlot(InventorySlotUI slot)
         {
             if (
                 inventory.Repairs > 0 &&
@@ -87,12 +88,12 @@ namespace YLHalf
             {
                 if (remaining == 0)
                 {
-                    slot.State = InventorySlotHUDState.Free;
-                    slot.CorruptionCount = 0;
+                    slot.State = InventorySlotUIState.Free;
+                    slot.RomanNumeralCount = 0;
                 }
                 else if (remaining > 0)
                 {
-                    slot.CorruptionCount = remaining;
+                    slot.RomanNumeralCount = remaining;
                 }
             }
         }
@@ -112,6 +113,7 @@ namespace YLHalf
             dragged = lootId;
             dragSlotStart = hoverSlot;
             mouseDragStart = Input.mousePosition;
+            Debug.Log(dragged);
         }
 
         private void InventorySlotHUD_OnDragLoot(string lootId)
@@ -170,7 +172,7 @@ namespace YLHalf
             }
         }
 
-        private void InventorySlotHUD_OnBeginHoverSlot(InventorySlotHUD slot)
+        private void InventorySlotHUD_OnBeginHoverSlot(InventorySlotUI slot)
         {
             hoverSlot = slot.Coordinates;
 
@@ -190,13 +192,13 @@ namespace YLHalf
             {
                 ApplyOverLootSlots(slot.LootId, coordinates => { Slots[coordinates].Hover = true; });
             }
-            else if (slot.State == InventorySlotHUDState.Corrupted && inventory.Repairs > 0)
+            else if (slot.State == InventorySlotUIState.Special && inventory.Repairs > 0)
             {
-                slot.PulseCorruption();
+                slot.Pulse();
             }
         }
 
-        private void InventorySlotHUD_OnEndHoverSlot(InventorySlotHUD slot)
+        private void InventorySlotHUD_OnEndHoverSlot(InventorySlotUI slot)
         {
             hoverSlot = Vector2Int.left;
             if (dragged != null)
@@ -316,18 +318,18 @@ namespace YLHalf
 
                     if (rack.Occupied[localY, x])
                     {
-                        slot.State = InventorySlotHUDState.Occupied;
-                        slot.CorruptionCount = 0;
+                        slot.State = InventorySlotUIState.Occupied;
+                        slot.RomanNumeralCount = 0;
                     }
                     else if (rack.Corruption[localY, x] > 0)
                     {
-                        slot.State = InventorySlotHUDState.Corrupted;
-                        slot.CorruptionCount = rack.Corruption[localY, x];
+                        slot.State = InventorySlotUIState.Special;
+                        slot.RomanNumeralCount = rack.Corruption[localY, x];
                     }
                     else
                     {
-                        slot.State = InventorySlotHUDState.Free;
-                        slot.CorruptionCount = 0;
+                        slot.State = InventorySlotUIState.Free;
+                        slot.RomanNumeralCount = 0;
                     }
 
                     SlotPosition(new Vector3Int(x, y), new RectInt(0, 0, 1, 1), slot.GetComponent<RectTransform>());
@@ -360,14 +362,14 @@ namespace YLHalf
         }
 
 
-        private void ApplyNewSlotState(Lootable loot, Vector3Int placement, InventorySlotHUDState state)
+        private void ApplyNewSlotState(Lootable loot, Vector3Int placement, InventorySlotUIState state)
         {
             var coordinates = loot.InventorySlots(placement).ToArray();
             for (int i = 0; i < coordinates.Length; i++)
             {
                 var slot = Slots[coordinates[i]];
                 slot.State = state;
-                slot.LootId = state == InventorySlotHUDState.Free ? null : loot.Id;
+                slot.LootId = state == InventorySlotUIState.Free ? null : loot.Id;
             }
 
         }
@@ -383,7 +385,7 @@ namespace YLHalf
             else
             {
                 Transforms.Add(loot.Id, CreateLootUI(loot, placement));
-                ApplyNewSlotState(loot, placement, InventorySlotHUDState.Occupied);
+                ApplyNewSlotState(loot, placement, InventorySlotUIState.Occupied);
             }
         }
 
@@ -398,9 +400,9 @@ namespace YLHalf
             else
             {
 
-                ApplyNewSlotState(loot, loot.Coordinates, InventorySlotHUDState.Free);
+                ApplyNewSlotState(loot, loot.Coordinates, InventorySlotUIState.Free);
                 SlotPosition(placement, loot.UIShape, rectTransform);
-                ApplyNewSlotState(loot, placement, InventorySlotHUDState.Occupied);
+                ApplyNewSlotState(loot, placement, InventorySlotUIState.Occupied);
             }
         }
 
@@ -411,7 +413,7 @@ namespace YLHalf
             var lootTransform = Transforms[lootId];
             Destroy(lootTransform.gameObject);
             Transforms.Remove(lootId);
-            ApplyNewSlotState(loot, loot.Coordinates, InventorySlotHUDState.Free);
+            ApplyNewSlotState(loot, loot.Coordinates, InventorySlotUIState.Free);
             Debug.Log("Inventory Drop");
         }
 

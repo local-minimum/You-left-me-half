@@ -4,17 +4,16 @@ using System.Linq;
 using DeCrawl.Utils;
 using DeCrawl.Primitives;
 using DeCrawl.Enemies;
+using DeCrawl.Systems;
 
 namespace YLHalf
 {
     public enum InventoryEvent { PickUp, Drop, Move };
 
     public delegate void InventoryChange(Lootable loot, InventoryEvent inventoryEvent, Vector3Int placement);
-    public delegate void CanisterChange(CanisterType type, int stored, int capacity);
 
     public class Inventory : MonoBehaviour
     {
-        public static event CanisterChange OnCanisterChange;
         public static event InventoryChange OnInventoryChange;
 
         public static readonly int RackWidth = 8;
@@ -25,15 +24,12 @@ namespace YLHalf
         public List<InventoryRack> Racks = new List<InventoryRack>();
         public int MaxRacks = 2;
 
-        private bool alive { get; set; }
-
         private void Start()
         {
             if (MaxRacks > RackLimit)
             {
                 Debug.LogError($"{name} claims too many rack slots");
             }
-            alive = true;
         }
 
         private void OnEnable()
@@ -54,12 +50,12 @@ namespace YLHalf
 
         private void Enemy_OnKillEnemy(GameObject enemy, int xpReward)
         {
-            Receive(xpReward, CanisterType.XP);
+            Receive(xpReward, CurrencyType.XP);
         }
 
         private void BattleMaster_OnHitPlayer(int amount)
         {
-            Withdraw(amount, CanisterType.Health);
+            Withdraw(amount, CurrencyType.Health);
         }
 
         private Vector3Int playerPosition;
@@ -202,7 +198,12 @@ namespace YLHalf
                 }
                 else
                 {
-                    return;
+                    // Reset to previous position
+                    args.Consumed = true;
+                    args.Coordinates = loot.Coordinates;
+                    placement = loot.Coordinates;
+                    Drop(loot);
+                    inventoryEvent = InventoryEvent.Move;
                 }
             }
             else
@@ -263,10 +264,10 @@ namespace YLHalf
             .Select(loot => (T)loot);
 
         private IEnumerable<Canister> GetXPCanisters() => GetLoot<Canister>()
-            .Where(canister => canister.CanisterType == CanisterType.XP);
+            .Where(canister => canister.CanisterType == CurrencyType.XP);
         private IEnumerable<Canister> GetHealthCanisters() => GetLoot<Canister>()
-            .Where(canister => canister.CanisterType == CanisterType.XP);
-        private IEnumerable<Canister> GetCanisters(CanisterType type) => GetLoot<Canister>()
+            .Where(canister => canister.CanisterType == CurrencyType.XP);
+        private IEnumerable<Canister> GetCanisters(CurrencyType type) => GetLoot<Canister>()
             .Where(canister => canister.CanisterType == type);
 
 
@@ -276,15 +277,17 @@ namespace YLHalf
         public int PlayerLevel { get => GetLoot<PlayerLevel>().Count(); }
         public int Repairs { get => GetLoot<Repair>().Count(); }
 
-        public void InvokeCanisterChange(CanisterType type)
+        public void InvokeCanisterChange(CurrencyType type)
         {
             var (stored, capacity) = GetCanisters(type)
                 .Aggregate((0, 0), (acc, canister) => (acc.Item1 + canister.Stored, acc.Item2 + canister.Capacity));
 
-            OnCanisterChange?.Invoke(type, stored, capacity);
+
+            CurrencyTracker.Update(type, stored, capacity);
+            
         }
 
-        public void Receive(int amount, CanisterType type)
+        public void Receive(int amount, CurrencyType type)
         {
             var canisters = GetCanisters(type).ToArray();
 
@@ -305,7 +308,7 @@ namespace YLHalf
             InvokeCanisterChange(type);
         }
 
-        public void Withdraw(int amount, CanisterType type)
+        public void Withdraw(int amount, CurrencyType type)
         {
             var canisters = GetCanisters(type).ToArray();
             for (int i = 0; i < canisters.Length; i++)

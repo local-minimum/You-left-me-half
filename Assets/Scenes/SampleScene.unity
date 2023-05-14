@@ -490,6 +490,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fillImage: {fileID: 459033834}
+  CapacityIsFullWidthValue: 0
   FullWidthValue: 400
   type: 1
   barTransform: {fileID: 1420133360}
@@ -1906,6 +1907,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b547fe1391e49e4282af852ab285660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  health: 10
+  xpReward: 16
+  AreaAwareness: 1
+  LOSAwareness: 15
   DefaultPatterns:
   - {fileID: 500403000}
   - {fileID: 377024629}
@@ -1913,10 +1918,6 @@ MonoBehaviour:
   - {fileID: 2027370673}
   - {fileID: 523090789}
   - {fileID: 1380164536}
-  AreaAwareness: 1
-  LOSAwareness: 15
-  health: 10
-  xpReward: 16
   AllowVirtualSpace: 1
 --- !u!1 &1298018613
 GameObject:
@@ -8000,8 +8001,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fillImage: {fileID: 354794493}
+  CapacityIsFullWidthValue: 0
   FullWidthValue: 1000
-  type: 0
+  type: 2
   barTransform: {fileID: 881581722}
 --- !u!222 &2102725036
 CanvasRenderer:

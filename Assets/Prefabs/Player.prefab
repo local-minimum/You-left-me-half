@@ -441,7 +441,7 @@ MonoBehaviour:
   texture: {fileID: 2800000, guid: b5c245027a6abea42abe5f2ffbe9f6f8, type: 3}
   textureProgress: {fileID: 2800000, guid: 4d9a87bd05b135f4b8db0ef6c39ac1da, type: 3}
   textureOverlay: {fileID: 2800000, guid: 181e0837beafb1a409ead715e5560c53, type: 3}
-  CanisterType: 0
+  CanisterType: 2
   capacity: 128
   initialStored: 0
   fillMethod: 0

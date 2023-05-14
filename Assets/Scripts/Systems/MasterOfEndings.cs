@@ -17,24 +17,24 @@ namespace YLHalf
 
         private void OnEnable()
         {
-            Inventory.OnCanisterChange += Inventory_OnCanisterChange;
+            CurrencyTracker.OnChange += CurrencyTracker_OnChange;
         }
 
         private void OnDisable()
         {
-            Inventory.OnCanisterChange -= Inventory_OnCanisterChange;
+            CurrencyTracker.OnChange -= CurrencyTracker_OnChange;
         }
 
-        private void Inventory_OnCanisterChange(CanisterType type, int stored, int capacity)
+        private void CurrencyTracker_OnChange(CurrencyType type, int available, int capacity)
         {
-            if (type != CanisterType.Health) return;
+            if (type != CurrencyType.Health) return;
             if (capacity == 0)
             {
                 OnEnding?.Invoke(EndingType.Death, Ending.NoHealthCanister);
                 Game.Status = GameStatus.GameOver;
 
             }
-            else if (stored == 0)
+            else if (available == 0)
             {
                 OnEnding?.Invoke(EndingType.Death, Ending.NoHealth);
                 Game.Status = GameStatus.GameOver;

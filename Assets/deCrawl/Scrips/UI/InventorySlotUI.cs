@@ -1,21 +1,21 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DeCrawl.Utils;
+using DeCrawl.Systems;
 
-namespace YLHalf
+namespace DeCrawl.UI
 {
-    public enum InventorySlotHUDState { Corrupted, Free, Occupied };
+    public enum InventorySlotUIState { Special, Free, Occupied };
 
-    public delegate void BeginHoverSlot(InventorySlotHUD slot);
-    public delegate void EndHoverSlot(InventorySlotHUD slot);
-    public delegate void ClickSlot(InventorySlotHUD slot);
+    public delegate void BeginHoverSlot(InventorySlotUI slot);
+    public delegate void EndHoverSlot(InventorySlotUI slot);
+    public delegate void ClickSlot(InventorySlotUI slot);
     public delegate void BeginDragLoot(string lootId);
     public delegate void DragLoot(string lootId);
     public delegate void EndDragLoot(string lootId);
 
-    public class InventorySlotHUD : MonoBehaviour
+    public class InventorySlotUI : MonoBehaviour
     {
         public static event BeginHoverSlot OnBeginHoverSlot;
         public static event EndHoverSlot OnEndHoverSlot;
@@ -46,7 +46,7 @@ namespace YLHalf
         }
 
         [SerializeField]
-        Color corruptionColor;
+        Color specialColor;
 
         [SerializeField]
         Color freeColor;
@@ -75,34 +75,41 @@ namespace YLHalf
 
         private void OnEnable()
         {
-            MasterOfEndings.OnEnding += MasterOfEndings_OnEnding;
+            Game.OnChangeStatus += Game_OnChangeStatus;
         }
 
         private void OnDisable()
         {
-            MasterOfEndings.OnEnding -= MasterOfEndings_OnEnding;
+            Game.OnChangeStatus -= Game_OnChangeStatus;
         }
 
-        private void MasterOfEndings_OnEnding(EndingType type, Ending ending)
+        private void Game_OnChangeStatus(GameStatus status, GameStatus oldStatus)
         {
-            enabled = false;
-        }
-
-        private InventorySlotHUDState state = InventorySlotHUDState.Free;
-
-        [SerializeField]
-        TMPro.TextMeshProUGUI text;
-
-        public int CorruptionCount
-        {
-            set
+            if (status == GameStatus.Playing)
             {
-                text.text = value.ToRomanNumerals();
+                enabled = true;
+            } else if (status == GameStatus.CutScene || status == GameStatus.Paused || status == GameStatus.GameOver)
+            {
+                enabled = false;
             }
         }
 
 
-        public InventorySlotHUDState State
+        private InventorySlotUIState state = InventorySlotUIState.Free;
+
+        [SerializeField]
+        TMPro.TextMeshProUGUI overlayText;
+
+        public int RomanNumeralCount
+        {
+            set
+            {
+                overlayText.text = value.ToRomanNumerals();
+            }
+        }
+
+
+        public InventorySlotUIState State
         {
             get
             {
@@ -111,7 +118,8 @@ namespace YLHalf
 
             set
             {
-                if (state == InventorySlotHUDState.Corrupted && value != InventorySlotHUDState.Corrupted && pulsing)
+                // TODO: Is this really general or need to become a setting?
+                if (state == InventorySlotUIState.Special && value != InventorySlotUIState.Special && pulsing)
                 {
                     StopPulsing();
                 }
@@ -126,14 +134,14 @@ namespace YLHalf
         {
             switch (state)
             {
-                case InventorySlotHUDState.Free:
+                case InventorySlotUIState.Free:
                     image.color = freeColor;
                     break;
-                case InventorySlotHUDState.Occupied:
+                case InventorySlotUIState.Occupied:
                     image.color = occupiedColor;
                     break;
-                case InventorySlotHUDState.Corrupted:
-                    image.color = corruptionColor;
+                case InventorySlotUIState.Special:
+                    image.color = specialColor;
                     break;
             }
         }
@@ -155,9 +163,9 @@ namespace YLHalf
 
         bool pulsing = false;
 
-        public void PulseCorruption()
+        public void Pulse()
         {
-            StartCoroutine(AnimatePulse(corruptionColor));
+            StartCoroutine(AnimatePulse(specialColor));
         }
 
         IEnumerator<WaitForSeconds> AnimatePulse(Color baseColor)
