@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[ExecuteInEditMode]
-public class Level1 : Level
+namespace YLHalf
 {
-    [HideInInspector]
-    protected string[] startGrid = new string[] {
+    [ExecuteInEditMode]
+    public class Level1 : Level
+    {
+        [HideInInspector]
+        protected string[] startGrid = new string[] {
         "--xxxxx-x-xxxx-xxxx-",
         "xSxxxxx-x-xxxx-xxxxx",
         "xxxxxxx-x-xxxx-xxx-x",
@@ -19,7 +21,8 @@ public class Level1 : Level
         "xxxxxx--xxxxxxxxxxx-"
     };
 
-    protected override string[] charGrid { get => startGrid; }
+        protected override string[] charGrid { get => startGrid; }
 
-    public override int lvl => 1;
+        public override int lvl => 1;
+    }
 }

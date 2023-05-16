@@ -107,7 +107,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3103182901678295461}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b65305321d2d1f649a182036a8e16e7d, type: 3}
+  m_Script: {fileID: 11500000, guid: 715841e1a64987b4eb1f9b276195a203, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &8743733896038076187
@@ -155,7 +155,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e150e4753fe57448a0e583905dcb147, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 
+  overrideNameId: 
   InventoryShape:
   - {x: 0, y: 0}
+  ShouldBeVisibleInInventory: 1
   texture: {fileID: 2800000, guid: 0d182d56eb32aea4a8e1c36c58509a44, type: 3}

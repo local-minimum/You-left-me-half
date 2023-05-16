@@ -1,24 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using DeCrawl.World;
 
-public class LootableManifestation : WorldClickable
+namespace YLHalf
 {
-    Lootable lootable;
-
-    private void Awake()
+    /// <summary>
+    /// A simple manifestation of loot in the world that activates the gameobject
+    /// when visibile and allows for pickup if the player is one tile away
+    /// no matter where on the tile the loot is.
+    /// </summary>
+    public class LootableManifestation : AbstractLootableManifestation<GridEntity, bool>
     {
-        lootable = GetComponentInParent<Lootable>();
-    }
-
-    protected override bool PreClickCheckRefusal() => !lootable.enabled;
-
-    protected override bool RefuseClick() =>
-        lootable.Owner != LootOwner.Level ||
-        (PlayerController.instance.Position - lootable.Coordinates).CheckerDitsance() > 1;
-
-    protected override void OnClick()
-    {
-        lootable.Loot(LootOwner.Player);
+        protected override float MaxWorldPickupDistance => 4f;
+        protected override float IgnoreHightDistanceThreshold => 1.5f;
     }
 }

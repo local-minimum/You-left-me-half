@@ -45,10 +45,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d894693a13712ca42badd5cb431c9792, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 
+  overrideNameId: 
   InventoryShape:
   - {x: 0, y: 0}
   - {x: 0, y: 1}
+  ShouldBeVisibleInInventory: 1
   texture: {fileID: 2800000, guid: 5cb6aed96c7d6cd4789adfc13e032078, type: 3}
   textureProgress: {fileID: 2800000, guid: 183900591bb6058499a3a0baacafb7e1, type: 3}
   textureOverlay: {fileID: 2800000, guid: 25cb270f03349134fb8df127c20ec89d, type: 3}
@@ -163,7 +164,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 303222275}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b65305321d2d1f649a182036a8e16e7d, type: 3}
+  m_Script: {fileID: 11500000, guid: 715841e1a64987b4eb1f9b276195a203, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &377078483
@@ -273,7 +274,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 377078483}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b65305321d2d1f649a182036a8e16e7d, type: 3}
+  m_Script: {fileID: 11500000, guid: 715841e1a64987b4eb1f9b276195a203, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &414357765
@@ -384,7 +385,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 414357765}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b65305321d2d1f649a182036a8e16e7d, type: 3}
+  m_Script: {fileID: 11500000, guid: 715841e1a64987b4eb1f9b276195a203, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &443080274
@@ -432,14 +433,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d894693a13712ca42badd5cb431c9792, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 
+  overrideNameId: 
   InventoryShape:
   - {x: 0, y: 0}
   - {x: 1, y: 0}
+  ShouldBeVisibleInInventory: 1
   texture: {fileID: 2800000, guid: b5c245027a6abea42abe5f2ffbe9f6f8, type: 3}
   textureProgress: {fileID: 2800000, guid: 4d9a87bd05b135f4b8db0ef6c39ac1da, type: 3}
   textureOverlay: {fileID: 2800000, guid: 181e0837beafb1a409ead715e5560c53, type: 3}
-  CanisterType: 0
+  CanisterType: 2
   capacity: 128
   initialStored: 0
   fillMethod: 0
@@ -550,7 +552,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 476259250}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b65305321d2d1f649a182036a8e16e7d, type: 3}
+  m_Script: {fileID: 11500000, guid: 715841e1a64987b4eb1f9b276195a203, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1079141180
@@ -599,8 +601,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edf71747a000b554caa4cdd64a5e0a1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 
+  overrideNameId: 
   InventoryShape: []
+  ShouldBeVisibleInInventory: 1
   texture: {fileID: 2800000, guid: a4a4a539748e82b4f85898e0acff9bff, type: 3}
 --- !u!114 &1079141184
 MonoBehaviour:
@@ -700,8 +703,6 @@ MonoBehaviour:
   xpNeededForLevel: 0a0000001e00000064000000c8000000f401000084030000
   tokensPerLevel: 020000000300000002000000030000000200000003000000
   inventory: {fileID: 1346296669}
-  levelPrefab: {fileID: 465825370906229136, guid: 11c48ec733549d04ba85c60037e738bc, type: 3}
-  repairPrefab: {fileID: 834131501170650406, guid: d154dfde0fb9d804bb2c0b657da9dae7, type: 3}
 --- !u!1 &1407947555
 GameObject:
   m_ObjectHideFlags: 0
@@ -743,7 +744,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1407947555}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b65305321d2d1f649a182036a8e16e7d, type: 3}
+  m_Script: {fileID: 11500000, guid: 715841e1a64987b4eb1f9b276195a203, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1777973315
@@ -791,11 +792,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57f1dbebe47ad6044af02f415f18a8c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 
+  overrideNameId: 
   InventoryShape:
   - {x: 0, y: 0}
   - {x: 0, y: 1}
   - {x: 1, y: 1}
+  ShouldBeVisibleInInventory: 1
   texture: {fileID: 2800000, guid: 7dacc482edac8bc4ca1c2de577073f14, type: 3}
   GraceSeconds: 20
 --- !u!1 &1966952317
@@ -843,12 +845,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77fd66a177722b745a09b3e546a158e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 
+  overrideNameId: 
   InventoryShape:
   - {x: 0, y: 0}
   - {x: 1, y: 0}
   - {x: 1, y: 1}
   - {x: 0, y: 1}
+  ShouldBeVisibleInInventory: 1
   texture: {fileID: 2800000, guid: 0ed80cc768f9a724d9d0b5cc26185f5e, type: 3}
   textureProgress: {fileID: 2800000, guid: 5c7c13f61ca4f274e90e55c48b8b518f, type: 3}
   textureOverlay: {fileID: 2800000, guid: 73ac66714031bc1479a6272d85fd7ce2, type: 3}
@@ -992,7 +995,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7213755287841571539}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8da0605e03851884b8ef65530fb6c913, type: 3}
+  m_Script: {fileID: 11500000, guid: 9839d6b838ad2434dbac8d959ee4cd59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   QueueMovesOnButton: 1
@@ -1016,7 +1019,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 724217e690c64c249b57d39309f9db26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 
+  overrideNameId: 
 --- !u!114 &991764315
 MonoBehaviour:
   m_ObjectHideFlags: 0

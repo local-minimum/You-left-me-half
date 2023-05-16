@@ -1,63 +1,67 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DeCrawl.Utils;
+using DeCrawl.Primitives;
 
-public class Melee : EnemyPattern
+namespace YLHalf
 {
-    public int reach = 1;
-    public bool mayAttackVirtualSpace = true;
-    public AttackStats attack;
-
-    public override bool Eligible
+    public class Melee : EnemyPattern
     {
-        get
-        {
-            var offset = Level.instance.PlayerPosition - movable.Position;
-            if (offset.ManhattanMagnitude() > reach) return false;
-            if (offset.AsDirection() != movable.LookDirection) return false;
-            if (reach == 1) return true;
+        public int reach = 1;
+        public bool mayAttackVirtualSpace = true;
+        public AttackStats attack;
 
-            return GraphSearch.LineSearch(
-                new GraphSearch.LineSearchParameters(
-                    movable.Position.XZTuple(),
-                    Level.instance.PlayerPosition,
-                    (coords) =>
-                    {
-                        if (coords == movable.Position.XZTuple() || coords == Level.instance.PlayerPosition.XZTuple()) return true;
-                        switch (Level.instance.GridBaseStatus(coords))
+        public override bool Eligible
+        {
+            get
+            {
+                var offset = Level.instance.PlayerPosition - movable.Position;
+                if (offset.ManhattanMagnitude() > reach) return false;
+                if (offset.AsDirection() != movable.LookDirection) return false;
+                if (reach == 1) return true;
+
+                return LineSearch.Search(
+                    new LineSearch.SearchParameters(
+                        movable.Position.XZTuple(),
+                        Level.instance.PlayerPosition,
+                        (coords) =>
                         {
-                            case GridEntity.InBound:
-                                return true;
-                            case GridEntity.VirtualSpace:
-                                return mayAttackVirtualSpace;
-                            default:
-                                return false;
+                            if (coords == movable.Position.XZTuple() || coords == Level.instance.PlayerPosition.XZTuple()) return true;
+                            switch (Level.instance.GridBaseStatus(coords))
+                            {
+                                case GridEntity.InBound:
+                                    return true;
+                                case GridEntity.VirtualSpace:
+                                    return mayAttackVirtualSpace;
+                                default:
+                                    return false;
+                            }
                         }
-                    }
-                ), 
-                out List<(int, int)> _
-            );
+                    ),
+                    out List<(int, int)> _
+                );
+            }
         }
-    }
 
-    private void Update()
-    {
-        if (!playing || easing) return;
-
-        StartCoroutine(Attack());
-    }
-
-    IEnumerator<WaitForSeconds> Attack()
-    {
-        easing = true;
-        var playerPosition = Level.instance.PlayerPosition;
-        yield return new WaitForSeconds(attack.beforeCooldownSeconds);
-        if (playerPosition == Level.instance.PlayerPosition)
+        private void Update()
         {
-            enemy.AttackPlayer(attack);
+            if (!playing || easing) return;
+
+            StartCoroutine(Attack());
         }
-        yield return new WaitForSeconds(attack.cooldownSeconds);
-        easing = false;
-        Abort();
+
+        IEnumerator<WaitForSeconds> Attack()
+        {
+            easing = true;
+            var playerPosition = Level.instance.PlayerPosition;
+            yield return new WaitForSeconds(attack.beforeCooldownSeconds);
+            if (playerPosition == Level.instance.PlayerPosition)
+            {
+                enemy.AttackPlayer(attack);
+            }
+            yield return new WaitForSeconds(attack.cooldownSeconds);
+            easing = false;
+            Abort();
+        }
     }
 }

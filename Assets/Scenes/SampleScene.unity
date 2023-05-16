@@ -490,6 +490,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fillImage: {fileID: 459033834}
+  CapacityIsFullWidthValue: 0
   FullWidthValue: 400
   type: 1
   barTransform: {fileID: 1420133360}
@@ -1087,7 +1088,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7602a30e0ed3164abb3e53f6be515b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerSpawnDirection: 1
+  playerFirstSpawnDirection: 1
 --- !u!114 &556127345
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1586,7 +1587,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 0f8804962819f3246b9cab8adcf8480f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1875,7 +1876,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 724217e690c64c249b57d39309f9db26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 
+  overrideNameId: 
 --- !u!4 &1189414891
 Transform:
   m_ObjectHideFlags: 0
@@ -1906,6 +1907,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b547fe1391e49e4282af852ab285660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  health: 10
+  xpReward: 16
+  AreaAwareness: 1
+  LOSAwareness: 15
   DefaultPatterns:
   - {fileID: 500403000}
   - {fileID: 377024629}
@@ -1913,10 +1918,6 @@ MonoBehaviour:
   - {fileID: 2027370673}
   - {fileID: 523090789}
   - {fileID: 1380164536}
-  AreaAwareness: 1
-  LOSAwareness: 15
-  health: 10
-  xpReward: 16
   AllowVirtualSpace: 1
 --- !u!1 &1298018613
 GameObject:
@@ -2202,7 +2203,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 0f8804962819f3246b9cab8adcf8480f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7691,8 +7692,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5af6c8a2152b6754187232d002951de0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slotPrefab: {fileID: 1775396644917281067, guid: df4cd4c0ec21cb0498a676975571edb4, type: 3}
   inventory: {fileID: 7213755288295939465}
+  slotPrefab: {fileID: 1775396644917281067, guid: df4cd4c0ec21cb0498a676975571edb4, type: 3}
 --- !u!1 &1723078669
 GameObject:
   m_ObjectHideFlags: 0
@@ -7827,6 +7828,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2c09953ccd10cb4d8a290d4da849f29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  effects: 02000000
   refreshRate: 0.1
   textGUI: {fileID: 411621256}
   pulseColorA:
@@ -7837,7 +7839,25 @@ MonoBehaviour:
     rgba: 4294967295
   pulseAnimation:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -7981,8 +8001,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fillImage: {fileID: 354794493}
+  CapacityIsFullWidthValue: 0
   FullWidthValue: 1000
-  type: 0
+  type: 2
   barTransform: {fileID: 881581722}
 --- !u!222 &2102725036
 CanvasRenderer:
@@ -8163,6 +8184,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1079141183, guid: 5b4d966a1ab203d43b9e8f5ef6d8a1d0, type: 3}
+      propertyPath: ShouldBeVisibleInInventory
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7213755287841571539, guid: 5b4d966a1ab203d43b9e8f5ef6d8a1d0, type: 3}
       propertyPath: m_Name
       value: Player
