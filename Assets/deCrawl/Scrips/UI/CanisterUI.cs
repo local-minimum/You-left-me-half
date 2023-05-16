@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DeCrawl.UI;
 using DeCrawl.Lootables;
 
-namespace YLHalf
+namespace DeCrawl.UI
 {
-    public class CanisterHUD : ProgressionIcon
+    public class CanisterUI : ProgressionIcon
     {
         public Canister canister;
 

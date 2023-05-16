@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,7 +8,7 @@ namespace YLHalf
 {
     public delegate void AttackEvent(Attack attack);
 
-    public class AttackInventoryHUD : ProgressionIcon
+    public class AttackInventoryUI : ProgressionIcon
     {
         public static event AttackEvent OnAttack;
         public Attack attack;
@@ -65,7 +64,9 @@ namespace YLHalf
             if (ActionStatus == 1)
             {
                 lastAttack = Time.timeSinceLevelLoad;
-                OnAttack?.Invoke(attack);
+                if (attack) {
+                    OnAttack?.Invoke(attack);
+                }
             }
         }
 

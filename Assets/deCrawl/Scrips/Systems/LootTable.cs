@@ -113,12 +113,12 @@ namespace DeCrawl.Systems
         }
 
         public T First<T>() where T : Lootable => AvailableLootables
-            .Where(l => l.GetType() == typeof(T))
+            .Where(l => l is T)
             .FirstOrDefault() as T;
 
 
         public int Count<T>() where T : Lootable => AvailableLootables
-            .Where(l => l.GetType() == typeof(T))
+            .Where(l => l is T)
             .Count();
 
 

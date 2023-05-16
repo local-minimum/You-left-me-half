@@ -55,7 +55,7 @@ namespace YLHalf
             var rt = go.GetComponent<RectTransform>();
             rt.SetParent(transform);
 
-            var hud = go.AddComponent<AttackInventoryHUD>();
+            var hud = go.AddComponent<AttackInventoryUI>();
             if (actionLoot is Attack)
             {
                 hud.attack = actionLoot as Attack;

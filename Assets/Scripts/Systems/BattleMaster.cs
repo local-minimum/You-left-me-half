@@ -45,14 +45,14 @@ namespace YLHalf
         {
 
             Enemy.OnAttackPlayer += Enemy_OnAttackPlayer;
-            AttackInventoryHUD.OnAttack += AttackInventoryHUD_OnAttack;
+            AttackInventoryUI.OnAttack += AttackInventoryHUD_OnAttack;
             PlayerController.OnPlayerMove += PlayerController_OnPlayerMove;
         }
 
         private void OnDisable()
         {
             Enemy.OnAttackPlayer -= Enemy_OnAttackPlayer;
-            AttackInventoryHUD.OnAttack -= AttackInventoryHUD_OnAttack;
+            AttackInventoryUI.OnAttack -= AttackInventoryHUD_OnAttack;
             PlayerController.OnPlayerMove -= PlayerController_OnPlayerMove;
         }
 

@@ -183,12 +183,12 @@ namespace YLHalf
 
             if (loot is Canister)
             {
-                var canisterHUD = rt.gameObject.AddComponent<CanisterHUD>();
+                var canisterHUD = rt.gameObject.AddComponent<CanisterUI>();
                 canisterHUD.canister = loot as Canister;
             }
             else if (loot is Attack)
             {
-                var lootHUD = rt.gameObject.AddComponent<AttackInventoryHUD>();
+                var lootHUD = rt.gameObject.AddComponent<AttackInventoryUI>();
                 lootHUD.attack = loot as Attack;
             }
 
