@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using DeCrawl.Primitives;
 using DeCrawl.Systems;
 
-namespace YLHalf
+namespace DeCrawl.Lootables
 {
     public class Canister : Lootable
     {
@@ -22,21 +22,21 @@ namespace YLHalf
 
         public Image.FillMethod fillMethod = Image.FillMethod.Horizontal;
 
-        public int Capacity { get { return capacity; } }
+        public int Capacity => capacity;
 
         private int stored = 0;
         bool ready = false;
 
-        public int Stored { get { return ready ? stored : initialStored; } }
+        public int Stored => ready ? stored : initialStored;
 
-        public float Fill
-        {
-            get
-            {
-                return Mathf.Clamp01((float)stored / capacity);
-            }
-        }
+        public float ImageFill => Mathf.Clamp01((float)stored / capacity);
 
+        /// <summary>
+        /// Recieves amount
+        /// </summary>
+        /// <param name="amount"></param>
+        /// <param name="remaining"></param>
+        /// <returns>If anything remains</returns>
         public bool Receive(int amount, out int remaining)
         {
             remaining = Mathf.Max(0, stored + amount - capacity);
@@ -45,6 +45,12 @@ namespace YLHalf
             return remaining > 0;
         }
 
+        /// <summary>
+        /// Withdraws amount
+        /// </summary>
+        /// <param name="amount"></param>
+        /// <param name="remaining"></param>
+        /// <returns>If all needed was withdrawn</returns>
         public bool Withdraw(int amount, out int remaining)
         {
             remaining = Mathf.Max(0, amount - stored);

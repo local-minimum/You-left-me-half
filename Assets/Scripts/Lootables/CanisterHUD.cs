@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using DeCrawl.UI;
+using DeCrawl.Lootables;
 
 namespace YLHalf
 {
@@ -10,17 +10,16 @@ namespace YLHalf
     {
         public Canister canister;
 
-
         private void Start()
         {
             Configure();
         }
 
-        void Configure() => Configure(canister.textureProgress, canister.textureOverlay, canister.fillMethod, canister.Fill);
+        void Configure() => Configure(canister.textureProgress, canister.textureOverlay, canister.fillMethod, canister.ImageFill);
 
         private void Update()
         {
-            progressImage.fillAmount = canister.Fill;
+            progressImage.fillAmount = canister.ImageFill;
         }
     }
 }

@@ -6,7 +6,7 @@ namespace YLHalf
     public class PlayerController : AbstractPlayerController<GridEntity, bool>
     {
         protected override GridEntity PlayerEntity => GridEntity.Player;
-        protected override bool ClaimCond => !inventory.Has(loot => loot.GetType() == typeof(Uplink), out Lootable loot);
+        protected override bool ClaimCond => !inventory.Has(loot => loot is Uplink, out Lootable loot);
 
         private ILevel<GridEntity, bool> level;
         public override ILevel<GridEntity, bool> Level

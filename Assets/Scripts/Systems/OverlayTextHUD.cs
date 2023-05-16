@@ -39,7 +39,7 @@ namespace YLHalf
 
         private void Inventory_OnInventoryChange(Lootable loot, InventoryEvent inventoryEvent, Vector3Int placement)
         {
-            if (loot.GetType() == typeof(PlayerLevel))
+            if (loot is PlayerLevel)
             {
                 if (inventoryEvent == InventoryEvent.PickUp)
                 {

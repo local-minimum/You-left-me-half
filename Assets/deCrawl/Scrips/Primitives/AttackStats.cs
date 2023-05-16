@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using DeCrawl.Primitives;
 
-namespace YLHalf
+namespace DeCrawl.Primitives
 {
     [System.Serializable]
     public class AttackStats : IAttackStats

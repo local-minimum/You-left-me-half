@@ -44,6 +44,8 @@ namespace DeCrawl.Primitives
         [SerializeField]
         public Vector2Int[] InventoryShape = new Vector2Int[] { Vector2Int.zero };
 
+        public int InventorySize => InventoryShape.Length;
+
         [SerializeField]
         bool ShouldBeVisibleInInventory = true;
 

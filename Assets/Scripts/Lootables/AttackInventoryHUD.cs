@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using DeCrawl.UI;
+using DeCrawl.Lootables;
 
 namespace YLHalf
 {

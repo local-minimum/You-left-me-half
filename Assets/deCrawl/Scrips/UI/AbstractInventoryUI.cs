@@ -101,7 +101,7 @@ namespace DeCrawl.UI
 
         private void MoveLoot(Lootable loot, Vector3Int placement)
         {
-            Debug.Log("Inventory Move");
+            Debug.Log($"Inventory Move: {loot.Id}");
             var rectTransform = Transforms[loot.Id];
             if (loot.GetComponent<IInventoryBag>() != null)
             {
@@ -209,8 +209,7 @@ namespace DeCrawl.UI
         {
             dragged = lootId;
             dragSlotStart = hoverSlot;
-            mouseDragStart = Input.mousePosition;
-            Debug.Log(dragged);
+            mouseDragStart = Input.mousePosition;            
         }
 
         private void InventorySlotHUD_OnDragLoot(string lootId)

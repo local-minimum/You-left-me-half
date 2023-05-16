@@ -44,8 +44,6 @@ namespace DeCrawl.Primitives
             }
         }
 
-        public int BagIndex;
-
         /// <summary>
         /// If shape falls outside and in a bag before this one
         /// </summary>

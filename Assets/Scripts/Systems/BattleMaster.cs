@@ -4,6 +4,7 @@ using UnityEngine;
 using DeCrawl.Primitives;
 using DeCrawl.Systems;
 using DeCrawl.UI;
+using DeCrawl.Lootables;
 
 
 namespace YLHalf

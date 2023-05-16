@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using DeCrawl.Utils;
 using DeCrawl.Primitives;
 using DeCrawl.UI;
+using DeCrawl.Lootables;
 
 namespace YLHalf
 {
@@ -44,7 +45,7 @@ namespace YLHalf
                     slot.Coordinates.XYVector3Int(),
                     () =>
                     {
-                        if (inventory.Has(l => l.GetType() == typeof(Repair), out Lootable repair))
+                        if (inventory.Has(l => l is Repair, out Lootable repair))
                         {
                             repair.Loot(LootOwner.None);
                             return true;
@@ -180,12 +181,12 @@ namespace YLHalf
         {
             var rt = CreateChild($"Item: {loot.Id}", loot.texture);
 
-            if (loot.GetType() == typeof(Canister))
+            if (loot is Canister)
             {
                 var canisterHUD = rt.gameObject.AddComponent<CanisterHUD>();
                 canisterHUD.canister = loot as Canister;
             }
-            else if (loot.GetType() == typeof(Attack))
+            else if (loot is Attack)
             {
                 var lootHUD = rt.gameObject.AddComponent<AttackInventoryHUD>();
                 lootHUD.attack = loot as Attack;

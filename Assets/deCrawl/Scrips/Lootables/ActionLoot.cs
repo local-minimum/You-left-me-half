@@ -1,17 +1,14 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DeCrawl.Primitives;
 
-namespace YLHalf
+namespace DeCrawl.Lootables
 {
-    public class Attack : Lootable
+    public class ActionLoot : Lootable
     {
         public Texture2D textureProgress;
         public Texture2D textureOverlay;
         public Image.FillMethod fillMethod = Image.FillMethod.Radial360;
-        public AttackStats attackStats;
-
     }
 }
