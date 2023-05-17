@@ -30,9 +30,8 @@ namespace FP
 
         public Vector3Int Coordinates {
             get
-            {
-                var scaled = transform.position / LevelGridSize.Size;
-                return new Vector3Int(Mathf.RoundToInt(scaled.x), Mathf.RoundToInt(scaled.y), Mathf.RoundToInt(scaled.z));
+            {                
+                return NodeLevel.instance.AsGridPosition(transform.position);
             }
         }
 

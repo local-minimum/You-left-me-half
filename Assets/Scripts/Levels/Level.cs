@@ -253,7 +253,7 @@ namespace YLHalf
             return false;
         }
 
-        public Vector3Int AsWorldPosition(Vector3Int gridPosition) => gridPosition * GridScale;
+        public Vector3 AsWorldPosition(Vector3Int gridPosition) => gridPosition * GridScale;
         public Vector3Int AsGridPosition(Vector3 worldPosition) => new Vector3Int(Mathf.FloorToInt(worldPosition.x / GridScale), 0, Mathf.FloorToInt(worldPosition.z / GridScale));
 
         private static Level _instance;
