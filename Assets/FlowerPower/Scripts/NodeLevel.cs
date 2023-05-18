@@ -68,6 +68,7 @@ namespace FP {
 
             if (claimer == FPEntity.Player && !node.CanBeReachedFrom(playerPosition))
             {
+                Debug.Log($"Player can't react {node.Coordinates} from {playerPosition}");
                 return false;
             }
 
@@ -114,6 +115,7 @@ namespace FP {
         Vector3Int playerPosition;
         private void PlayerController_OnPlayerMove(Vector3Int position, CardinalDirection lookDirection)
         {
+            // Debug.Log($"Got player position {position}");
             playerPosition = position;
         }
     }

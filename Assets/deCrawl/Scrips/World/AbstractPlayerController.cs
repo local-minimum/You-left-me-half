@@ -56,7 +56,30 @@ namespace DeCrawl.World
             OnPlayerMove?.Invoke(position, lookDirection);
         }
 
+        [SerializeField]
+        float teleportDelay = 0.1f;
 
+        bool teleporting = false;
+        public void Teleport(Vector3Int position, CardinalDirection direction)
+        {
+            if (Level.ClaimPositionForced(PlayerEntity, position))
+            {
+                StartCoroutine(_Teleport(position, direction));
+            }
+        }
+
+        IEnumerator<WaitForSeconds> _Teleport(Vector3Int position, CardinalDirection direction)
+        {
+            teleporting = true;
+            Debug.Log($"Teleporting from {movableEntity.Position}");
+            yield return new WaitForSeconds(teleportDelay);
+
+            Level.ReleasePosition(PlayerEntity, movableEntity.Position);
+            movableEntity.SetNewGridPosition(position, direction);
+            OnPlayerMove?.Invoke(position, direction);
+            Debug.Log($"Teleported to {position}");
+            teleporting = false;
+        }
 
         Navigation GetKeyPress(bool alsoKey = false)
         {
@@ -76,6 +99,7 @@ namespace DeCrawl.World
 
         protected void Update()
         {
+            if (teleporting) return;
             var nav = GetKeyPress();
             switch (nav)
             {
@@ -106,6 +130,12 @@ namespace DeCrawl.World
             int moveIndex = 0;
             while (true)
             {
+                if (teleporting)
+                {
+                    yield return new WaitForSeconds(0.02f);
+                    continue;
+                }
+
                 Navigation nav = navigationQueue[moveIndex];
                 if (nav == Navigation.None)
                 {
