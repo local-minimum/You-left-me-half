@@ -7592,6 +7592,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2086558796}
     m_Modifications:
+    - target: {fileID: 7914339273002438432, guid: b8c8e4f3b5025e1499817458d6d67df2, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7914339274635756917, guid: b8c8e4f3b5025e1499817458d6d67df2, type: 3}
       propertyPath: m_Name
       value: FourWalls

@@ -26,7 +26,7 @@ namespace DeCrawl.UI
         [SerializeField, Range(0, 100)]
         float pulseCharacterLength = 10;
 
-        private void Start()
+        private void OnEnable()
         {
             if (textGUI == null)
             {
@@ -34,6 +34,11 @@ namespace DeCrawl.UI
             }
 
             StartCoroutine(Animate());
+        }
+
+        private void OnDisable()
+        {
+            StopAllCoroutines();
         }
 
         private void ApplyColor(
