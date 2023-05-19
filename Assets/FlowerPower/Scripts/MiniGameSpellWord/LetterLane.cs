@@ -68,6 +68,8 @@ namespace FP
             }
         }
 
+        char currentLetter;
+
         void SpawnLetter()
         {
             var letter = RandomLetter;
@@ -81,14 +83,17 @@ namespace FP
 
             SetSlider();
 
+            currentLetter = letter;
             SlidingLetter.text = letter.ToString();
             sliding = true;
         }
 
+        float yPosition;
+
         void SetSlider()
         {
-            var position = spawnOffset + direction * (Time.timeSinceLevelLoad - startTime) * speed;
-            var offset = new Vector2(0, position);
+            yPosition = spawnOffset + direction * (Time.timeSinceLevelLoad - startTime) * speed;
+            var offset = new Vector2(0, yPosition);
             SlidingLetter.rectTransform.anchorMin = offset;
             offset.x = 1;
             SlidingLetter.rectTransform.anchorMax = offset;
@@ -97,11 +102,11 @@ namespace FP
 
             if (direction > 0)
             {
-                sliding = position < killPosition;
+                sliding = yPosition < killPosition;
             }
             else
             {
-                sliding = position > killPosition;
+                sliding = yPosition > killPosition;
             }
 
             if (!sliding)
@@ -124,6 +129,33 @@ namespace FP
             {
                 SpawnLetter();
             }
+        }
+
+        public bool Handle(char ch, bool asGood)
+        {
+            if (ch != currentLetter || !sliding) return false;
+
+            var letterZone = yPosition >= 0.4 && yPosition <= 0.6;
+
+            if (asGood)
+            {
+                if (letterZone == ShowingCorrectLetter)
+                {
+                    startTime = -1;
+                    Debug.Log($"Good clear {currentLetter}");
+                    return true;
+                }
+            } else
+            {
+                if (letterZone != ShowingCorrectLetter)
+                {
+                    startTime = -1;
+                    Debug.Log($"Bad clear {currentLetter}");
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -52,9 +53,41 @@ namespace FP
             }
         }
 
+        IEnumerable<char> PressedLetters => Input.inputString
+            .ToUpper()
+            .ToCharArray()
+            .Where(ch => ch != '\n' || ch != '\r' || ch != '\b');
+
+
+        bool ApplyOverLanes(System.Func<LetterLane, bool> predicate)
+        {
+            bool anySuccess = false;
+            for (int i = 0; i<ChallengeWord.Length; i++)
+            {
+                anySuccess = predicate(lanes[i]) || anySuccess;
+            }
+
+            return anySuccess;
+        }
+
         private void Update()
         {
-            
+            if (!PlayingField.activeSelf) return;
+
+            foreach (var ch in PressedLetters)
+            {
+                var anyGood = ApplyOverLanes(lane => lane.Handle(ch, true));
+                if (!anyGood)
+                {
+                    if (ApplyOverLanes(lane => lane.Handle(ch, false)))
+                    {
+                        Debug.Log($"Player pressed {ch} but this was bad");
+                    }
+                    else {
+                        Debug.Log($"Player pressed {ch} but was not present");
+                    }
+                }
+            }
         }
     }
 }
