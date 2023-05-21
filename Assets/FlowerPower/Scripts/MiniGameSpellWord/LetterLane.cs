@@ -34,6 +34,12 @@ namespace FP
         [SerializeField]
         float BetweenMaxTime = 0.5f;
 
+        [SerializeField]
+        Color goodZoneColor;
+
+        [SerializeField]
+        Color badZoneColor;
+
         private void OnEnable()
         {
             TargetLetter.text = letter.ToString();
@@ -90,6 +96,9 @@ namespace FP
 
         float yPosition;
 
+        bool InLetterZone => yPosition >= 0.4 && yPosition <= 0.6;
+  
+
         void SetSlider()
         {
             yPosition = spawnOffset + direction * (Time.timeSinceLevelLoad - startTime) * speed;
@@ -98,7 +107,7 @@ namespace FP
             offset.x = 1;
             SlidingLetter.rectTransform.anchorMax = offset;
 
-
+            SlidingLetter.color = InLetterZone == ShowingCorrectLetter ? goodZoneColor : badZoneColor;
 
             if (direction > 0)
             {
@@ -135,7 +144,7 @@ namespace FP
         {
             if (ch != currentLetter || !sliding) return false;
 
-            var letterZone = yPosition >= 0.4 && yPosition <= 0.6;
+            var letterZone = InLetterZone;
 
             if (asGood)
             {

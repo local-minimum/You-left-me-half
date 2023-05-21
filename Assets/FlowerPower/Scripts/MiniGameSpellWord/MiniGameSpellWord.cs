@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UIElements;
+using DeCrawl.Systems;
 
 namespace FP
 {
@@ -20,16 +20,25 @@ namespace FP
         [SerializeField]
         LetterLane LetterLanePrefab;
 
+        [SerializeField]
+        TMPro.TextMeshProUGUI EnemyName;        
+
         List<LetterLane> lanes = new List<LetterLane>();
 
         public void DisableContent()
         {
+            CurrencyTracker.Update(CurrencyType.Health, 100, 300);
+
             PlayingField.SetActive(false);
         }
 
         public void InitiateFight()
         {
+            
             PlayingField.SetActive(true);
+
+            EnemyName.text = ChallengeWord;
+            CurrencyTracker.Update(CurrencyType.BossHealth, 100, 100);
 
             var nLanes = lanes.Count;
             for (int i = 0, l = Mathf.Max(nLanes, ChallengeWord.Length); i < l; i++)
@@ -56,19 +65,37 @@ namespace FP
         IEnumerable<char> PressedLetters => Input.inputString
             .ToUpper()
             .ToCharArray()
-            .Where(ch => ch != '\n' || ch != '\r' || ch != '\b');
+            .Where(ch => ch != ' ' || ch != '\n' || ch != '\r' || ch != '\b');
 
 
-        bool ApplyOverLanes(System.Func<LetterLane, bool> predicate)
+        int ApplyOverLanes(System.Func<LetterLane, bool> predicate)
         {
-            bool anySuccess = false;
+            int count = 0;
             for (int i = 0; i<ChallengeWord.Length; i++)
             {
-                anySuccess = predicate(lanes[i]) || anySuccess;
+                if (predicate(lanes[i]))
+                {
+                    count++;
+                }
             }
 
-            return anySuccess;
+            return count;
         }
+
+        [SerializeField]
+        int omissiongHealthCost = 20;
+
+        [SerializeField]
+        int badHealth = 5;
+
+        [SerializeField]
+        int goodComboHealthBonus = 10;
+
+        [SerializeField]
+        int hitDamage = 5;
+
+        [SerializeField]
+        int comboHitDamage = 10;
 
         private void Update()
         {
@@ -76,15 +103,28 @@ namespace FP
 
             foreach (var ch in PressedLetters)
             {
-                var anyGood = ApplyOverLanes(lane => lane.Handle(ch, true));
-                if (!anyGood)
+                var nGood = ApplyOverLanes(lane => lane.Handle(ch, true));
+                if (nGood > 0)
                 {
-                    if (ApplyOverLanes(lane => lane.Handle(ch, false)))
+                    if (nGood > 1)
                     {
-                        Debug.Log($"Player pressed {ch} but this was bad");
+                        CurrencyTracker.AddAvailable(CurrencyType.Health, goodComboHealthBonus * nGood);
+                        CurrencyTracker.SubtractAvailable(CurrencyType.BossHealth, comboHitDamage + hitDamage * nGood);
+                    } else
+                    {
+                        CurrencyTracker.SubtractAvailable(CurrencyType.BossHealth, hitDamage);
+                    }
+                }
+                else
+                {
+                    var nBad = ApplyOverLanes(lane => lane.Handle(ch, false));
+                    if (nBad > 0)
+                    {
+                        CurrencyTracker.SubtractAvailable(CurrencyType.Health, badHealth * nBad);
                     }
                     else {
-                        Debug.Log($"Player pressed {ch} but was not present");
+                        Debug.Log(ch);
+                        CurrencyTracker.SubtractAvailable(CurrencyType.Health, omissiongHealthCost);
                     }
                 }
             }

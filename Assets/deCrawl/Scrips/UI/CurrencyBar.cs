@@ -23,6 +23,9 @@ namespace DeCrawl.UI
         [SerializeField]
         RectTransform barTransform;
 
+        [SerializeField]
+        TMPro.TextMeshProUGUI changeText;
+
         int Capacity;
 
         private void Update()
@@ -46,6 +49,35 @@ namespace DeCrawl.UI
             barTransform.anchorMax = new Vector2((float)Capacity / FullWidthValue, 1);
             barTransform.offsetMax = Vector2.zero;
         }
+
+        int trackedAvailable = -1;
+
+        [SerializeField]
+        float showChangeTime = 1f;
+
+        [SerializeField]
+        Color gainColor;
+
+        [SerializeField]
+        Color lossColor;
+
+        int lastChange = 0;
+        IEnumerator<WaitForSeconds> ShowChange(int change)
+        {
+            if (change == 0) yield break;
+
+            lastChange = change;
+            changeText.color = change > 0 ? gainColor : lossColor;
+            changeText.text = change > 0 ? $"+{change}" : change.ToString();
+
+            yield return new WaitForSeconds(showChangeTime);
+
+            if (lastChange == change)
+            {
+                changeText.text = "";
+            }
+        }
+
         private void CurrencyTracker_OnChange(CurrencyType type, int available, int capacity)
         {
             if (type != this.type) return;
@@ -60,6 +92,15 @@ namespace DeCrawl.UI
             }
 
             fillImage.fillAmount = capacity == 0 ? 0 : Mathf.Min(1, (float)available / capacity);
+
+            if (changeText != null)
+            {
+                if (trackedAvailable > 0)
+                {
+                    StartCoroutine(ShowChange(available - trackedAvailable));
+                }
+                trackedAvailable = available;
+            }
         }
     }
 }

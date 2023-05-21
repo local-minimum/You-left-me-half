@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace DeCrawl.Systems
 {
-    public enum CurrencyType { Money, Health, XP }
+    public enum CurrencyType { Money, Health, XP, BossHealth }
     public static class CurrencyTracker
     {
         public delegate void ChangeEvent(CurrencyType type, int available, int capacity);
@@ -25,6 +25,15 @@ namespace DeCrawl.Systems
         }
 
         private static Dictionary<CurrencyType, int> Available = new Dictionary<CurrencyType, int>();
+
+        public static void AddAvailable(CurrencyType type, int amount) => SubtractAvailable(type, -amount);
+        public static void SubtractAvailable(CurrencyType type, int amount)
+        {
+            var available = Mathf.Max(0, Available.GetValueOrDefault(type, 0) - amount);
+            Available[type] = available;
+            
+            OnChange?.Invoke(type, available, Capacity.GetValueOrDefault(type, available));
+        }
 
         /// <summary>
         /// Sets available amount, if capacity hasn't been regisered then it's assumed to be same as available
