@@ -74,8 +74,11 @@ namespace FP
                 if (type == CurrencyType.Health)
                 {
                     playerAlive = false;
-                }
-                StartPhase(Phase.Epilogue);
+                    StartPhase(Phase.Done);
+                } else
+                {
+                    StartPhase(Phase.Epilogue);
+                }                
             }
         }
 

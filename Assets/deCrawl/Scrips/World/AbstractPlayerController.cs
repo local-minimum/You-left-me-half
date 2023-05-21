@@ -144,8 +144,15 @@ namespace DeCrawl.World
             int moveIndex = 0;
             while (true)
             {
-                if (teleporting)
+                if (teleporting || !NavigationAllowed)
                 {
+                    if (!NavigationAllowed)
+                    {
+                        for (int i =0; i<navigationQueue.Count; i++)
+                        {
+                            navigationQueue[i] = Navigation.None;
+                        }                        
+                    }
                     yield return new WaitForSeconds(0.02f);
                     continue;
                 }

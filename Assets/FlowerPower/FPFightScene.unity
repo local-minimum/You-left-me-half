@@ -1398,17 +1398,20 @@ MonoBehaviour:
   Interlocutor: {fileID: 1308281183, guid: 4e5f2070666c618419bbb185ae677e98, type: 3}
   prologue:
   - Speaker: 1
-    Text: Who are you that stand at my door step gawking through to the other side
+    Text: Who are you that stand at my doorstep gawking through to the other side
       like you've never seen a proper wrought iron gate before?
   - Speaker: 2
-    Text: Huh?
+    Text: ...?
   - Speaker: 1
-    Text: A stupid wide eyed oogler it seems, without manners and perhaps suffering
-      a faulty speach apparatur. Wonderful!
+    Text: A stupid wide eyed oogler it seems! Without manners and perhaps suffering
+      a faulty speach apparatus too. Wonderful!
   - Speaker: 0
-    Text: The gate stared back. This was apparently a thing. Meanwhile, the player
-      struggled to formulate their first coherent word.
-  epilogue: []
+    Text: The gate stared back at the player. This was apparently a thing.
+  - Speaker: 0
+    Text: Meanwhile, the player struggled to formulate their first coherent word.
+  epilogue:
+  - Speaker: 1
+    Text: G-A-T-E! Good that you managed as much.
   TextArea: {fileID: 1749479334}
   Elipsis: {fileID: 1849720188}
   InterlocutorAvatar: {fileID: 1578261058}
