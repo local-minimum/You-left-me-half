@@ -2,12 +2,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DeCrawl.Primitives;
+using DeCrawl.Systems;
 
 namespace FP
 {
     public class Interaction : FindingSingleton<Interaction>
     {
-        public enum Phase { Prologue, Fight, Epilogue }
+        public enum Phase { Prologue, Fight, Epilogue, Done }
         public enum Speaker { Narrator, Interlocutor, Player };
 
         [System.Serializable]
@@ -36,6 +37,9 @@ namespace FP
         Image InterlocutorAvatar;
 
         [SerializeField]
+        Image AvatarBackground;
+
+        [SerializeField]
         GameObject PlayerAvatar;
 
         [SerializeField, Range(0, 3)]
@@ -49,16 +53,48 @@ namespace FP
         {
             InterlocutorAvatar.sprite = Interlocutor;
             StartPhase(Phase.Prologue);
+            CurrencyTracker.OnChange += CurrencyTracker_OnChange;
+            
+        }
+
+        private void OnDisable()
+        {
+            CurrencyTracker.OnChange -= CurrencyTracker_OnChange;
+        }
+
+        bool playerAlive = true;
+
+        private void CurrencyTracker_OnChange(CurrencyType type, int available, int capacity)
+        {
+            if (phase != Phase.Fight && (type != CurrencyType.BossHealth || type != CurrencyType.Health)) return;
+
+
+            if (available == 0)
+            {
+                if (type == CurrencyType.Health)
+                {
+                    playerAlive = false;
+                }
+                StartPhase(Phase.Epilogue);
+            }
         }
 
         void StartPhase(Phase phase)
         {
             this.phase = phase;
+
             phaseStep = -1;
             EnableAvatar(Speaker.Narrator);
             UpdateText("");
 
-            if (phase == Phase.Fight)
+            if (phase == Phase.Done)
+            {
+                TextArea.transform.parent.gameObject.SetActive(false);
+                GetComponent<IFight>().DisableContent();
+                Game.Status = playerAlive ? GameStatus.Playing : GameStatus.GameOver;
+                return;
+            }
+            else if (phase == Phase.Fight)
             {
                 TextArea.transform.parent.gameObject.SetActive(false);
                 GetComponent<IFight>().InitiateFight();
@@ -66,7 +102,7 @@ namespace FP
             {
                 GetComponent<IFight>().DisableContent();
                 TextArea.transform.parent.gameObject.SetActive(true);
-            }
+            }            
         }
 
         void EnableAvatar(Speaker speaker)
@@ -74,14 +110,17 @@ namespace FP
             switch (speaker)
             {
                 case Speaker.Narrator:
+                    AvatarBackground.gameObject.SetActive(false);
                     InterlocutorAvatar.gameObject.SetActive(false);
                     PlayerAvatar.gameObject.SetActive(false);
                     break;
                 case Speaker.Player:
+                    AvatarBackground.gameObject.SetActive(true);
                     InterlocutorAvatar.gameObject.SetActive(false);
                     PlayerAvatar.gameObject.SetActive(true);
                     break;
                 case Speaker.Interlocutor:
+                    AvatarBackground.gameObject.SetActive(true);
                     InterlocutorAvatar.gameObject.SetActive(true);
                     PlayerAvatar.gameObject.SetActive(false);
                     break;
@@ -102,6 +141,15 @@ namespace FP
             if (phaseStep == prologue.Length) return false;
 
             var step = prologue[phaseStep];
+            StartCoroutine(ProgressStep(step));
+            return true;
+        }
+        bool ProgressEpilogue()
+        {
+            phaseStep++;
+            if (phaseStep == epilogue.Length) return false;
+
+            var step = epilogue[phaseStep];
             StartCoroutine(ProgressStep(step));
             return true;
         }
@@ -152,6 +200,22 @@ namespace FP
                         StartPhase(Phase.Fight);
                     }
                     break;
+                case Phase.Epilogue:
+                    if (phaseStep >= 0)
+                    {
+                        if (ContinueTalk)
+                        {
+                            if (!ProgressEpilogue())
+                            {
+                                StartPhase(Phase.Done);
+                            }
+                        }
+                    } else if (!ProgressEpilogue())
+                    {
+                        StartPhase(Phase.Done);
+                    }
+                    break;
+
             }
         }
     }

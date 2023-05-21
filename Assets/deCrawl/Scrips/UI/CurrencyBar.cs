@@ -93,9 +93,9 @@ namespace DeCrawl.UI
 
             fillImage.fillAmount = capacity == 0 ? 0 : Mathf.Min(1, (float)available / capacity);
 
-            if (changeText != null)
+            if (changeText != null && gameObject.activeSelf)
             {
-                if (trackedAvailable > 0)
+                if (trackedAvailable > 0 && available > 0)
                 {
                     StartCoroutine(ShowChange(available - trackedAvailable));
                 }

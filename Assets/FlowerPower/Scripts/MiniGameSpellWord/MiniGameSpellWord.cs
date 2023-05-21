@@ -120,7 +120,7 @@ namespace FP
                 var nGood = ApplyOverLanes(lane => lane.Handle(ch, true));
                 if (nGood > 0)
                 {
-                    Debug.Log($"Good letter {ch} {nGood}");
+                    // Debug.Log($"Good letter {ch} {nGood}");
                     if (nGood > 1)
                     {
                         CurrencyTracker.AddAvailable(CurrencyType.Health, goodComboHealthBonus * nGood);
@@ -133,7 +133,7 @@ namespace FP
                 else
                 {
                     var nBad = ApplyOverLanes(lane => lane.Handle(ch, false));
-                    Debug.Log($"Bad letter {ch} {nBad}");
+                    // Debug.Log($"Bad letter {ch} {nBad}");
                     if (nBad > 0)
                     {
                         CurrencyTracker.SubtractAvailable(CurrencyType.Health, badHealth * nBad);

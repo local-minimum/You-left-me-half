@@ -13,11 +13,18 @@ namespace FP
         [SerializeField]
         CardinalDirection teleportDirection;
 
-        LevelNode node;
+        LevelNode _node;
 
-        private void Start()
+        LevelNode node
         {
-            node = GetComponent<LevelNode>();
+            get
+            {
+                if (_node == null)
+                {
+                    _node = GetComponent<LevelNode>();
+                }
+                return _node;
+            }
         }
 
         private void OnEnable()

@@ -1,6 +1,8 @@
+using UnityEngine;
+
 namespace DeCrawl.Systems
 {
-    public enum GameStatus { Unknown, Playing, CutScene, Paused, GameOver };
+    public enum GameStatus { Unknown, Playing, CutScene, Paused, FightScene, GameOver };
 
     public delegate void GameStatusChangeEvent(GameStatus status, GameStatus oldStatus);
     public static class Game
@@ -18,6 +20,7 @@ namespace DeCrawl.Systems
 
             set
             {
+                Debug.Log($"Game Status {_status} => {value}");
                 OnChangeStatus?.Invoke(value, _status);
                 _status = value;
             }

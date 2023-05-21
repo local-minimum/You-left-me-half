@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DeCrawl.Primitives;
+using DeCrawl.Systems;
 
 namespace DeCrawl.World
 {
@@ -47,13 +48,23 @@ namespace DeCrawl.World
             movableEntity = GetComponent<AbstractMovingEntity<Entity, ClaimCondition>>();            
             movableEntity.OnMove += MovableEntity_OnMove;
 
+            Game.OnChangeStatus += Game_OnChangeStatus;
+            NavigationAllowed = Game.Status == GameStatus.Playing;
+
             var lookDirection = Level.PlayerFirstSpawnDirection;
             var position = Level.PlayerFirstSpawnPosition;
 
 
             movableEntity.SetNewGridPosition(position, lookDirection);
-            Level.ClaimPosition(PlayerEntity, position, ClaimCond);
+            Level.ClaimPosition(PlayerEntity, position, ClaimCond);            
             OnPlayerMove?.Invoke(position, lookDirection);
+        }
+
+        protected bool NavigationAllowed { get; private set; }
+
+        private void Game_OnChangeStatus(GameStatus status, GameStatus oldStatus)
+        {
+            NavigationAllowed = status == GameStatus.Playing;    
         }
 
         [SerializeField]
@@ -99,7 +110,10 @@ namespace DeCrawl.World
 
         protected void Update()
         {
+            if (!NavigationAllowed) return;
+
             if (teleporting) return;
+
             var nav = GetKeyPress();
             switch (nav)
             {

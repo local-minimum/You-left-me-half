@@ -1434,6 +1434,24 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2596205675990107672, guid: d25ef63969803b8428753ae8fc875990, type: 3}
   m_PrefabInstance: {fileID: 122225546}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &122225548 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2596205675990107674, guid: d25ef63969803b8428753ae8fc875990, type: 3}
+  m_PrefabInstance: {fileID: 122225546}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &122225549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 122225548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d96b43a9ccf87104e83d3fa94dc12dcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fightScene: FPFightScene
 --- !u!4 &122655536 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7914339274635756923, guid: b8c8e4f3b5025e1499817458d6d67df2, type: 3}
@@ -6922,6 +6940,7 @@ GameObject:
   - component: {fileID: 675651474}
   - component: {fileID: 675651473}
   - component: {fileID: 675651475}
+  - component: {fileID: 675651476}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -6980,6 +6999,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   overrideNameId: 
+--- !u!114 &675651476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 675651472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9372ff0bb930d2a41a173d31b4c6f84f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &675949670
 PrefabInstance:
   m_ObjectHideFlags: 0

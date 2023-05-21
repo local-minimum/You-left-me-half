@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/FlowerPower/FPLevelScene.unity
+    guid: 12425ad38cd39ad4394f5718df9f1899
+  - enabled: 1
+    path: Assets/FlowerPower/FPFightScene.unity
+    guid: 33747e07ab9b4c24185316d468f6c455
   m_configObjects: {}
