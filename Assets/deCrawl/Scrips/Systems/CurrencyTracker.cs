@@ -30,6 +30,7 @@ namespace DeCrawl.Systems
         public static void SubtractAvailable(CurrencyType type, int amount)
         {
             var available = Mathf.Max(0, Available.GetValueOrDefault(type, 0) - amount);
+            // Debug.Log($"{type}: {Available[type]} => {available}");
             Available[type] = available;
             
             OnChange?.Invoke(type, available, Capacity.GetValueOrDefault(type, available));

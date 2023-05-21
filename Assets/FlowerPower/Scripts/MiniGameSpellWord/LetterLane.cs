@@ -7,6 +7,10 @@ namespace FP
 {
     public class LetterLane : MonoBehaviour
     {
+        public delegate void MissedLetter(char letter);
+
+        public static event MissedLetter OnMissedLetter;
+
         [SerializeField]
         float startOutside = 0.2f;
 
@@ -121,6 +125,7 @@ namespace FP
             if (!sliding)
             {
                 startTime = -1;
+                OnMissedLetter?.Invoke(letter);
             }
         }
 
@@ -151,7 +156,7 @@ namespace FP
                 if (letterZone == ShowingCorrectLetter)
                 {
                     startTime = -1;
-                    Debug.Log($"Good clear {currentLetter}");
+                    sliding = false;
                     return true;
                 }
             } else
@@ -159,7 +164,7 @@ namespace FP
                 if (letterZone != ShowingCorrectLetter)
                 {
                     startTime = -1;
-                    Debug.Log($"Bad clear {currentLetter}");
+                    sliding = false;
                     return true;
                 }
             }

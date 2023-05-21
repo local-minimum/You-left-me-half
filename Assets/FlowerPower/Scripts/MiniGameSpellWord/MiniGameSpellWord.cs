@@ -21,7 +21,21 @@ namespace FP
         LetterLane LetterLanePrefab;
 
         [SerializeField]
-        TMPro.TextMeshProUGUI EnemyName;        
+        TMPro.TextMeshProUGUI EnemyName;
+
+        private void OnEnable()
+        {
+            LetterLane.OnMissedLetter += LetterLane_OnMissedLetter;
+        }
+
+        private void OnDisable()
+        {
+            LetterLane.OnMissedLetter -= LetterLane_OnMissedLetter;
+        }
+        private void LetterLane_OnMissedLetter(char letter)
+        {
+            CurrencyTracker.SubtractAvailable(CurrencyType.Health, omissionHealthCost);
+        }
 
         List<LetterLane> lanes = new List<LetterLane>();
 
@@ -65,7 +79,7 @@ namespace FP
         IEnumerable<char> PressedLetters => Input.inputString
             .ToUpper()
             .ToCharArray()
-            .Where(ch => ch != ' ' || ch != '\n' || ch != '\r' || ch != '\b');
+            .Where(ch => (short)ch >= 64 && ch != ' ' && ch != '\n' && ch != '\r' && ch != '\b');
 
 
         int ApplyOverLanes(System.Func<LetterLane, bool> predicate)
@@ -83,7 +97,7 @@ namespace FP
         }
 
         [SerializeField]
-        int omissiongHealthCost = 20;
+        int omissionHealthCost = 20;
 
         [SerializeField]
         int badHealth = 5;
@@ -106,6 +120,7 @@ namespace FP
                 var nGood = ApplyOverLanes(lane => lane.Handle(ch, true));
                 if (nGood > 0)
                 {
+                    Debug.Log($"Good letter {ch} {nGood}");
                     if (nGood > 1)
                     {
                         CurrencyTracker.AddAvailable(CurrencyType.Health, goodComboHealthBonus * nGood);
@@ -118,13 +133,14 @@ namespace FP
                 else
                 {
                     var nBad = ApplyOverLanes(lane => lane.Handle(ch, false));
+                    Debug.Log($"Bad letter {ch} {nBad}");
                     if (nBad > 0)
                     {
                         CurrencyTracker.SubtractAvailable(CurrencyType.Health, badHealth * nBad);
                     }
                     else {
-                        Debug.Log(ch);
-                        CurrencyTracker.SubtractAvailable(CurrencyType.Health, omissiongHealthCost);
+                        // Pressing something else not involved in the game
+                        CurrencyTracker.SubtractAvailable(CurrencyType.Health, omissionHealthCost);
                     }
                 }
             }
