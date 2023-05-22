@@ -54,6 +54,7 @@ namespace FP
             Interlocutor = interlocutorSprite;
             this.prologue = prologue;
             this.epilogue = epilogue;
+            InterlocutorAvatar.sprite = Interlocutor;
         }
 
         private void OnEnable()

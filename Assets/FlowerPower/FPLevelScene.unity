@@ -4123,6 +4123,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7914339274635756923, guid: b8c8e4f3b5025e1499817458d6d67df2, type: 3}
   m_PrefabInstance: {fileID: 1762287065}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &353300542 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2596205675990107674, guid: d25ef63969803b8428753ae8fc875990, type: 3}
+  m_PrefabInstance: {fileID: 402946522}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &354096373 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2596205675990107672, guid: d25ef63969803b8428753ae8fc875990, type: 3}
@@ -4546,6 +4551,34 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2596205675990107672, guid: d25ef63969803b8428753ae8fc875990, type: 3}
   m_PrefabInstance: {fileID: 402946522}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &402946525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 353300542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d96b43a9ccf87104e83d3fa94dc12dcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fightScene: FPFightScene
+  allowRepeatTriggering: 0
+  InterlocutorSprite: {fileID: 835998764, guid: 4e5f2070666c618419bbb185ae677e98, type: 3}
+  Interlocutor: Sign
+  prologue:
+  - Speaker: 0
+    Text: The player was sure signs were supposed to be helpful.
+  - Speaker: 0
+    Text: But this one didn't seem to be pointing clearly towards anything in particular.
+      Or multple things at the same time.
+  - Speaker: 0
+    Text: And there was no text, not a single character written on it.
+  - Speaker: 1
+    Text: What. Do. You. Want?
+  FightWord: SIGN
+  epilogue: []
 --- !u!4 &410828755 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2596205675990107672, guid: d25ef63969803b8428753ae8fc875990, type: 3}
