@@ -4,11 +4,15 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using DeCrawl.Systems;
+using DeCrawl.Primitives;
 
 namespace FP
 {
     public class FightTrigger : MonoBehaviour
     {
+        [SerializeField]
+        CardinalDirection forceDirection;
+
         [SerializeField]
         string fightScene;
 
@@ -63,6 +67,7 @@ namespace FP
             spellWordFight.Configure(Interlocutor, FightWord);
 
             Game.Status = GameStatus.FightScene;
+
         }
 
         private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
@@ -80,6 +85,11 @@ namespace FP
             if (triggered) return;
             if (GetComponent<LevelNode>().Coordinates != position) return;
 
+            if (forceDirection != CardinalDirection.Invalid && lookDirection != forceDirection)
+            {
+                PlayerController.instance.Teleport(position, forceDirection);
+            }
+            
             LoadInteractionIfNeeded();            
 
             if (!allowRepeatTriggering) {
