@@ -18,6 +18,9 @@ namespace FP
         string ChallengeWord;
 
         [SerializeField]
+        string Enemy;
+
+        [SerializeField]
         LetterLane LetterLanePrefab;
 
         [SerializeField]
@@ -46,12 +49,18 @@ namespace FP
             PlayingField.SetActive(false);
         }
 
+        public void Configure(string enemy, string challengeWord)
+        {
+            ChallengeWord = challengeWord;
+            Enemy = enemy;
+        }
+
         public void InitiateFight()
         {
             
             PlayingField.SetActive(true);
 
-            EnemyName.text = ChallengeWord;
+            EnemyName.text = Enemy;
             CurrencyTracker.Update(CurrencyType.BossHealth, 100, 100);
 
             var nLanes = lanes.Count;

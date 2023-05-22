@@ -1452,6 +1452,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fightScene: FPFightScene
+  allowRepeatTriggering: 0
+  InterlocutorSprite: {fileID: 1308281183, guid: 4e5f2070666c618419bbb185ae677e98, type: 3}
+  Interlocutor: Gate
+  prologue:
+  - Speaker: 1
+    Text: Who are you that stand at my doorstep gawking through to the other side
+      like you've never seen a proper wrought iron gate before?
+  - Speaker: 2
+    Text: ...?
+  - Speaker: 1
+    Text: A stupid wide eyed oogler it seems! Without manners and perhaps suffering
+      a faulty speach apparatus too. Wonderful!
+  - Speaker: 0
+    Text: The gate stared back at the player. This was apparently a thing.
+  - Speaker: 0
+    Text: Meanwhile, the player struggled to formulate their first coherent word.
+  FightWord: GATE
+  epilogue:
+  - Speaker: 0
+    Text: G-A-T-E! Great, you managed that much at least.
 --- !u!4 &122655536 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7914339274635756923, guid: b8c8e4f3b5025e1499817458d6d67df2, type: 3}

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using DeCrawl.Systems;
 
 namespace FP
@@ -10,6 +11,24 @@ namespace FP
     {
         [SerializeField]
         string fightScene;
+
+        [SerializeField]
+        bool allowRepeatTriggering = false;
+
+        [SerializeField]
+        Sprite InterlocutorSprite;
+
+        [SerializeField]
+        string Interlocutor;
+
+        [SerializeField]
+        Interaction.TextPrompt[] prologue;
+
+        [SerializeField]
+        string FightWord;
+
+        [SerializeField]
+        Interaction.TextPrompt[] epilogue;
 
         bool triggered = false;
 
@@ -23,18 +42,49 @@ namespace FP
             PlayerController.OnPlayerMove += PlayerController_OnPlayerMove;
         }
 
+        void LoadInteractionIfNeeded()
+        {
+            if (Interaction.instance == null)
+            {
+                Game.Status = GameStatus.FightScene;
+                SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+                SceneManager.LoadScene(fightScene, LoadSceneMode.Additive);
+            } else
+            {
+                ConfigInteraction();
+            }
+        }
+
+        void ConfigInteraction()
+        {
+            var interaction = Interaction.instance;
+            interaction.Configure(InterlocutorSprite, prologue, epilogue);
+            var spellWordFight = interaction.GetComponent<MiniGameSpellWord>();
+            spellWordFight.Configure(Interlocutor, FightWord);
+
+            Game.Status = GameStatus.FightScene;
+        }
+
+        private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
+        {
+            if (arg0.name != fightScene) return;
+            
+            SceneManager.sceneLoaded -= SceneManager_sceneLoaded;
+            ConfigInteraction();
+        }
+
+
+
         private void PlayerController_OnPlayerMove(Vector3Int position, DeCrawl.Primitives.CardinalDirection lookDirection)
         {
             if (triggered) return;
             if (GetComponent<LevelNode>().Coordinates != position) return;
 
-            if (Interaction.instance == null)
-            {
-                SceneManager.LoadScene(fightScene, LoadSceneMode.Additive);
-            }
+            LoadInteractionIfNeeded();            
 
-            Game.Status = GameStatus.FightScene;
-            triggered = true;
+            if (!allowRepeatTriggering) {
+                triggered = true;
+            }
         }
     }
 }

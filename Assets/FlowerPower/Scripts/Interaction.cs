@@ -49,17 +49,32 @@ namespace FP
         Phase phase;
         int phaseStep;
 
+        public void Configure(Sprite interlocutorSprite, TextPrompt[] prologue, TextPrompt[] epilogue)
+        {
+            Interlocutor = interlocutorSprite;
+            this.prologue = prologue;
+            this.epilogue = epilogue;
+        }
+
         private void OnEnable()
         {
             InterlocutorAvatar.sprite = Interlocutor;
-            StartPhase(Phase.Prologue);
-            CurrencyTracker.OnChange += CurrencyTracker_OnChange;
-            
+            Game.OnChangeStatus += Game_OnChangeStatus;
+            CurrencyTracker.OnChange += CurrencyTracker_OnChange;            
         }
 
         private void OnDisable()
         {
             CurrencyTracker.OnChange -= CurrencyTracker_OnChange;
+            Game.OnChangeStatus -= Game_OnChangeStatus;
+        }
+
+        private void Game_OnChangeStatus(GameStatus status, GameStatus oldStatus)
+        {
+            if (status == GameStatus.FightScene)
+            {
+                StartPhase(Phase.Prologue);
+            }
         }
 
         bool playerAlive = true;
