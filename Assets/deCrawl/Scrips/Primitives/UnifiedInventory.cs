@@ -269,6 +269,7 @@ namespace DeCrawl.Primitives
                 .Aggregate((0, 0), (acc, canister) => (acc.Item1 + canister.Stored, acc.Item2 + canister.Capacity));
 
 
+            Debug.Log($"{type} set to {stored} / {capacity}");
             CurrencyTracker.Update(type, stored, capacity);
 
         }

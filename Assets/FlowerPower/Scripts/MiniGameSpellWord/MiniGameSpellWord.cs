@@ -29,12 +29,26 @@ namespace FP
         private void OnEnable()
         {
             LetterLane.OnMissedLetter += LetterLane_OnMissedLetter;
+            CurrencyTracker.OnChange += CurrencyTracker_OnChange;
         }
 
         private void OnDisable()
         {
             LetterLane.OnMissedLetter -= LetterLane_OnMissedLetter;
+            CurrencyTracker.OnChange -= CurrencyTracker_OnChange;
         }
+
+        private void CurrencyTracker_OnChange(CurrencyType type, int available, int capacity)
+        {
+            if (available == 0 && (type == CurrencyType.Health || type == CurrencyType.BossHealth))
+            {
+                foreach (var lane in lanes)
+                {
+                    lane.Stop = true;
+                }
+            }
+        }
+
         private void LetterLane_OnMissedLetter(char letter)
         {
             CurrencyTracker.SubtractAvailable(CurrencyType.Health, omissionHealthCost);
@@ -43,16 +57,16 @@ namespace FP
         List<LetterLane> lanes = new List<LetterLane>();
 
         public void DisableContent()
-        {
-            CurrencyTracker.Update(CurrencyType.Health, 100, 300);
-
+        {           
             PlayingField.SetActive(false);
         }
 
-        public void Configure(string enemy, string challengeWord)
+        public void Configure(string enemy, string challengeWord, int bossHealth)
         {
             ChallengeWord = challengeWord;
             Enemy = enemy;
+            CurrencyTracker.Update(CurrencyType.BossHealth, bossHealth, bossHealth);
+            CurrencyTracker.ReEmit(CurrencyType.Health);
         }
 
         public void InitiateFight()
@@ -61,7 +75,6 @@ namespace FP
             PlayingField.SetActive(true);
 
             EnemyName.text = Enemy;
-            CurrencyTracker.Update(CurrencyType.BossHealth, 100, 100);
 
             var nLanes = lanes.Count;
             for (int i = 0, l = Mathf.Max(nLanes, ChallengeWord.Length); i < l; i++)

@@ -31,6 +31,12 @@ namespace DeCrawl.UI
         private void Update()
         {
             UpdateBar();
+
+            if (Time.timeSinceLevelLoad > hideChangeTime)
+            {
+                changeText.text = "";
+            }
+
         }
 
         private void OnEnable()
@@ -62,20 +68,18 @@ namespace DeCrawl.UI
         Color lossColor;
 
         int lastChange = 0;
-        IEnumerator<WaitForSeconds> ShowChange(int change)
+
+        float hideChangeTime;
+
+        void ShowChange(int change)
         {
-            if (change == 0) yield break;
+            if (change == 0) return;
 
             lastChange = change;
             changeText.color = change > 0 ? gainColor : lossColor;
             changeText.text = change > 0 ? $"+{change}" : change.ToString();
 
-            yield return new WaitForSeconds(showChangeTime);
-
-            if (lastChange == change)
-            {
-                changeText.text = "";
-            }
+            hideChangeTime = showChangeTime + Time.deltaTime;
         }
 
         private void CurrencyTracker_OnChange(CurrencyType type, int available, int capacity)
@@ -95,12 +99,12 @@ namespace DeCrawl.UI
 
             if (changeText != null && gameObject.activeSelf)
             {
-                if (trackedAvailable > 0 && available > 0)
+                if (trackedAvailable > 0)
                 {
-                    StartCoroutine(ShowChange(available - trackedAvailable));
+                    ShowChange(available - trackedAvailable);
                 }
                 trackedAvailable = available;
             }
-        }
+        }        
     }
 }

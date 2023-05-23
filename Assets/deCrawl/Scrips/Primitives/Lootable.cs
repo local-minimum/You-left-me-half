@@ -87,10 +87,13 @@ namespace DeCrawl.Primitives
                 // figure out where to place it by its own rules (probably track player).
                 Loot(LootOwner.Level);
             }
-            else
+            else if (args.Owner != LootOwner.None)
             {
                 // If level can't hold it, it goes back to the loot table
                 Loot(LootOwner.None);
+            } else
+            {
+                Debug.LogError($"No one looted {Id}");
             }
             return args.Consumed;
         }

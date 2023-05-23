@@ -59,5 +59,10 @@ namespace DeCrawl.Systems
             Capacity[type] = capacity;
             OnChange?.Invoke(type, Mathf.Min(available, capacity), capacity);
         }
+
+        public static void ReEmit(CurrencyType type)
+        {
+            OnChange?.Invoke(type, Available.GetValueOrDefault(type, 0), Capacity.GetValueOrDefault(type, 0));
+        }
     }
 }

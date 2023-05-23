@@ -1451,6 +1451,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d96b43a9ccf87104e83d3fa94dc12dcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  forceDirection: 0
   fightScene: FPFightScene
   allowRepeatTriggering: 0
   InterlocutorSprite: {fileID: 1308281183, guid: 4e5f2070666c618419bbb185ae677e98, type: 3}
@@ -1472,6 +1473,7 @@ MonoBehaviour:
   epilogue:
   - Speaker: 0
     Text: G-A-T-E! Great, you managed that much at least.
+  InterlocutorHealth: 100
 --- !u!4 &122655536 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7914339274635756923, guid: b8c8e4f3b5025e1499817458d6d67df2, type: 3}
@@ -2438,6 +2440,69 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7914339274635756923, guid: b8c8e4f3b5025e1499817458d6d67df2, type: 3}
   m_PrefabInstance: {fileID: 1931321482}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &220134355
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 220134356}
+  - component: {fileID: 220134357}
+  - component: {fileID: 220134358}
+  m_Layer: 0
+  m_Name: Inventory
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &220134356
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 220134355}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1364265101}
+  - {fileID: 1767835876}
+  m_Father: {fileID: 675651474}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &220134357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 220134355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 591b25bf097ac4240b2a3dcb56bb5a02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Bags: []
+  MaxBags: 1
+--- !u!114 &220134358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 220134355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4257b69b5c847f04cbfb2faf633a11bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnlyDirectDecendants: 1
+  OwnerType: 1
 --- !u!1 &223475394
 GameObject:
   m_ObjectHideFlags: 0
@@ -4563,6 +4628,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d96b43a9ccf87104e83d3fa94dc12dcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  forceDirection: 0
   fightScene: FPFightScene
   allowRepeatTriggering: 0
   InterlocutorSprite: {fileID: 835998764, guid: 4e5f2070666c618419bbb185ae677e98, type: 3}
@@ -4579,6 +4645,7 @@ MonoBehaviour:
     Text: What. Do. You. Want?
   FightWord: SIGN
   epilogue: []
+  InterlocutorHealth: 100
 --- !u!4 &410828755 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2596205675990107672, guid: d25ef63969803b8428753ae8fc875990, type: 3}
@@ -7036,6 +7103,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 565766251}
+  - {fileID: 220134356}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -14591,6 +14659,57 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7914339274635756923, guid: b8c8e4f3b5025e1499817458d6d67df2, type: 3}
   m_PrefabInstance: {fileID: 1577465109}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1364265100
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1364265101}
+  - component: {fileID: 1364265102}
+  m_Layer: 0
+  m_Name: Bag
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1364265101
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1364265100}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 220134356}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1364265102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1364265100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c2851bba15d0954593a3f8a37dfd615, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  overrideNameId: 
+  InventoryShape:
+  - {x: 0, y: 0}
+  ShouldBeVisibleInInventory: 1
+  texture: {fileID: 0}
+  rows: 5
+  cols: 6
 --- !u!1001 &1364547515
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19384,6 +19503,61 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2596205675990107672, guid: d25ef63969803b8428753ae8fc875990, type: 3}
   m_PrefabInstance: {fileID: 1767511421}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1767835875
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1767835876}
+  - component: {fileID: 1767835877}
+  m_Layer: 0
+  m_Name: BasicHealth
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1767835876
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1767835875}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 220134356}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1767835877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1767835875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d894693a13712ca42badd5cb431c9792, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  overrideNameId: 
+  InventoryShape:
+  - {x: 0, y: 0}
+  ShouldBeVisibleInInventory: 1
+  texture: {fileID: 0}
+  textureProgress: {fileID: 0}
+  textureOverlay: {fileID: 0}
+  CanisterType: 1
+  capacity: 200
+  initialStored: 150
+  fillMethod: 0
 --- !u!4 &1769737290 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6524399839707702998, guid: 36d64cb1717aa3b488fa7c80624281fe, type: 3}

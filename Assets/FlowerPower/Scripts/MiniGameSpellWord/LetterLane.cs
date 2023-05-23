@@ -56,6 +56,8 @@ namespace FP
         float startTime = -1;
         float killPosition;
 
+        public bool Stop { get; set; }
+
         public bool ShowingCorrectLetter { get; private set; }
 
         public void Configure(char letter, char[] alternativeLetters)
@@ -64,6 +66,7 @@ namespace FP
             this.alternativeLetters = alternativeLetters;
             TargetLetter.text = letter.ToString();
             SlidingLetter.text = "";
+            Stop = false;
         }
 
         char RandomLetter
@@ -131,6 +134,8 @@ namespace FP
 
         private void Update()
         {
+            if (Stop) return;
+
             if (sliding)
             {
                 SetSlider();

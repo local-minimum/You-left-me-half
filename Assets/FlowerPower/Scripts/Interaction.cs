@@ -90,12 +90,21 @@ namespace FP
                 if (type == CurrencyType.Health)
                 {
                     playerAlive = false;
-                    StartPhase(Phase.Done);
+                    StartCoroutine(DelayedPhaseChange(Phase.Done));
                 } else
                 {
-                    StartPhase(Phase.Epilogue);
-                }                
+                    StartCoroutine(DelayedPhaseChange(Phase.Epilogue));
+                }
             }
+        }
+
+        [SerializeField, Range(0, 5)]
+        float fightEndTime = 1;
+
+        IEnumerator<WaitForSeconds> DelayedPhaseChange(Phase newPhase)
+        {
+            yield return new WaitForSeconds(fightEndTime);
+            StartPhase(newPhase);
         }
 
         void StartPhase(Phase phase)

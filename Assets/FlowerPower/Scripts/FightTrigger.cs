@@ -34,6 +34,9 @@ namespace FP
         [SerializeField]
         Interaction.TextPrompt[] epilogue;
 
+        [SerializeField]
+        int InterlocutorHealth = 100;
+
         bool triggered = false;
 
         private void OnEnable()
@@ -64,7 +67,7 @@ namespace FP
             var interaction = Interaction.instance;
             interaction.Configure(InterlocutorSprite, prologue, epilogue);
             var spellWordFight = interaction.GetComponent<MiniGameSpellWord>();
-            spellWordFight.Configure(Interlocutor, FightWord);
+            spellWordFight.Configure(Interlocutor, FightWord, InterlocutorHealth);
 
             Game.Status = GameStatus.FightScene;
 

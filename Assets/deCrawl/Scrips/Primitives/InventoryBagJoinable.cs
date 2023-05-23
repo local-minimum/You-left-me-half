@@ -92,8 +92,8 @@ namespace DeCrawl.Primitives
         /// This may be outside of the bag and still slot some offsets
         /// </param>
         /// <param name="offsets">Offsets relative to the orgin that the loot requires</param>
-        /// <param name="violators">Coordinates in the bag coordinate system that are inside the bag
-        /// and cannot be occupied by the loot.
+        /// <param name="violators">Loot offsets relative to the loot origin that are inside the bag
+        /// and cannot be occupied.
         /// </param>
         /// <returns></returns>
         public int Slotable(Vector3Int localOrigin, Vector2Int[] offsets, out List<Vector2Int> violators)

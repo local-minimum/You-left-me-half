@@ -1418,6 +1418,7 @@ MonoBehaviour:
   AvatarBackground: {fileID: 1120302600}
   PlayerAvatar: {fileID: 915401691}
   TextTimeBeforeElipsis: 1
+  fightEndTime: 3
   ContinueTalkKey: 32
 --- !u!114 &1803153527
 MonoBehaviour:
@@ -1434,6 +1435,7 @@ MonoBehaviour:
   PlayingField: {fileID: 958971367}
   LetterLanesArea: {fileID: 1239416977}
   ChallengeWord: GATE
+  Enemy: 
   LetterLanePrefab: {fileID: 115820855340480050, guid: c4aecbac4c1a5dd43a31c20c58127497, type: 3}
   EnemyName: {fileID: 97819239}
   omissionHealthCost: 20
