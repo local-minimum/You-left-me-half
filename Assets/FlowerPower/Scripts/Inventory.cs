@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 using DeCrawl.Primitives;
 using DeCrawl.Lootables;
 
@@ -20,5 +21,10 @@ namespace FP
 
             return base.CanPickupShape(loot, out origin);
         }
+
+        public IEnumerable<T> FilterHas<T>(
+            System.Func<Lootable, T, bool> predicate,
+            IEnumerable<T> options
+        ) => options.Where(value => Loots.Any(loot => predicate(loot, value)));
     }
 }

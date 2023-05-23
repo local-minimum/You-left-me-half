@@ -38,6 +38,8 @@ namespace FP
             CurrencyTracker.OnChange -= CurrencyTracker_OnChange;
         }
 
+        public bool Reward { get; private set; }
+        public char RewardLetter { get; private set; }
         private void CurrencyTracker_OnChange(CurrencyType type, int available, int capacity)
         {
             if (available == 0 && (type == CurrencyType.Health || type == CurrencyType.BossHealth))
@@ -45,6 +47,24 @@ namespace FP
                 foreach (var lane in lanes)
                 {
                     lane.Stop = true;
+                }
+
+                if (type == CurrencyType.BossHealth)
+                {
+                    var playerInventory = PlayerController.instance.GetComponentInChildren<Inventory>();
+                    var options = playerInventory
+                        .FilterHas<char>((loot, ch) => loot.Id == $"Letter-{ch}", ChallengeWord)
+                        .ToArray();
+
+                    if (options.Length == 0)
+                    {
+                        RewardLetter = '\n';
+                        Reward = false;
+                    } else
+                    {
+                        RewardLetter = options[Random.Range(0, options.Length)];
+                        Reward = true;
+                    }
                 }
             }
         }
@@ -67,11 +87,11 @@ namespace FP
             Enemy = enemy;
             CurrencyTracker.Update(CurrencyType.BossHealth, bossHealth, bossHealth);
             CurrencyTracker.ReEmit(CurrencyType.Health);
+            Reward = false;
         }
 
         public void InitiateFight()
-        {
-            
+        {            
             PlayingField.SetActive(true);
 
             EnemyName.text = Enemy;

@@ -118,7 +118,9 @@ namespace FP
             if (phase == Phase.Done)
             {
                 TextArea.transform.parent.gameObject.SetActive(false);
-                GetComponent<IFight>().DisableContent();
+                var fight = GetComponent<IFight>();
+                fight.RewardPlayer();
+                fight.DisableContent();
                 Game.Status = playerAlive ? GameStatus.Playing : GameStatus.GameOver;
                 return;
             }

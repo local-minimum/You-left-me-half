@@ -9,5 +9,7 @@ namespace FP
         public void DisableContent();
 
         public void InitiateFight();
+
+        public void RewardPlayer();
     }
 }

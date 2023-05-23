@@ -271,7 +271,6 @@ namespace DeCrawl.Primitives
 
             Debug.Log($"{type} set to {stored} / {capacity}");
             CurrencyTracker.Update(type, stored, capacity);
-
         }
 
         /// <summary>
