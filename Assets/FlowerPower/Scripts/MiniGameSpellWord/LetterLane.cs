@@ -23,7 +23,11 @@ namespace FP
         [SerializeField, Range(0, 1)]
         float correctLetterProbability = 0.3f;
 
+        [SerializeField, Range(0, 1)]
+        float otherLetterIsConfusedProbability = 0.2f;
+
         char[] alternativeLetters;
+        char[] confusionLetters;
         char letter = 'G';
 
         [SerializeField]
@@ -60,10 +64,11 @@ namespace FP
 
         public bool ShowingCorrectLetter { get; private set; }
 
-        public void Configure(char letter, char[] alternativeLetters)
+        public void Configure(char letter, char[] alternativeLetters, char[] confusionLetters)
         {
             this.letter = letter;
             this.alternativeLetters = alternativeLetters;
+            this.confusionLetters = confusionLetters;
             TargetLetter.text = letter.ToString();
             SlidingLetter.text = "";
             Stop = false;
@@ -77,6 +82,12 @@ namespace FP
                 {
                     return letter;
                 }
+
+                if (confusionLetters.Length > 0 && Random.value < otherLetterIsConfusedProbability)
+                {
+                    return confusionLetters[Random.Range(0, confusionLetters.Length)];
+                }
+
                 return alternativeLetters[Random.Range(0, alternativeLetters.Length)];
             }
         }

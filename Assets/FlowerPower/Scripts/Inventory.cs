@@ -8,9 +8,7 @@ using DeCrawl.Lootables;
 namespace FP
 {
     public class Inventory : UnifiedInventory<SingleSpaceOnlyBag>
-    {
-        new protected bool HasConstraint(Lootable loot) => Has(l => l.Id == loot.Id);
-        
+    {        
         new protected bool CanPickupShape(Lootable loot, out Vector3Int origin)
         {
             if (loot is Canister)
@@ -26,5 +24,9 @@ namespace FP
             System.Func<Lootable, T, bool> predicate,
             IEnumerable<T> options
         ) => options.Where(value => Loots.Any(loot => predicate(loot, value)));
+
+        public IEnumerable<Lootable> Where(
+            System.Func<Lootable, bool> predicate
+        ) => Loots.Where(predicate);
     }
 }

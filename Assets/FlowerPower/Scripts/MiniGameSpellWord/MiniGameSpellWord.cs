@@ -26,6 +26,8 @@ namespace FP
         [SerializeField]
         TMPro.TextMeshProUGUI EnemyName;
 
+        Inventory PlayerInventory => PlayerController.instance.GetComponentInChildren<Inventory>();
+
         private void OnEnable()
         {
             LetterLane.OnMissedLetter += LetterLane_OnMissedLetter;
@@ -51,20 +53,24 @@ namespace FP
 
                 if (type == CurrencyType.BossHealth)
                 {
-                    var playerInventory = PlayerController.instance.GetComponentInChildren<Inventory>();
-                    var options = playerInventory
-                        .FilterHas<char>((loot, ch) => loot.Id == $"Letter-{ch}", ChallengeWord)
+                    var options = ChallengeWord
+                        .Where(ch => !ConfusionLetters.Contains(ch))
                         .ToArray();
 
                     if (options.Length == 0)
                     {
-                        RewardLetter = '\n';
+                        Debug.LogWarning($"All letters from '{ChallengeWord}' already known");
+                        RewardLetter = LetterLoot.NoLetterChar;
                         Reward = false;
                     } else
                     {
                         RewardLetter = options[Random.Range(0, options.Length)];
+                        Debug.Log($"Planning reward '{RewardLetter}'");
                         Reward = true;
                     }
+                } else
+                {
+                    Debug.Log("Player died");
                 }
             }
         }
@@ -81,12 +87,20 @@ namespace FP
             PlayingField.SetActive(false);
         }
 
+        private char[] ConfusionLetters { get; set; }
+
         public void Configure(string enemy, string challengeWord, int bossHealth)
         {
             ChallengeWord = challengeWord;
             Enemy = enemy;
             CurrencyTracker.Update(CurrencyType.BossHealth, bossHealth, bossHealth);
             CurrencyTracker.ReEmit(CurrencyType.Health);
+            ConfusionLetters = PlayerInventory
+                .Where(loot => loot is LetterLoot)
+                .Select(loot => ((LetterLoot)loot).Letter)
+                .Where(letter => letter != LetterLoot.NoLetterChar && !challengeWord.Contains(letter))
+                .ToArray();
+
             Reward = false;
         }
 
@@ -99,16 +113,19 @@ namespace FP
             var nLanes = lanes.Count;
             for (int i = 0, l = Mathf.Max(nLanes, ChallengeWord.Length); i < l; i++)
             {
+                var letter = ChallengeWord[i];
+                var otherChallangeLetters = ChallengeWord.Where(ch => ch != ChallengeWord[i]).ToArray();
+
                 if (i >= nLanes)
                 {
                     var lane = Instantiate(LetterLanePrefab, LetterLanesArea);
-                    lane.Configure(ChallengeWord[i], ChallengeWord.ToCharArray());
+                    lane.Configure(letter, otherChallangeLetters, ConfusionLetters);
                     lanes.Add(lane);
                 }
                 else if (i < ChallengeWord.Length)
                 {
                     var lane = lanes[i];
-                    lane.Configure(ChallengeWord[i], ChallengeWord.ToCharArray());
+                    lane.Configure(letter, otherChallangeLetters, ConfusionLetters);
                     lane.gameObject.SetActive(true);
                 }
                 else
@@ -193,31 +210,26 @@ namespace FP
 
         public void RewardPlayer()
         {
+            if (!Reward)
+            {
+                Debug.Log("There was no reward planned");
+                return;
+            }
+
             if (LootPrefab == null)
             {
                 Debug.LogWarning($"There's no reward from {name} because loot prefab missing");
                 return;
             }
 
-            var inventory = PlayerController.instance.GetComponentInChildren<Inventory>();
-            if (inventory == null)
-            {
-                Debug.LogWarning($"Could not locate player inventory of expected type");
-                return;
-            }
-            var alreadyGotten = inventory.FilterHas<char>((loot, ch) => loot.Id == LetterLoot.AsId(ch), ChallengeWord);
-            var options = ChallengeWord.Where(ch => !alreadyGotten.Contains(ch)).ToArray();
-
-            if (options.Length == 0)
+            if (RewardLetter == LetterLoot.NoLetterChar)
             {
                 Debug.LogWarning($"There's no reward from {name} because all options already looted");
                 return;
             }
-
-            var newChar = options[Random.Range(0, options.Length)];
-
+           
             var loot = Instantiate(LootPrefab);
-            loot.name = LetterLoot.AsId(newChar);
+            loot.name = LetterLoot.AsId(RewardLetter);
             loot.Loot(DeCrawl.Primitives.LootOwner.Player);
         }
     }
