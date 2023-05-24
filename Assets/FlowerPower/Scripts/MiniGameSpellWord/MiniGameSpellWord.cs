@@ -187,5 +187,38 @@ namespace FP
                 }
             }
         }
+
+        [SerializeField]
+        LetterLoot LootPrefab;
+
+        public void RewardPlayer()
+        {
+            if (LootPrefab == null)
+            {
+                Debug.LogWarning($"There's no reward from {name} because loot prefab missing");
+                return;
+            }
+
+            var inventory = PlayerController.instance.GetComponentInChildren<Inventory>();
+            if (inventory == null)
+            {
+                Debug.LogWarning($"Could not locate player inventory of expected type");
+                return;
+            }
+            var alreadyGotten = inventory.FilterHas<char>((loot, ch) => loot.Id == LetterLoot.AsId(ch), ChallengeWord);
+            var options = ChallengeWord.Where(ch => !alreadyGotten.Contains(ch)).ToArray();
+
+            if (options.Length == 0)
+            {
+                Debug.LogWarning($"There's no reward from {name} because all options already looted");
+                return;
+            }
+
+            var newChar = options[Random.Range(0, options.Length)];
+
+            var loot = Instantiate(LootPrefab);
+            loot.name = LetterLoot.AsId(newChar);
+            loot.Loot(DeCrawl.Primitives.LootOwner.Player);
+        }
     }
 }

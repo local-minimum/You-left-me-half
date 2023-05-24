@@ -1443,6 +1443,7 @@ MonoBehaviour:
   goodComboHealthBonus: 10
   hitDamage: 5
   comboHitDamage: 10
+  LootPrefab: {fileID: 317796206812940760, guid: 75053ba9d43eccd43aea61ea6aaeed03, type: 3}
 --- !u!1 &1849720186
 GameObject:
   m_ObjectHideFlags: 0
