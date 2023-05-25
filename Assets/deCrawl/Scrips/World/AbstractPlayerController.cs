@@ -19,19 +19,6 @@ namespace DeCrawl.World
 
         public static event PlayerMove OnPlayerMove;
 
-        [SerializeField]
-        KeyCode forwardKey = KeyCode.W;
-        [SerializeField]
-        KeyCode backKey = KeyCode.S;
-        [SerializeField]
-        KeyCode leftKey = KeyCode.A;
-        [SerializeField]
-        KeyCode rightKey = KeyCode.D;
-        [SerializeField]
-        KeyCode turnCWKey = KeyCode.E;
-        [SerializeField]
-        KeyCode turnCCWKey = KeyCode.Q;
-
         AbstractMovingEntity<Entity, ClaimCondition> movableEntity;
 
         public Vector3Int Position { get; private set; }
@@ -51,6 +38,8 @@ namespace DeCrawl.World
             Game.OnChangeStatus += Game_OnChangeStatus;
             NavigationAllowed = Game.Status == GameStatus.Playing;
 
+            DungeonInput.OnInput += DungeonInput_OnInput;
+
             var lookDirection = Level.PlayerFirstSpawnDirection;
             var position = Level.PlayerFirstSpawnPosition;
 
@@ -58,6 +47,62 @@ namespace DeCrawl.World
             movableEntity.SetNewGridPosition(position, lookDirection);
             Level.ClaimPosition(PlayerEntity, position, ClaimCond);            
             OnPlayerMove?.Invoke(position, lookDirection);
+        }
+
+        Navigation AsNavigation(DungeonInput.InputEvent input)
+        {
+            switch (input)
+            {
+                case DungeonInput.InputEvent.MoveForward:
+                    return Navigation.Forward;
+                case DungeonInput.InputEvent.MoveBackwards:
+                    return Navigation.Backward;
+                case DungeonInput.InputEvent.StrafeLeft:
+                    return Navigation.Left;
+                case DungeonInput.InputEvent.StrafeRight:
+                    return Navigation.Right;
+                case DungeonInput.InputEvent.TurnClockWise:
+                    return Navigation.TurnCW;
+                case DungeonInput.InputEvent.TurnCounterClockWise:
+                    return Navigation.TurnCCW;
+                default:
+                    return Navigation.None;
+            }
+        }
+
+        Navigation HeldNav = Navigation.None;
+
+        private void DungeonInput_OnInput(DungeonInput.InputEvent input, DungeonInput.InputType type)
+        {
+            var nav = AsNavigation(input);
+
+            if (HeldNav != Navigation.None && (nav != HeldNav || type == DungeonInput.InputType.Up || type == DungeonInput.InputType.Click))
+            {
+                HeldNav = Navigation.None;
+            }
+            else if (type == DungeonInput.InputType.Held)
+            {
+                HeldNav = nav;
+            }
+
+            if (!NavigationAllowed || teleporting || (type & DungeonInput.InputType.Down) == DungeonInput.InputType.None) return;
+
+            switch (nav)
+            {
+                case Navigation.None:
+                    return;
+                default:
+                    if (isMoving)
+                    {
+                        navigationQueue[1] = nav;
+                    }
+                    else
+                    {
+                        navigationQueue[0] = nav;
+                        StartCoroutine(Move());
+                    }
+                    break;
+            }
         }
 
         protected bool NavigationAllowed { get; private set; }
@@ -92,46 +137,10 @@ namespace DeCrawl.World
             teleporting = false;
         }
 
-        Navigation GetKeyPress(bool alsoKey = false)
-        {
-            if (Input.GetKeyDown(forwardKey) || alsoKey && Input.GetKey(forwardKey)) return Navigation.Forward;
-            if (Input.GetKeyDown(backKey) || alsoKey && Input.GetKey(backKey)) return Navigation.Backward;
-            if (Input.GetKeyDown(leftKey) || alsoKey && Input.GetKey(leftKey)) return Navigation.Left;
-            if (Input.GetKeyDown(rightKey) || alsoKey && Input.GetKey(rightKey)) return Navigation.Right;
-            if (Input.GetKeyDown(turnCWKey) || alsoKey && Input.GetKey(turnCWKey)) return Navigation.TurnCW;
-            if (Input.GetKeyDown(turnCCWKey) || alsoKey && Input.GetKey(turnCCWKey)) return Navigation.TurnCCW;
-            return Navigation.None;
-        }
-
 
         bool isMoving = false;
 
         List<Navigation> navigationQueue = new List<Navigation>(2) { Navigation.None, Navigation.None };
-
-        protected void Update()
-        {
-            if (!NavigationAllowed) return;
-
-            if (teleporting) return;
-
-            var nav = GetKeyPress();
-            switch (nav)
-            {
-                case Navigation.None:
-                    return;
-                default:
-                    if (isMoving)
-                    {
-                        navigationQueue[1] = nav;
-                    }
-                    else
-                    {
-                        navigationQueue[0] = nav;
-                        StartCoroutine(Move());
-                    }
-                    break;
-            }
-        }
 
         [SerializeField, Range(0, 2)]
         float turnTime = 0.4f;
@@ -192,7 +201,7 @@ namespace DeCrawl.World
                     break;
                 }
 
-                if (QueueMovesOnButton && GetKeyPress(true) == nav)
+                if (QueueMovesOnButton && HeldNav == nav)
                 {
                     // Repeat move
                     navigationQueue[moveIndex] = nav;
