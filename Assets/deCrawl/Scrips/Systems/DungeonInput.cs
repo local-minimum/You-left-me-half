@@ -18,6 +18,9 @@ namespace DeCrawl.Systems
             Click = Down | Up
         }
 
+        public static bool OverlappingTypes(InputType type, InputType kind) => (type & kind) != InputType.None;
+        
+
         public delegate void DungeonInputEvent(InputEvent input, InputType type);
 
         public static event DungeonInputEvent OnInput;

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using DeCrawl.Primitives;
+using DeCrawl.Systems;
 
 namespace FP {
     public class UIInventory : FindingSingleton<UIInventory>
@@ -9,14 +10,35 @@ namespace FP {
         [SerializeField]
         UIInventoryItem Prefab;
 
+        UIMenuSystem menuSystem;
+
         private void Start()
         {
-            GetComponentInParent<UIMenuSystem>().OnChangeState += UIInventory_OnChangeState;
+            menuSystem = GetComponentInParent<UIMenuSystem>();
+            menuSystem.OnChangeState += UIInventory_OnChangeState;
+        }
+
+        private void OnEnable()
+        {
+            DungeonInput.OnInput += DungeonInput_OnInput;
+        }
+
+        private void OnDisable()
+        {
+            DungeonInput.OnInput -= DungeonInput_OnInput;
+        }
+        private void DungeonInput_OnInput(DungeonInput.InputEvent input, DungeonInput.InputType type)
+        {
+            if (input != DungeonInput.InputEvent.Inventory) return;
+            if (DungeonInput.OverlappingTypes(type, DungeonInput.InputType.Down))
+            {
+                menuSystem.state = UIMenuSystem.State.Hidden;
+            }
         }
 
         new protected void OnDestroy()
         {
-            GetComponentInParent<UIMenuSystem>().OnChangeState -= UIInventory_OnChangeState;
+            menuSystem.OnChangeState -= UIInventory_OnChangeState;
             base.OnDestroy();
         }
 

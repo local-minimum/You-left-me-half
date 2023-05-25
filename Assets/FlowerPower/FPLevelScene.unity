@@ -7081,12 +7081,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   QueueMovesOnButton: 1
-  forwardKey: 119
-  backKey: 115
-  leftKey: 97
-  rightKey: 100
-  turnCWKey: 101
-  turnCCWKey: 113
   teleportDelay: 0.1
   turnTime: 0.3
   moveTime: 0.3
@@ -9196,6 +9190,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fdcc8882967c21458bfd4f0f57af6fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ForwardKeys: 7700000011010000
+  BackwardKeys: 7300000012010000
+  LeftKeys: 6100000014010000
+  RightKeys: 6400000013010000
+  TurnClockWiseKeys: 6500000019010000
+  TurnCounterClockWiseKeys: 7100000018010000
+  InventoryKeys: 6900000009000000
 --- !u!4 &880884711
 Transform:
   m_ObjectHideFlags: 0

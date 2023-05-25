@@ -76,7 +76,7 @@ namespace DeCrawl.World
         {
             var nav = AsNavigation(input);
 
-            if (HeldNav != Navigation.None && (nav != HeldNav || type == DungeonInput.InputType.Up || type == DungeonInput.InputType.Click))
+            if (HeldNav != Navigation.None && (nav != HeldNav || DungeonInput.OverlappingTypes(type, DungeonInput.InputType.Up)))
             {
                 HeldNav = Navigation.None;
             }
@@ -85,7 +85,7 @@ namespace DeCrawl.World
                 HeldNav = nav;
             }
 
-            if (!NavigationAllowed || teleporting || (type & DungeonInput.InputType.Down) == DungeonInput.InputType.None) return;
+            if (!NavigationAllowed || teleporting || !DungeonInput.OverlappingTypes(type, DungeonInput.InputType.Down)) return;
 
             switch (nav)
             {
