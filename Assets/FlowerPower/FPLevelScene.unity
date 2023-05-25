@@ -9194,8 +9194,8 @@ MonoBehaviour:
   BackwardKeys: 7300000012010000
   LeftKeys: 6100000014010000
   RightKeys: 6400000013010000
-  TurnClockWiseKeys: 6500000019010000
-  TurnCounterClockWiseKeys: 7100000018010000
+  TurnClockWiseKeys: 6500000017010000
+  TurnCounterClockWiseKeys: 7100000016010000
   InventoryKeys: 6900000009000000
 --- !u!4 &880884711
 Transform:

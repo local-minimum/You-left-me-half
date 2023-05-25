@@ -38,10 +38,10 @@ namespace DeCrawl.Systems
         public KeyCode[] RightKeys = new KeyCode[] { KeyCode.D, KeyCode.RightArrow };
 
         [Header("Turn Clock-Wise")]
-        public KeyCode[] TurnClockWiseKeys = new KeyCode[] { KeyCode.E, KeyCode.PageDown };
+        public KeyCode[] TurnClockWiseKeys = new KeyCode[] { KeyCode.E, KeyCode.End };
 
         [Header("Turn Counter Clock-Wise")]
-        public KeyCode[] TurnCounterClockWiseKeys = new KeyCode[] { KeyCode.Q, KeyCode.PageUp };
+        public KeyCode[] TurnCounterClockWiseKeys = new KeyCode[] { KeyCode.Q, KeyCode.Home };
 
         [Header("Inventory")]
         public KeyCode[] InventoryKeys = new KeyCode[] { KeyCode.I, KeyCode.Tab };
