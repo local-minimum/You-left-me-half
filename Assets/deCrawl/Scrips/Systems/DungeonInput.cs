@@ -7,7 +7,18 @@ namespace DeCrawl.Systems
 {
     public class DungeonInput : FindingSingleton<DungeonInput>
     {
-        public enum InputEvent { MoveForward, MoveBackwards, StrafeLeft, StrafeRight, TurnClockWise, TurnCounterClockWise, Inventory }
+        public enum InputEvent { 
+            MoveForward,
+            MoveBackwards, 
+            StrafeLeft,
+            StrafeRight,
+            TurnClockWise,
+            TurnCounterClockWise,
+            Inventory,
+            Pause,
+            Abort,
+            Select
+        }
 
         [System.Flags]
         public enum InputType {
@@ -45,6 +56,15 @@ namespace DeCrawl.Systems
 
         [Header("Inventory")]
         public KeyCode[] InventoryKeys = new KeyCode[] { KeyCode.I, KeyCode.Tab };
+
+        [Header("Pause")]
+        public KeyCode[] PauseKeys = new KeyCode[] { KeyCode.P, KeyCode.Pause };
+
+        [Header("Abort")]
+        public KeyCode[] AbortKeys = new KeyCode[] { KeyCode.Escape, KeyCode.Backspace };
+
+        [Header("Select")]
+        public KeyCode[] SelectKeys = new KeyCode[] { KeyCode.Return };
 
         void EmitFor(KeyCode[] codes, InputEvent input)
         {
@@ -87,6 +107,9 @@ namespace DeCrawl.Systems
             EmitFor(TurnClockWiseKeys, InputEvent.TurnClockWise);
             EmitFor(TurnCounterClockWiseKeys, InputEvent.TurnCounterClockWise);
             EmitFor(InventoryKeys, InputEvent.Inventory);
+            EmitFor(PauseKeys, InputEvent.Pause);
+            EmitFor(AbortKeys, InputEvent.Abort);
+            EmitFor(SelectKeys, InputEvent.Select);            
         }
     }
 }

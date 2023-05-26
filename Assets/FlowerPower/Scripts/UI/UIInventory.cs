@@ -5,10 +5,23 @@ using DeCrawl.Primitives;
 using DeCrawl.Systems;
 
 namespace FP {
-    public class UIInventory : FindingSingleton<UIInventory>
+    public class UIInventory : FindingSingleton<UIInventory>, IUIMenuView
     {
         [SerializeField]
         UIInventoryItem Prefab;
+
+        [SerializeField]
+        RectTransform Container;
+
+        public UIMenuSystem.State State => UIMenuSystem.State.Inventory;
+
+        public bool Active
+        {
+            set
+            {                
+                gameObject.SetActive(value);
+            }
+        }
 
         UIMenuSystem menuSystem;
 
@@ -55,14 +68,14 @@ namespace FP {
             {
                 if (i > letters.Length)
                 {
-                    transform.GetChild(i).gameObject.SetActive(false);                    
+                    Container.GetChild(i).gameObject.SetActive(false);                    
                 } else if (i < nChildren)
                 {
-                    transform.GetChild(i).GetComponent<UIInventoryItem>().Text.text = $"{letters[i]}";
+                    Container.GetChild(i).GetComponent<UIInventoryItem>().Text.text = $"{letters[i]}";
                 } else
                 {
                     var newLetter = Instantiate(Prefab);
-                    newLetter.transform.SetParent(transform);
+                    newLetter.transform.SetParent(Container);
                     newLetter.Text.text = $"{letters[i]}";
                 }
             }

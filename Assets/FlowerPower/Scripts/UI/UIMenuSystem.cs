@@ -8,7 +8,7 @@ namespace FP
     {
         [SerializeField]
         bool PauseGameWhenVisible = true;
-        public enum State { Hidden, Main, About, KeyBindings, Inventory };
+        public enum State { Hidden, Main, About, Settings, Inventory };
 
         private State _state;
         public State state
@@ -17,16 +17,23 @@ namespace FP
             set
             {
                 _state = value;
-                ToggleChildrenVisibility(value != State.Hidden);
+                bool visible = value != State.Hidden;
+                ToggleChildrenVisibility(visible, value);
+                HandleGameState(visible);
                 OnChangeState?.Invoke(value);
             }
         }
 
-        void ToggleChildrenVisibility(bool visible)
+        void ToggleChildrenVisibility(bool visible, State state)
         {
             for (int i = 0, l = transform.childCount; i < l; i++)
             {
                 transform.GetChild(i).gameObject.SetActive(visible);
+            }
+
+            foreach (var view in GetComponentsInChildren<IUIMenuView>(true))
+            {
+                view.Active = view.State == state;
             }
         }
 

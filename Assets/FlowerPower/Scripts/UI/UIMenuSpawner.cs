@@ -33,15 +33,28 @@ namespace FP
         {
             DungeonInput.OnInput -= DungeonInput_OnInput;
         }
+
+        void ShowInventory(DungeonInput.InputType type)
+        {
+            System.state = UIMenuSystem.State.Inventory;
+            System.GetComponentInChildren<UIInventory>().Configure(
+                PlayerController.instance.GetComponentInChildren<Inventory>()
+            );
+        }
+
         private void DungeonInput_OnInput(DungeonInput.InputEvent input, DungeonInput.InputType type)
         {
-            if (input != DungeonInput.InputEvent.Inventory) return;
-            if (DungeonInput.OverlappingTypes(type, DungeonInput.InputType.Down) && Game.Status == GameStatus.Playing)
+            if (Game.Status != GameStatus.Playing || !DungeonInput.OverlappingTypes(type, DungeonInput.InputType.Down)) return;
+
+            if (input == DungeonInput.InputEvent.Inventory)
             {
-                System.state = UIMenuSystem.State.Inventory;
-                System.GetComponentInChildren<UIInventory>().Configure(
-                    PlayerController.instance.GetComponentInChildren<Inventory>()
-                );
+                ShowInventory(type);
+                return;
+            }
+
+            if (input == DungeonInput.InputEvent.Pause || input == DungeonInput.InputEvent.Abort)
+            {
+                System.state = UIMenuSystem.State.Main;
             }
         }
     }
