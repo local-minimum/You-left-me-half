@@ -361,7 +361,6 @@ namespace DeCrawl.Systems
 
                 if (input != InputEvent.None)
                 {
-                    Debug.Log($"Loading key-binding '{input}': {mapping.ToJSON()}");
                     for (int j = 0; j < mapping.Length; j++)
                     {
                         SetKey(input, j, mapping[j]);
