@@ -154,6 +154,7 @@ namespace FP
                 if (keyCode != KeyCode.None)
                 {
                     DungeonInput.instance.SetKey(inputEvent, bindingIndex, keyCode);
+                    Settings.HasCustomBindings = true;
                 }
 
                 StopBinding();

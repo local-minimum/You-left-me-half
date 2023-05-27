@@ -8,6 +8,20 @@ namespace FP {
     {
         public UIMenuSystem.State State => UIMenuSystem.State.Settings;
 
+        [SerializeField]
+        UIButton ResetButton;
+
+        public bool HasCustomBindings
+        {
+            set
+            {
+                if (ResetButton)
+                {
+                    ResetButton.Disabled = !value;
+                }
+            }
+        }
+
         public bool KeyBinding { get; set; }
         public bool Active { set { gameObject.SetActive(value); } }
 
@@ -16,6 +30,7 @@ namespace FP {
         private void OnEnable()
         {
             DungeonInput.OnInput += DungeonInput_OnInput;
+            HasCustomBindings = DungeonInput.instance.HasCustomBindings;
         }
 
         private void OnDisable()
@@ -44,6 +59,7 @@ namespace FP {
             {
                 keybinding.SyncKey();
             }
+            HasCustomBindings = false;
         }
     }
 }

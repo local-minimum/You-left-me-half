@@ -1,13 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using DeCrawl.Primitives;
+using DeCrawl.Utils;
 
 namespace DeCrawl.Systems
 {
     public class DungeonInput : FindingSingleton<DungeonInput>
     {
         public enum InputEvent { 
+            None,
             MoveForward,
             MoveBackwards, 
             StrafeLeft,
@@ -29,6 +32,88 @@ namespace DeCrawl.Systems
             Click = Down | Up
         }
 
+        [System.Serializable]
+        public class InputMapping
+        {
+            public KeyCode Primary = KeyCode.None;
+            public KeyCode Secondary = KeyCode.None;
+
+            public InputMapping(KeyCode primary, KeyCode secondary)
+            {
+                Primary = primary;
+                Secondary = secondary;
+            }
+
+            public int Length => 2;
+
+            public KeyCode this[int index]
+            {
+                get
+                {
+                    if (index == 0) return Primary;
+                    if (index == 1) return Secondary;
+                    throw new System.IndexOutOfRangeException("Index must be either 0 or 1");
+                }
+
+                set
+                {
+                    if (index == 0)
+                    {
+                        Primary = value;
+                    } else if (index == 1)
+                    {
+                        Secondary = value;
+                    } else
+                    {
+                        throw new System.IndexOutOfRangeException("Index must be either 0 or 1");
+                    }
+                }
+            }
+
+            public string ToJSON() => JsonUtility.ToJson(this);
+
+            public static InputMapping FromJSON(string json) => JsonUtility.FromJson<InputMapping>(json);
+        }
+
+
+        [System.Serializable]
+        public class StoredMappings
+        {
+            public List<string> Inputs;
+            public List<string> SerializedMappings;
+            
+            public StoredMappings()
+            {
+                Inputs = new List<string>();
+                SerializedMappings = new List<string>();
+            }
+
+            public (string, string) this[int index]
+            {
+                get => (Inputs[index], SerializedMappings[index]);
+            }
+
+
+            public int Count
+            {
+                get => Mathf.Min(Inputs.Count, SerializedMappings.Count);
+            }
+
+            public void Add(InputEvent input, InputMapping mapping)
+            {
+                if (SerializedMappings == null)
+                {
+                    SerializedMappings = new List<string>();
+                }
+                if (Inputs == null)
+                {
+                    Inputs = new List<string>();
+                }
+                Inputs.Add(input.ToString());
+                SerializedMappings.Add(mapping.ToJSON());
+            }
+        }
+
         public static bool OverlappingTypes(InputType type, InputType kind) => (type & kind) != InputType.None;
         
 
@@ -42,63 +127,70 @@ namespace DeCrawl.Systems
         [SerializeField]
         Dictionary<(InputEvent, int), KeyCode> MappingsRestore = new Dictionary<(InputEvent, int), KeyCode>();
 
-        [Header("Move Forward")]        
-        private KeyCode[] ForwardKeys = new KeyCode[] {  KeyCode.W, KeyCode.UpArrow };
+        [SerializeField]        
+        private InputMapping ForwardKeys = new InputMapping(KeyCode.W, KeyCode.UpArrow);
 
-        [Header("Move Backward")]
-        private KeyCode[] BackwardKeys = new KeyCode[] { KeyCode.S, KeyCode.DownArrow } ;
+        [SerializeField]
+        private InputMapping BackwardKeys = new InputMapping(KeyCode.S, KeyCode.DownArrow);
 
-        [Header("Strafe Left")]
-        private KeyCode[] LeftKeys = new KeyCode[] { KeyCode.A, KeyCode.LeftArrow };
+        [SerializeField]
+        private InputMapping LeftKeys = new InputMapping(KeyCode.A, KeyCode.LeftArrow);
 
-        [Header("Strafe Right")]
-        private KeyCode[] RightKeys = new KeyCode[] { KeyCode.D, KeyCode.RightArrow };
+        [SerializeField]
+        private InputMapping RightKeys = new InputMapping(KeyCode.D, KeyCode.RightArrow);
 
-        [Header("Turn Clock-Wise")]
-        private KeyCode[] TurnClockWiseKeys = new KeyCode[] { KeyCode.E, KeyCode.End };
+        [SerializeField]
+        private InputMapping TurnClockWiseKeys = new InputMapping(KeyCode.E, KeyCode.End);
 
-        [Header("Turn Counter Clock-Wise")]
-        private KeyCode[] TurnCounterClockWiseKeys = new KeyCode[] { KeyCode.Q, KeyCode.Home };
+        [SerializeField]
+        private InputMapping TurnCounterClockWiseKeys = new InputMapping(KeyCode.Q, KeyCode.Home);
 
-        [Header("Inventory")]
-        private KeyCode[] InventoryKeys = new KeyCode[] { KeyCode.I, KeyCode.Tab };
+        [SerializeField]
+        private InputMapping InventoryKeys = new InputMapping(KeyCode.I, KeyCode.Tab);
 
-        [Header("Pause")]
-        private KeyCode[] PauseKeys = new KeyCode[] { KeyCode.P, KeyCode.Pause };
+        [SerializeField]
+        private InputMapping PauseKeys = new InputMapping(KeyCode.P, KeyCode.Pause);
 
-        [Header("Abort")]
-        private KeyCode[] AbortKeys = new KeyCode[] { KeyCode.Escape, KeyCode.Backspace };
+        [SerializeField]
+        private InputMapping AbortKeys = new InputMapping(KeyCode.Escape, KeyCode.Backspace);
 
-        [Header("Select")]
-        private KeyCode[] SelectKeys = new KeyCode[] { KeyCode.Return, KeyCode.None };
+        [SerializeField]
+        private InputMapping SelectKeys = new InputMapping(KeyCode.Return, KeyCode.None);
 
-        public KeyCode GetKey(InputEvent input, int index)
+        private InputMapping GetMapping(InputEvent input)
         {
             switch (input)
             {
                 case InputEvent.MoveForward:
-                    return ForwardKeys[index];
+                    return ForwardKeys;
                 case InputEvent.MoveBackwards:
-                    return BackwardKeys[index];
+                    return BackwardKeys;
                 case InputEvent.StrafeLeft:
-                    return LeftKeys[index];
+                    return LeftKeys;
                 case InputEvent.StrafeRight:
-                    return RightKeys[index];
+                    return RightKeys;
                 case InputEvent.TurnClockWise:
-                    return TurnClockWiseKeys[index];
+                    return TurnClockWiseKeys;
                 case InputEvent.TurnCounterClockWise:
-                    return TurnCounterClockWiseKeys[index];
+                    return TurnCounterClockWiseKeys;
                 case InputEvent.Pause:
-                    return PauseKeys[index];
+                    return PauseKeys;
                 case InputEvent.Select:
-                    return SelectKeys[index];
+                    return SelectKeys;
                 case InputEvent.Abort:
-                    return AbortKeys[index];
+                    return AbortKeys;
                 case InputEvent.Inventory:
-                    return InventoryKeys[index];
+                    return InventoryKeys;
                 default:
-                    return KeyCode.None;
+                    return null;
             }
+        }
+
+        public KeyCode GetKey(InputEvent input, int index)
+        {
+            var mapping = GetMapping(input);
+            if (mapping == null) return KeyCode.None;
+            return mapping[index];
         }
 
         void TrackResetBindings((InputEvent, int) key, KeyCode currentValue)
@@ -119,78 +211,130 @@ namespace DeCrawl.Systems
             MappingsRestore.Clear();
         }
 
-        void EnsureNoDupes(InputEvent input, KeyCode[] alternatives)
+        public bool HasCustomBindings => MappingsRestore.Count > 0;
+
+        void EnsureNoDupes(InputEvent input, InputMapping inputMapping)
         {
-            for (int i = 0; i<alternatives.Length; i++)
+            for (int i = 0; i<inputMapping.Length; i++)
             {
-                var primary = alternatives[i];
-                for (int j = i + 1; j<alternatives.Length; j++)
+                var primary = inputMapping[i];
+                for (int j = i + 1; j<inputMapping.Length; j++)
                 {
-                    if (alternatives[j] == primary)
+                    if (inputMapping[j] == primary)
                     {
-                        TrackResetBindings((input, j), alternatives[j]);
-                        alternatives[j] = KeyCode.None;
+                        TrackResetBindings((input, j), inputMapping[j]);
+                        inputMapping[j] = KeyCode.None;
                     }
                 }
             }
         }
 
-        void UpdateKey(KeyCode[] keys, InputEvent input, int index, KeyCode code, bool isOverride)
+        void UpdateKey(InputMapping inputMapping, InputEvent input, int index, KeyCode code, bool isOverride)
         {
             if (isOverride)
             {
-                TrackResetBindings((input, index), keys[index]);
+                TrackResetBindings((input, index), inputMapping[index]);
             }
-            keys[index] = code;
+            inputMapping[index] = code;
             if (isOverride)
             {
-                EnsureNoDupes(input, keys);
+                EnsureNoDupes(input, inputMapping);
+                StoreUserMappings();
+            }
+        }
+
+        static InputEvent[] _allInputs;
+
+        static InputEvent[] AllInputs
+        {
+            get
+            {
+                if (_allInputs == null)
+                {
+                    _allInputs = (InputEvent[])System.Enum.GetValues(typeof(InputEvent));
+                }
+                return _allInputs;
+            }
+        }
+
+        static InputEvent InputFromString(string sInput)
+        {
+            foreach (var input in AllInputs)
+            {
+                if (input.ToString() == sInput)
+                {
+                    return input;
+                }
+            }
+
+            return InputEvent.None;
+        }
+
+        void StoreUserMappings()
+        {
+            var settings = new StoredMappings();
+            var events = AllInputs;
+            for (int i=0; i<events.Length; i++)
+            {
+                if (events[i] == InputEvent.None) continue;
+
+                var mappings = GetMapping(events[i]);
+                if (mappings != null)
+                {
+                    settings.Add(events[i], mappings);
+                }
+            }
+
+            PlayerPrefs.SetString(PreferenceStorage, JsonUtility.ToJson(settings));
+        }
+
+        void LoadUserMappings()
+        {
+            var settingsString = PlayerPrefs.GetString(PreferenceStorage);
+            if (string.IsNullOrEmpty(settingsString)) return;
+
+            var settings = JsonUtility.FromJson<StoredMappings>(settingsString);
+
+            for (int i=0, l=settings.Count; i<l; i++)
+            {
+                var (sInput, sMapping) = settings[i];
+
+                var input = InputFromString(sInput);
+                var mapping = InputMapping.FromJSON(sMapping);
+
+                if (input != InputEvent.None)
+                {
+                    Debug.Log($"Loading key-binding '{input}': {mapping.ToJSON()}");
+                    for (int j = 0; j < mapping.Length; j++)
+                    {
+                        SetKey(input, j, mapping[j]);
+                    }
+                } else
+                {
+                    Debug.LogWarning($"Could not understand stored key-binding {input}");
+                }
             }
         }
 
         public void SetKey(InputEvent input, int index, KeyCode keyCode) => SetKey(input, index, keyCode, true);
         public void SetKey(InputEvent input, int index, KeyCode keyCode, bool isOverride)
         {
-            switch (input)
+            if (input == InputEvent.None) return;
+
+            var mapping = GetMapping(input);
+            if (mapping == null)
             {
-                case InputEvent.MoveForward:
-                    UpdateKey(ForwardKeys, input, index, keyCode, isOverride);
-                    break;
-                case InputEvent.MoveBackwards:
-                    UpdateKey(BackwardKeys, input, index, keyCode, isOverride);
-                    break;
-                case InputEvent.StrafeLeft:
-                    UpdateKey(LeftKeys, input, index, keyCode, isOverride);
-                    break;
-                case InputEvent.StrafeRight:
-                    UpdateKey(RightKeys, input, index, keyCode, isOverride);
-                    break;
-                case InputEvent.TurnClockWise:
-                    UpdateKey(TurnClockWiseKeys, input, index, keyCode, isOverride);
-                    break;
-                case InputEvent.TurnCounterClockWise:
-                    UpdateKey(TurnCounterClockWiseKeys, input, index, keyCode, isOverride);
-                    break;
-                case InputEvent.Pause:
-                    UpdateKey(PauseKeys, input, index, keyCode, isOverride);
-                    break;
-                case InputEvent.Select:
-                    UpdateKey(SelectKeys, input, index, keyCode, isOverride);
-                    break;
-                case InputEvent.Abort:
-                    UpdateKey(AbortKeys, input, index, keyCode, isOverride);
-                    break;
-                case InputEvent.Inventory:
-                    UpdateKey(InventoryKeys, input, index, keyCode, isOverride);
-                    break;
-                default:
-                    Debug.LogWarning($"Don't know how to set {input}[{index}] = {keyCode}");
-                    break;
+                Debug.LogWarning($"Don't know how to set {input}[{index}] = {keyCode}");
+            } else
+            {
+                UpdateKey(mapping, input, index, keyCode, isOverride);
             }
         }
 
-        void EmitFor(KeyCode[] codes, InputEvent input)
+        void EmitFor(InputMapping codes, InputEvent input)
         {
+            if (input == InputEvent.None) return;
+
             for (int i = 0; i<codes.Length; i++)
             {
                 var code = codes[i];
@@ -233,6 +377,11 @@ namespace DeCrawl.Systems
             EmitFor(PauseKeys, InputEvent.Pause);
             EmitFor(AbortKeys, InputEvent.Abort);
             EmitFor(SelectKeys, InputEvent.Select);            
+        }
+
+        private void Start()
+        {
+            LoadUserMappings();
         }
     }
 }
