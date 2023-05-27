@@ -32,8 +32,8 @@ namespace FP
             if (button == null)
             {
                 button = GetComponent<UIButton>();
-                button.OnClick += Button_OnClick;
             }
+            button.OnClick += Button_OnClick;
         }
 
         private void OnDisable()

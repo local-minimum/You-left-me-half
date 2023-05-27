@@ -52,15 +52,19 @@ namespace FP
 
             foreach (var button in Buttons)
             {
+                button.Disabled = DisabledOptions.Contains(button);
+                button.OnHover += Button_OnHover;
+                button.OnClick += Button_OnClick;
+
                 if (autoSelectFirstButton)
                 {
                     selectedButton = button;
                     button.Hovered = true;
                     autoSelectFirstButton = false;
+                } else
+                {
+                    selectedButton.Hovered = true;
                 }
-                button.Disabled = DisabledOptions.Contains(button);
-                button.OnHover += Button_OnHover;
-                button.OnClick += Button_OnClick;
             }
         }
 
@@ -77,11 +81,12 @@ namespace FP
         private void Button_OnClick(UIButton button)
         {
             selectedButton = button;
+            hoveredButton = null;
         }
 
         private void Button_OnHover(UIButton button)
         {
-            // Debug.Log($"Btn {button} {button.Hovered} / Sel {selectedOption} / Hov {hoverOption}");
+            // Debug.Log($"Btn {button} {button.Hovered} / Sel {selectedButton} / Hov {hoveredButton}");
 
             // Set hover option if needed
             if (button.Hovered)
@@ -161,7 +166,7 @@ namespace FP
 
         private void DungeonInput_OnInput(DungeonInput.InputEvent input, DungeonInput.InputType type)
         {
-            if (menuSystem.state != UIMenuSystem.State.Main || !DungeonInput.OverlappingTypes(type, DungeonInput.InputType.Down)) return;
+            if (!DungeonInput.OverlappingTypes(type, DungeonInput.InputType.Down)) return;
 
             if (
                 (input == DungeonInput.InputEvent.Abort || input == DungeonInput.InputEvent.Pause)
@@ -181,25 +186,6 @@ namespace FP
             {
                 ShiftSelection(1);
             }
-
-        }
-
-        public void HandleClickResume()
-        {
-            selectedButton = hoveredButton;
-            menuSystem.state = UIMenuSystem.State.Hidden;
-        }
-
-        public void HandleClickSettings()
-        {
-            selectedButton = hoveredButton;
-            menuSystem.state = UIMenuSystem.State.Settings;
-        }
-
-        public void HandleClickAbout()
-        {
-            selectedButton = hoveredButton;
-            menuSystem.state = UIMenuSystem.State.About;
         }
     }
 }
