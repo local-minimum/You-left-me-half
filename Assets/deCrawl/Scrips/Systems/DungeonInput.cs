@@ -213,6 +213,63 @@ namespace DeCrawl.Systems
 
         public bool HasCustomBindings => MappingsRestore.Count > 0;
 
+        public struct BindingConflicts
+        {
+            public List<InputEvent> Inputs;
+            public KeyCode Key;
+
+            public BindingConflicts(List<InputEvent> inputs, KeyCode key)
+            {
+                Inputs = inputs;
+                Key = key;
+            }
+
+            public override string ToString()
+            {
+
+                var inputs = string.Join(", ", Inputs);                
+                return $"{inputs} use '{Key}' as input.";
+            }
+        }
+
+        public IEnumerable<BindingConflicts> DuplicateBindings
+        {
+            get
+            {
+                var codesToEvents = new Dictionary<KeyCode, List<InputEvent>>();
+
+                var events = AllInputs;
+                for (int i = 0; i< events.Length; i++)
+                {
+                    if (events[i] == InputEvent.None) continue;
+
+                    var mapping = GetMapping(events[i]);
+
+                    if (mapping == null) continue;
+
+                    for (int j = 0; j< mapping.Length; j++)
+                    {
+                        var code = mapping[j];
+                        if (codesToEvents.ContainsKey(code))
+                        {
+                            codesToEvents[code].Add(events[i]);
+                        } else
+                        {
+                            codesToEvents.Add(code, new List<InputEvent>() { events[i] });
+                        }
+                    }
+                }
+
+                foreach (var kvp in codesToEvents)
+                {
+                    if (kvp.Value.Count > 1)
+                    {
+                        yield return new BindingConflicts(kvp.Value, kvp.Key);
+                    }
+                }
+            }
+        }
+
         void EnsureNoDupes(InputEvent input, InputMapping inputMapping)
         {
             for (int i = 0; i<inputMapping.Length; i++)

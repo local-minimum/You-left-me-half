@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using DeCrawl.Systems;
+
 
 namespace FP {
     public class UISettings : MonoBehaviour, IUIMenuView
@@ -10,6 +12,9 @@ namespace FP {
 
         [SerializeField]
         UIButton ResetButton;
+
+        [SerializeField]
+        TMPro.TextMeshProUGUI BindingWarnings;
 
         public bool HasCustomBindings
         {
@@ -22,7 +27,14 @@ namespace FP {
             }
         }
 
-        public bool KeyBinding { get; set; }
+        bool _KeyBinding = false;
+        public bool KeyBinding { 
+            get => _KeyBinding; 
+            set {
+                _KeyBinding = value;
+                SyncBindingWarnings();
+            } 
+        }
         public bool Active { set { gameObject.SetActive(value); } }
 
         UIMenuSystem menuSystem;
@@ -31,6 +43,7 @@ namespace FP {
         {
             DungeonInput.OnInput += DungeonInput_OnInput;
             HasCustomBindings = DungeonInput.instance.HasCustomBindings;
+            SyncBindingWarnings();
         }
 
         private void OnDisable()
@@ -60,6 +73,23 @@ namespace FP {
                 keybinding.SyncKey();
             }
             HasCustomBindings = false;
+            SyncBindingWarnings();
+        }
+
+        void SyncBindingWarnings()
+        {
+            if (BindingWarnings == null) return;
+
+            var dupes = DungeonInput.instance.DuplicateBindings.ToArray();
+            if (dupes.Length == 0)
+            {
+                BindingWarnings.text = "";
+            } else if (dupes.Length == 1) {
+                BindingWarnings.text = dupes[0].ToString();
+            } else
+            {
+                BindingWarnings.text = $"There are {dupes.Length} binding conflicts, first: {dupes[0]}";
+            }
         }
     }
 }
