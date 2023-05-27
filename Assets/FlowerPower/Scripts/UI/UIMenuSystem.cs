@@ -14,6 +14,22 @@ namespace FP
         public enum State { Hidden, Main, About, Settings, Inventory };
 
         private State _state;
+
+        private List<IUIMenuView> _Options;
+
+        List<IUIMenuView> Options
+        {
+            get
+            {
+                if (_Options == null)
+                {
+                    _Options = new List<IUIMenuView>();
+                    _Options.AddRange(GetComponentsInChildren<IUIMenuView>(true));
+                }
+                return _Options;
+            }
+        }
+
         public State state
         {
             get => _state;
@@ -35,7 +51,7 @@ namespace FP
                 transform.GetChild(i).gameObject.SetActive(visible);
             }
 
-            foreach (var view in GetComponentsInChildren<IUIMenuView>(true))
+            foreach (var view in Options)
             {
                 view.Active = view.State == state;
             }
