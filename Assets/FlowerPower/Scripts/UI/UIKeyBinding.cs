@@ -75,11 +75,16 @@ namespace FP
         {
             Settings.KeyBinding = false;
             binding = false;
-            SyncKey();
+
+            foreach (var keyBinding in transform.parent.GetComponentsInChildren<UIKeyBinding>())
+            {
+                keyBinding.SyncKey();
+            }
+            
             nextBindAllowed = Time.realtimeSinceStartup + noRebindTime;
         }
 
-        void SyncKey()
+        public void SyncKey()
         {
             var key = DungeonInput.instance.GetKey(inputEvent, bindingIndex);
             if (!binding)

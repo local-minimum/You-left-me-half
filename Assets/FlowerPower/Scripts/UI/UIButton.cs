@@ -52,7 +52,11 @@ namespace FP
 
         public void SyncState()
         {
-            ActiveChoiceImage.enabled = Hovered && !Disabled;
+            if (ActiveChoiceImage)
+            {
+                ActiveChoiceImage.enabled = Hovered && !Disabled;
+            }
+
             if (Text != null && TextColor.InUse)
             {
                 Text.color = TextColor.GetColor(Hovered, Disabled);

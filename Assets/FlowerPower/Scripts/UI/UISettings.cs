@@ -37,5 +37,13 @@ namespace FP {
                 menuSystem.state = UIMenuSystem.State.Main;
             }
         }
+
+        public void HandleResetBindings() {
+            DungeonInput.instance.ResetKeyBindings();
+            foreach (var keybinding in GetComponentsInChildren<UIKeyBinding>())
+            {
+                keybinding.SyncKey();
+            }
+        }
     }
 }

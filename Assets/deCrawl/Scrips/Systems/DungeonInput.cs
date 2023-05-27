@@ -36,6 +36,12 @@ namespace DeCrawl.Systems
 
         public static event DungeonInputEvent OnInput;
 
+        [SerializeField]
+        string PreferenceStorage = "Settings.Input";
+
+        [SerializeField]
+        Dictionary<(InputEvent, int), KeyCode> MappingsRestore = new Dictionary<(InputEvent, int), KeyCode>();
+
         [Header("Move Forward")]        
         private KeyCode[] ForwardKeys = new KeyCode[] {  KeyCode.W, KeyCode.UpArrow };
 
@@ -95,7 +101,25 @@ namespace DeCrawl.Systems
             }
         }
 
-        void EnsureNoDupes(KeyCode[] alternatives)
+        void TrackResetBindings((InputEvent, int) key, KeyCode currentValue)
+        {
+            if (!MappingsRestore.ContainsKey(key))
+            {
+                MappingsRestore.Add(key, currentValue);
+            }
+        }
+
+        public void ResetKeyBindings()
+        {
+            foreach (var kvp in MappingsRestore)
+            {
+                SetKey(kvp.Key.Item1, kvp.Key.Item2, kvp.Value, false);
+            }
+            PlayerPrefs.DeleteKey(PreferenceStorage);
+            MappingsRestore.Clear();
+        }
+
+        void EnsureNoDupes(InputEvent input, KeyCode[] alternatives)
         {
             for (int i = 0; i<alternatives.Length; i++)
             {
@@ -104,61 +128,67 @@ namespace DeCrawl.Systems
                 {
                     if (alternatives[j] == primary)
                     {
+                        TrackResetBindings((input, j), alternatives[j]);
                         alternatives[j] = KeyCode.None;
                     }
                 }
             }
         }
 
-        public void SetKey(InputEvent input, int index, KeyCode keyCode)
+        void UpdateKey(KeyCode[] keys, InputEvent input, int index, KeyCode code, bool isOverride)
+        {
+            if (isOverride)
+            {
+                TrackResetBindings((input, index), keys[index]);
+            }
+            keys[index] = code;
+            if (isOverride)
+            {
+                EnsureNoDupes(input, keys);
+            }
+        }
+
+        public void SetKey(InputEvent input, int index, KeyCode keyCode) => SetKey(input, index, keyCode, true);
+        public void SetKey(InputEvent input, int index, KeyCode keyCode, bool isOverride)
         {
             switch (input)
             {
                 case InputEvent.MoveForward:
-                    ForwardKeys[index] = keyCode;
-                    EnsureNoDupes(ForwardKeys);
+                    UpdateKey(ForwardKeys, input, index, keyCode, isOverride);
                     break;
                 case InputEvent.MoveBackwards:
-                    BackwardKeys[index] = keyCode;
-                    EnsureNoDupes(BackwardKeys);
+                    UpdateKey(BackwardKeys, input, index, keyCode, isOverride);
                     break;
                 case InputEvent.StrafeLeft:
-                    LeftKeys[index] = keyCode;
-                    EnsureNoDupes(LeftKeys);
+                    UpdateKey(LeftKeys, input, index, keyCode, isOverride);
                     break;
                 case InputEvent.StrafeRight:
-                    RightKeys[index] = keyCode;
-                    EnsureNoDupes(RightKeys);
+                    UpdateKey(RightKeys, input, index, keyCode, isOverride);
                     break;
                 case InputEvent.TurnClockWise:
-                    TurnClockWiseKeys[index] = keyCode;
-                    EnsureNoDupes(TurnClockWiseKeys);
+                    UpdateKey(TurnClockWiseKeys, input, index, keyCode, isOverride);
                     break;
                 case InputEvent.TurnCounterClockWise:
-                    TurnCounterClockWiseKeys[index] = keyCode;
-                    EnsureNoDupes(TurnCounterClockWiseKeys);
+                    UpdateKey(TurnCounterClockWiseKeys, input, index, keyCode, isOverride);
                     break;
                 case InputEvent.Pause:
-                    PauseKeys[index] = keyCode;
-                    EnsureNoDupes(PauseKeys);
+                    UpdateKey(PauseKeys, input, index, keyCode, isOverride);
                     break;
                 case InputEvent.Select:
-                    SelectKeys[index] = keyCode;
-                    EnsureNoDupes(SelectKeys);
+                    UpdateKey(SelectKeys, input, index, keyCode, isOverride);
                     break;
                 case InputEvent.Abort:
-                    AbortKeys[index] = keyCode;
-                    EnsureNoDupes(AbortKeys);
+                    UpdateKey(AbortKeys, input, index, keyCode, isOverride);
                     break;
                 case InputEvent.Inventory:
-                    InventoryKeys[index] = keyCode;
-                    EnsureNoDupes(InventoryKeys);
+                    UpdateKey(InventoryKeys, input, index, keyCode, isOverride);
                     break;
                 default:
                     Debug.LogWarning($"Don't know how to set {input}[{index}] = {keyCode}");
                     break;
             }
         }
+
         void EmitFor(KeyCode[] codes, InputEvent input)
         {
             for (int i = 0; i<codes.Length; i++)
