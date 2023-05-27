@@ -8,6 +8,7 @@ namespace FP {
     {
         public UIMenuSystem.State State => UIMenuSystem.State.Settings;
 
+        public bool KeyBinding { get; set; }
         public bool Active { set { gameObject.SetActive(value); } }
 
         UIMenuSystem menuSystem;
@@ -29,7 +30,7 @@ namespace FP {
 
         private void DungeonInput_OnInput(DungeonInput.InputEvent input, DungeonInput.InputType type)
         {
-            if (!DungeonInput.OverlappingTypes(type, DungeonInput.InputType.Down)) return;
+            if (!DungeonInput.OverlappingTypes(type, DungeonInput.InputType.Down) || KeyBinding) return;
 
             if (input == DungeonInput.InputEvent.Abort)
             {

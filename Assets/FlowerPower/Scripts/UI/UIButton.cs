@@ -4,29 +4,13 @@ using UnityEngine.UI;
 
 namespace FP
 {
-    public class UIButton : MonoBehaviour
+    public partial class UIButton : MonoBehaviour
     {
         public delegate void ButtonClickEvent(UIButton button);
         public delegate void ButtonHoverEvent(UIButton button);
 
         public event ButtonClickEvent OnClick;
         public event ButtonHoverEvent OnHover;
-
-        [System.Serializable]
-        public struct ColorSettings
-        {
-            [Tooltip("If color settings should be applied")]
-            public bool InUse;
-            public Color Default;
-            public Color Hover;
-            public Color Disabled;
-
-            public Color GetColor(bool hovered, bool disabled)
-            {
-                if (disabled) return Disabled;
-                return hovered ? Hover : Default;
-            }
-        }
 
         bool _disabled;
         public bool Disabled {
