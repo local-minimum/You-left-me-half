@@ -8,6 +8,9 @@ namespace FP
     {
         [SerializeField]
         bool PauseGameWhenVisible = true;
+
+        bool synced;
+
         public enum State { Hidden, Main, About, Settings, Inventory };
 
         private State _state;
@@ -20,6 +23,7 @@ namespace FP
                 bool visible = value != State.Hidden;
                 ToggleChildrenVisibility(visible, value);
                 HandleGameState(visible);
+                synced = true;
                 OnChangeState?.Invoke(value);
             }
         }
@@ -54,6 +58,14 @@ namespace FP
 
         public delegate void StateChangeEvent(State state);
         public event StateChangeEvent OnChangeState;
+
+        private void Start()
+        {
+            if (!synced)
+            {
+                state = state;
+            }
+        }
     }
 
 }
