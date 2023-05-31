@@ -32,7 +32,7 @@ namespace DeCrawl.UI
         {
             UpdateBar();
 
-            if (Time.timeSinceLevelLoad > hideChangeTime)
+            if (changeText != null && Time.timeSinceLevelLoad > hideChangeTime)
             {
                 changeText.text = "";
             }

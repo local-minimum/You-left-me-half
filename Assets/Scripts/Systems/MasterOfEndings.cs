@@ -27,6 +27,7 @@ namespace YLHalf
 
         private void CurrencyTracker_OnChange(CurrencyType type, int available, int capacity)
         {
+            if (Game.Status == GameStatus.Loading) return;
             if (type != CurrencyType.Health) return;
             if (capacity == 0)
             {

@@ -66,7 +66,10 @@ namespace DeCrawl.Systems
         public string SerializeState()
         {
             var lootables = AllLootables
-                .Select(l => new LootDto(l.Id, l.Coordinates, l.Owner))
+                .Select(l => {
+                    Debug.Log($"Storing {l.Id} owned by {l.Owner} at {l.Coordinates}");
+                    return new LootDto(l.Id, l.Coordinates, l.Owner);
+                 })
                 .ToArray();
 
             return JsonUtility.ToJson(new StateDto(lootables));
@@ -87,6 +90,7 @@ namespace DeCrawl.Systems
                 if (records.ContainsKey(loot.Id))
                 {
                     var record = records[loot.Id];
+                    Debug.Log($"Restore loot {loot.Id} to {record.owner} at {record.coordinates}");
                     loot.Loot(record.owner, record.coordinates);
                 }
                 else

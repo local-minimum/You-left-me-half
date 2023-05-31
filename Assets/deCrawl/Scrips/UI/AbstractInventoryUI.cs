@@ -86,7 +86,10 @@ namespace DeCrawl.UI
 
         private void PutInInventory(Lootable loot, Vector3Int placement)
         {
+            if (Loots.ContainsKey(loot.Id)) return;
+                
             Loots.Add(loot.Id, loot);
+
             var bag = loot.GetComponent<IInventoryBag>();
             if (bag != null)
             {

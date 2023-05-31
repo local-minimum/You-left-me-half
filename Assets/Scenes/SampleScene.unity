@@ -494,6 +494,10 @@ MonoBehaviour:
   FullWidthValue: 400
   type: 1
   barTransform: {fileID: 1420133360}
+  changeText: {fileID: 0}
+  showChangeTime: 1
+  gainColor: {r: 0, g: 0, b: 0, a: 0}
+  lossColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &377024627
 GameObject:
   m_ObjectHideFlags: 0
@@ -1284,7 +1288,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c6b6ef9908dde044869323c35c99d0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hideDebugUI: 1
 --- !u!4 &770052549
 Transform:
   m_ObjectHideFlags: 0
@@ -1541,6 +1544,51 @@ Transform:
   - {fileID: 1080903809}
   m_Father: {fileID: 1460335563}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1042312614
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1042312616}
+  - component: {fileID: 1042312615}
+  m_Layer: 0
+  m_Name: GameSaver
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1042312615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1042312614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 379a75b96de67124589b109c89059487, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hideDebugUI: 0
+--- !u!4 &1042312616
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1042312614}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1062187845 stripped
 Transform:
@@ -7552,6 +7600,7 @@ GameObject:
   - component: {fileID: 1723078672}
   - component: {fileID: 1723078671}
   - component: {fileID: 1723078670}
+  - component: {fileID: 1723078673}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -7609,6 +7658,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1723078673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1723078669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cc62f59e8cc3b84082c87854d2fca77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  behaviour: {fileID: 1723078671}
 --- !u!1 &1824845013
 GameObject:
   m_ObjectHideFlags: 0
@@ -7743,6 +7805,81 @@ Transform:
   - {fileID: 1380164537}
   m_Father: {fileID: 1189414891}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1947271674
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1947271676}
+  - component: {fileID: 1947271675}
+  m_Layer: 0
+  m_Name: DungeonInput
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1947271675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1947271674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fdcc8882967c21458bfd4f0f57af6fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PreferenceStorage: Settings.Input
+  ForwardKeys:
+    Primary: 119
+    Secondary: 273
+  BackwardKeys:
+    Primary: 115
+    Secondary: 274
+  LeftKeys:
+    Primary: 97
+    Secondary: 276
+  RightKeys:
+    Primary: 100
+    Secondary: 275
+  TurnClockWiseKeys:
+    Primary: 101
+    Secondary: 279
+  TurnCounterClockWiseKeys:
+    Primary: 113
+    Secondary: 278
+  InventoryKeys:
+    Primary: 105
+    Secondary: 9
+  PauseKeys:
+    Primary: 112
+    Secondary: 19
+  AbortKeys:
+    Primary: 27
+    Secondary: 8
+  SelectKeys:
+    Primary: 13
+    Secondary: 0
+--- !u!4 &1947271676
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1947271674}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2027370671
 GameObject:

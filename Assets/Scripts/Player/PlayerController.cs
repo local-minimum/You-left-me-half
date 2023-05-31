@@ -1,5 +1,6 @@
 using DeCrawl.World;
 using DeCrawl.Primitives;
+using DeCrawl.Systems;
 
 namespace YLHalf
 {
@@ -24,6 +25,7 @@ namespace YLHalf
         private new void Start()
         {
             inventory = GetComponentInChildren<Inventory>();
+            Game.Status = GameStatus.Playing;
             base.Start();
         }
 

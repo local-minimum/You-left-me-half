@@ -111,38 +111,13 @@ namespace DeCrawl.Systems
                 if (positions.ContainsKey(id))
                 {
                     entity.SetNewGridPosition(positions[id], lookDirections[id]);
+                } else
+                {
+                    Debug.Log($"Entity: {entity.Id} not recorded in save and will remain in its default position");
                 }
             }
 
             listening = true;
-        }
-
-        private string debugPlayerPrefsKey = "save.debug";
-
-        [SerializeField]
-        bool hideDebugUI = false;
-
-        private void OnGUI()
-        {
-            if (hideDebugUI) return;
-
-            if (GUILayout.Button("Debug Save"))
-            {
-                PlayerPrefs.SetString(debugPlayerPrefsKey, StringCompressor.CompressString(SerializeState()));
-            }
-            if (GUILayout.Button("Debug Load"))
-            {
-                var data = PlayerPrefs.GetString(debugPlayerPrefsKey);
-                if (string.IsNullOrEmpty(data))
-                {
-                    Debug.LogWarning($"Nothing stored at {debugPlayerPrefsKey} yet");
-                }
-                else
-                {
-                    DeserializeState(StringCompressor.DecompressString(data));
-                    RestorePositions();
-                }
-            }
         }
     }
 }

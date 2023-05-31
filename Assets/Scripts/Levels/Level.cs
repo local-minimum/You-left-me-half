@@ -316,6 +316,7 @@ namespace YLHalf
             else
             {
                 loot.transform.position = GridScale * (playerPosition + 0.5f * playerLookDirection.AsVector());
+                args.Coordinates = playerPosition;
             }
 
             loot.transform.SetParent(transform);
