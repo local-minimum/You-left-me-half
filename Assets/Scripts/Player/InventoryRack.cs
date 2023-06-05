@@ -8,13 +8,27 @@ using DeCrawl.UI;
 namespace YLHalf
 {
     [RequireComponent(typeof(Lootable))]
-    public abstract class InventoryRack : InventoryBagJoinable
+    public abstract class InventoryRack : InventoryBagJoinable, IPhased
     {
         public int[,] Corruption = new int[Inventory.RackHeight, Inventory.RackWidth];
+
+        public event PhaseChangeEvent OnPhaseChange;
+
         private void Awake()
         {
             InitOccupancy(Inventory.RackHeight, Inventory.RackWidth);
             ParseInitialCorruption();
+        }
+
+        private void EmitCurrentCorruptionAsPhase()
+        {
+            OnPhaseChange?.Invoke(Id, string.Join("\n", CorruptionAsStrings).Replace('\t', '|'));
+
+        }
+
+        private void Start()
+        {
+            EmitCurrentCorruptionAsPhase();
         }
 
         public IEnumerable<string> CorruptionAsStrings
@@ -34,6 +48,8 @@ namespace YLHalf
         }
 
         abstract protected string[] InitialCorruption { get; }
+
+        public string Id => GetComponent<Lootable>().Id;
 
         void ParseInitialCorruption()
         {
@@ -65,6 +81,7 @@ namespace YLHalf
                 {
                     Corruption[slot.y, slot.x]--;
                     remaining = Corruption[slot.y, slot.x];
+                    EmitCurrentCorruptionAsPhase();
                     return true;
                 }
                 remaining = -1;
@@ -92,6 +109,33 @@ namespace YLHalf
             {
                 slot.State = InventorySlotUIState.Free;
                 slot.RomanNumeralCount = 0;
+            }
+        }
+
+        public void RestorePhase(string phase)
+        {
+            Debug.Log(phase);
+            int y = 0;
+            foreach (var row in phase.Split('\n'))
+            {
+                if (y >= Corruption.GetLength(0)) continue;
+
+                int x = 0;
+                foreach (var rawCorrupt in row.Split('|'))
+                {
+                    if (x >= Corruption.GetLength(1)) continue;
+
+                    if (int.TryParse(rawCorrupt, out int corrupt))
+                    {
+                        Corruption[y, x] = Mathf.Max(0, corrupt);
+                    } else
+                    {
+                        Corruption[y, x] = 0;
+                        Debug.LogWarning($"Failed to parse corruption at {x}, {y} ({rawCorrupt})");
+                    }
+                    x++;
+                }
+                y++;
             }
         }
     }

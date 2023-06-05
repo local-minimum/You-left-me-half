@@ -56,16 +56,23 @@ namespace DeCrawl.Systems
 
                 PositionRecorder.instance?.DeserializeState(state.SerializedPositions);
 
+                PhaseRecorder.instance?.DeserializeState(state.SerializedPhases);
+
+                // Loot must be fixed after phases in case a phase affects what can be looted where
                 LootTable.instance?.DeserializeState(state.SerializedLoot);
 
-                PhaseRecorder.instance?.DeserializeState(state.SerializedPhases);
             }
             Game.RevertStatus();
         }
 
+        [SerializeField]
+        Rect DebugUIRect = new Rect(0, 0, 100, 48);
+
         private void OnGUI()
         {
             if (hideDebugUI) return;
+
+            GUILayout.BeginArea(DebugUIRect);
 
             if (GUILayout.Button("Debug Save"))
             {
@@ -75,6 +82,8 @@ namespace DeCrawl.Systems
             {
                 Load();
             }
+
+            GUILayout.EndArea();
         }
     }
 }

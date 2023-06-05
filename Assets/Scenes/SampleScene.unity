@@ -1575,7 +1575,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 379a75b96de67124589b109c89059487, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugPlayerPrefsKey: save.debug
   hideDebugUI: 0
+  DebugUIRect:
+    serializedVersion: 2
+    x: 25
+    y: 50
+    width: 100
+    height: 48
 --- !u!4 &1042312616
 Transform:
   m_ObjectHideFlags: 0
