@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace DeCrawl.Primitives
 {
-    public class IdentifiableEntity : MonoBehaviour
+    public class IdentifiableEntity : MonoBehaviour, IIdentifiable
     {
         [SerializeField, Tooltip("Leave empty to use game object name as identifier")]
         string overrideNameId;

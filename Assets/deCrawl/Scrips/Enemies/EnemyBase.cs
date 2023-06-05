@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DeCrawl.Primitives;
+using DeCrawl.World;
 
 namespace DeCrawl.Enemies
 {
@@ -24,7 +25,14 @@ namespace DeCrawl.Enemies
         {
             OnKillEnemy?.Invoke(gameObject, xpReward);
 
-            Destroy(gameObject);
+            var entity = GetComponent<IMovingEntity>();
+            if (entity != null)
+            {
+                entity.RemoveFromGame();
+            } else
+            {
+                Destroy(gameObject);
+            }
         }
 
         public void AttackPlayer(IAttackStats attack)

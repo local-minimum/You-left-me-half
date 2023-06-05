@@ -13,11 +13,13 @@ namespace DeCrawl.Systems
         {
             public string SerializedPositions;
             public string SerializedLoot;
+            public string SerializedPhases;
 
-            public StateDto(string positions, string loot)
+            public StateDto(string positions, string loot, string phases)
             {
                 SerializedPositions = positions;
                 SerializedLoot = loot;
+                SerializedPhases = phases;
             }
         }
 
@@ -30,7 +32,8 @@ namespace DeCrawl.Systems
         {
             var state = new StateDto(
                 PositionRecorder.instance.SerializeState(),
-                LootTable.instance.SerializeState()
+                LootTable.instance.SerializeState(),
+                PhaseRecorder.instance.SerializeState()
             );
             var compressedJSON = StringCompressor.CompressString(JsonUtility.ToJson(state));
             PlayerPrefs.SetString(debugPlayerPrefsKey, compressedJSON);
@@ -54,6 +57,8 @@ namespace DeCrawl.Systems
                 PositionRecorder.instance.RestorePositions();
 
                 LootTable.instance.DeserializeState(state.SerializedLoot);
+
+                PhaseRecorder.instance.DeserializeState(state.SerializedPhases);
             }
             Game.RevertStatus();
         }
