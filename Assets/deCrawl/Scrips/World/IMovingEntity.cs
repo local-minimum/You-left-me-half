@@ -16,5 +16,7 @@ namespace DeCrawl.World
         public void ClaimPosition();
 
         public event MoveEvent OnMove;
+
+        public void RemoveFromGame();
     }
 }

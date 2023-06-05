@@ -3,6 +3,8 @@ using UnityEngine;
 using System.Linq;
 using DeCrawl.Utils;
 using DeCrawl.Primitives;
+using DeCrawl.Enemies;
+using DeCrawl.World;
 
 namespace DeCrawl.Systems
 {
@@ -26,17 +28,20 @@ namespace DeCrawl.Systems
             public string id;
             public Vector3Int position;
             public CardinalDirection lookDirection;
+            public bool alive;
 
-            public PositionRecordDto(string id, Vector3Int position, CardinalDirection lookDirection)
+            public PositionRecordDto(string id, Vector3Int position, CardinalDirection lookDirection, bool alive)
             {
                 this.id = id;
                 this.position = position;
                 this.lookDirection = lookDirection;
+                this.alive = alive;
             }
         }
 
         Dictionary<string, Vector3Int> positions = new Dictionary<string, Vector3Int>();
         Dictionary<string, CardinalDirection> lookDirections = new Dictionary<string, CardinalDirection>();
+        Dictionary<string, bool> aliveStatus = new Dictionary<string, bool>();
         bool listening = true;
  
         private new void Awake()
@@ -49,6 +54,17 @@ namespace DeCrawl.Systems
                 {
                     entity.OnMove += PositionRecorder_OnMove;
                 }
+
+                EnemyBase.OnKillEnemy += EnemyBase_OnKillEnemy;
+            }
+        }
+
+        private void EnemyBase_OnKillEnemy(GameObject enemy, int xpReward)
+        {
+            var entity = enemy.GetComponent<IMovingEntity>();
+            if (entity != null)
+            {
+                aliveStatus[entity.Id] = false;
             }
         }
 
@@ -64,6 +80,8 @@ namespace DeCrawl.Systems
             {
                 entity.OnMove -= PositionRecorder_OnMove;
             }
+
+            EnemyBase.OnKillEnemy -= EnemyBase_OnKillEnemy;
             base.OnDestroy();
         }
 
@@ -73,18 +91,20 @@ namespace DeCrawl.Systems
 
             positions[id] = position;
             lookDirections[id] = lookDirection;
+            aliveStatus[id] = true;
         }
 
         public void ResetStored()
         {
             positions.Clear();
             lookDirections.Clear();
+            aliveStatus.Clear();
         }
 
         public string SerializeState()
         {
             var records = positions.Keys
-                .Select(id => new PositionRecordDto(id, positions[id], lookDirections[id]))
+                .Select(id => new PositionRecordDto(id, positions[id], lookDirections[id], aliveStatus[id]))
                 .ToArray();
 
             return JsonUtility.ToJson(new StateDto(records));
@@ -98,6 +118,7 @@ namespace DeCrawl.Systems
                 var state = records[i];
                 positions[state.id] = state.position;
                 lookDirections[state.id] = state.lookDirection;
+                aliveStatus[state.id] = state.alive;
             }
         }
 
@@ -110,13 +131,19 @@ namespace DeCrawl.Systems
             foreach (var entity in InterfaceFinder.FindMonoBehavioursWithIMovingEntity())
             {
                 var id = entity.Id;
-                if (positions.ContainsKey(id))
-                {                    
+                if (!aliveStatus.GetValueOrDefault(id, false))
+                {
+                    Debug.Log($"Removing Entity: {id} because it is not alive");
+                    entity.RemoveFromGame();                    
+                }
+                else if (positions.ContainsKey(id))
+                {
+                    Debug.Log($"Restoring Entity: {id} to position {positions[id]}");
                     entity.SetNewGridPosition(positions[id], lookDirections[id]);
                     entity.ClaimPosition();
                 } else
                 {
-                    Debug.Log($"Entity: {entity.Id} not recorded in save and will remain in its default position");
+                    Debug.Log($"Defaulting Entity: {id} not recorded in save");
                 }
             }
 

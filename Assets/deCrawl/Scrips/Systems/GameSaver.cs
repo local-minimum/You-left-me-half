@@ -36,6 +36,7 @@ namespace DeCrawl.Systems
             PlayerPrefs.SetString(debugPlayerPrefsKey, compressedJSON);
         }
 
+        public bool HasSave => PlayerPrefs.HasKey(debugPlayerPrefsKey);
 
         void Load()
         {
@@ -65,7 +66,7 @@ namespace DeCrawl.Systems
             {
                 Save();
             }
-            if (GUILayout.Button("Debug Load"))
+            if (HasSave && GUILayout.Button("Debug Load"))
             {
                 Load();
             }

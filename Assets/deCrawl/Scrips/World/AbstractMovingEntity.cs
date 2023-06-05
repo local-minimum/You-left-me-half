@@ -121,6 +121,11 @@ namespace DeCrawl.World
             return NavInstructions.NoNavigation;
         }
 
-        abstract public void ClaimPosition();        
+        abstract public void ClaimPosition();
+
+        public void RemoveFromGame()
+        {
+            Destroy(gameObject);
+        }
     }
 }
