@@ -63,7 +63,7 @@ namespace FP {
         public void Configure(Inventory inventory)
         {
             var letters = inventory.Where(l => l is LetterLoot).Select(ll => ((LetterLoot)ll).Letter).OrderBy(ch => ch).ToArray();
-            var nChildren = transform.childCount;
+            var nChildren = Container.childCount;
             for (int i = 0, l = Mathf.Max(nChildren, letters.Length); i<l; i++)
             {
                 if (i > letters.Length)

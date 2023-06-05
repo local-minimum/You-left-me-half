@@ -9,7 +9,7 @@ namespace FP
 {
     public class Inventory : UnifiedInventory<SingleSpaceOnlyBag>
     {        
-        new protected bool CanPickupShape(Lootable loot, out Vector3Int origin)
+        protected override bool CanPickupShape(Lootable loot, out Vector3Int origin)
         {
             if (loot is Canister)
             {
@@ -18,6 +18,16 @@ namespace FP
             }
 
             return base.CanPickupShape(loot, out origin);
+        }
+
+        protected override bool CanPickupShape(Lootable loot, Vector3Int origin)
+        {
+            if (loot is Canister)
+            {
+                return true;
+            }
+
+            return base.CanPickupShape(loot, origin);
         }
 
         public IEnumerable<T> FilterHas<T>(

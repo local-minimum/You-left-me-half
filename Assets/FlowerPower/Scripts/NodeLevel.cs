@@ -68,7 +68,7 @@ namespace FP {
 
             if (claimer == FPEntity.Player && !node.CanBeReachedFrom(playerPosition))
             {
-                Debug.Log($"Player can't react {node.Coordinates} from {playerPosition}");
+                Debug.LogWarning($"Player can't react {node.Coordinates} from {playerPosition}");
                 return false;
             }
 
@@ -92,6 +92,12 @@ namespace FP {
                 node.ClearOccupants();
             }
             node.AddOccupant(claimer);
+
+            if (claimer == FPEntity.Player)
+            {
+                playerPosition = position;
+            }
+
             return true;
         }
 

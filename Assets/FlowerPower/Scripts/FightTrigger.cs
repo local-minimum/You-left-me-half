@@ -8,7 +8,7 @@ using DeCrawl.Primitives;
 
 namespace FP
 {
-    public class FightTrigger : MonoBehaviour
+    public class FightTrigger : MonoBehaviour, IPhased
     {
         [SerializeField]
         CardinalDirection forceDirection;
@@ -38,6 +38,10 @@ namespace FP
         int InterlocutorHealth = 100;
 
         bool triggered = false;
+
+        public string Id => Interlocutor;
+
+        public event PhaseChangeEvent OnPhaseChange;
 
         private void OnEnable()
         {
@@ -97,7 +101,13 @@ namespace FP
 
             if (!allowRepeatTriggering) {
                 triggered = true;
+                OnPhaseChange?.Invoke(Id, "triggered");
             }
+        }
+
+        public void RestorePhase(string phase)
+        {
+            triggered = phase == "triggered";
         }
     }
 }

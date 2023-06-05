@@ -26,6 +26,7 @@ namespace DeCrawl.Primitives
             }
             else if (_instance != this)
             {
+                Debug.LogError($"Duplicate Singleton: {_instance} exists yet {this} also exists");
                 Destroy(this);
             }
         }

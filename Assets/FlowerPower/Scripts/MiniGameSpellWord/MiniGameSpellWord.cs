@@ -205,9 +205,6 @@ namespace FP
             }
         }
 
-        [SerializeField]
-        LetterLoot LootPrefab;
-
         public void RewardPlayer()
         {
             if (!Reward)
@@ -216,20 +213,13 @@ namespace FP
                 return;
             }
 
-            if (LootPrefab == null)
-            {
-                Debug.LogWarning($"There's no reward from {name} because loot prefab missing");
-                return;
-            }
-
             if (RewardLetter == LetterLoot.NoLetterChar)
             {
                 Debug.LogWarning($"There's no reward from {name} because all options already looted");
                 return;
             }
-           
-            var loot = Instantiate(LootPrefab);
-            loot.name = LetterLoot.AsId(RewardLetter);
+
+            var loot = LootTable.instance.CreateLootById(LetterLoot.AsId(RewardLetter));
             loot.Loot(DeCrawl.Primitives.LootOwner.Player);
         }
     }

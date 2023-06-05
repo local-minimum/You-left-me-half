@@ -35,6 +35,7 @@ namespace DeCrawl.Primitives
                 offsetRows += rack.Rows;
             });
             Loots.Remove(lootable);
+            Debug.Log($"Dropped up: {lootable.Id}");
 
             if (Bags.Contains(lootable.GetComponent<BagType>()))
             {
@@ -58,6 +59,7 @@ namespace DeCrawl.Primitives
             });
 
             Loots.Add(lootable);
+            Debug.Log($"Picked up: {lootable.Id}");
 
             if (newLoot && lootable is Canister)
             {
@@ -75,7 +77,7 @@ namespace DeCrawl.Primitives
         /// <param name="loot"></param>
         /// <param name="origin">First free position where it can be picked up to</param>
         /// <returns></returns>
-        protected bool CanPickupShape(Lootable loot, out Vector3Int origin)
+        protected virtual bool CanPickupShape(Lootable loot, out Vector3Int origin)
         {
             var shape = loot.InventoryShape;
             int shapeHeight = shape.Max(offset => offset.y) + 1;
@@ -120,7 +122,7 @@ namespace DeCrawl.Primitives
         /// <param name="loot"></param>
         /// <param name="origin"></param>
         /// <returns></returns>
-        protected bool CanPickupShape(Lootable loot, Vector3Int origin)
+        protected virtual bool CanPickupShape(Lootable loot, Vector3Int origin)
         {
             if (origin.y < 0) return false;
 
@@ -174,7 +176,11 @@ namespace DeCrawl.Primitives
             }
 
             if (args.Owner != LootOwner.Player || args.Consumed) return;
-            if (HasConstraint(loot)) return;
+            if (HasConstraint(loot))
+            {
+                Debug.Log($"Refuse pick up of {loot.Id} due to constraint");
+                return;
+            }
 
             InventoryEvent inventoryEvent = InventoryEvent.PickUp;
             var newBag = loot.GetComponent<BagType>();
@@ -192,6 +198,7 @@ namespace DeCrawl.Primitives
                 }
                 else
                 {
+                    Debug.Log($"Refused pickup {loot.Id} due because no more bags allowed");
                     return;
                 }
             }

@@ -76,6 +76,8 @@ namespace DeCrawl.Systems
             return JsonUtility.ToJson(new StateDto(lootables));
         }
 
+        public virtual Lootable CreateLootById(string id) => throw new System.NotImplementedException($"Loot table has no custom loot creator, cannot load {id}");
+
         public void DeserializeState(string json)
         {            
             var allLoot = AllLootables
@@ -103,12 +105,20 @@ namespace DeCrawl.Systems
 
                     Debug.Log($"Restore loot {loot.Id} to {record.owner} at {record.coordinates}");
                     loot.Loot(record.owner, record.coordinates);
+                    records.Remove(loot.Id);
                 }
                 else
                 {
                     loot.gameObject.SetActive(false);
                 }
             }
+
+            foreach (var record in records)
+            {
+
+                var loot = CreateLootById(record.Key);
+                loot.Loot(record.Value.owner, record.Value.coordinates);
+            }                
         }
 
         public bool GetLootByPartialId(string partialId, out Lootable loot)

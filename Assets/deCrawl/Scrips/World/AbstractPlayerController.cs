@@ -44,8 +44,8 @@ namespace DeCrawl.World
             var position = Level.PlayerFirstSpawnPosition;
 
 
-            movableEntity.SetNewGridPosition(position, lookDirection);
-            Level.ClaimPosition(PlayerEntity, position, ClaimCond);            
+            movableEntity.SetNewGridPosition(position, lookDirection);            
+            Level.ClaimPositionForced(PlayerEntity, position);            
             OnPlayerMove?.Invoke(position, lookDirection);
         }
 

@@ -23,6 +23,7 @@ namespace DeCrawl.Systems
             }
         }
 
+        [SerializeField]
         private string debugPlayerPrefsKey = "save.debug";
 
         [SerializeField]
@@ -31,9 +32,9 @@ namespace DeCrawl.Systems
         void Save()
         {
             var state = new StateDto(
-                PositionRecorder.instance.SerializeState(),
-                LootTable.instance.SerializeState(),
-                PhaseRecorder.instance.SerializeState()
+                PositionRecorder.instance?.SerializeState(),
+                LootTable.instance?.SerializeState(),
+                PhaseRecorder.instance?.SerializeState()
             );
             var compressedJSON = StringCompressor.CompressString(JsonUtility.ToJson(state));
             PlayerPrefs.SetString(debugPlayerPrefsKey, compressedJSON);
@@ -53,12 +54,11 @@ namespace DeCrawl.Systems
             {                
                 var state = JsonUtility.FromJson<StateDto>(StringCompressor.DecompressString(data));
 
-                PositionRecorder.instance.DeserializeState(state.SerializedPositions);
-                PositionRecorder.instance.RestorePositions();
+                PositionRecorder.instance?.DeserializeState(state.SerializedPositions);
 
-                LootTable.instance.DeserializeState(state.SerializedLoot);
+                LootTable.instance?.DeserializeState(state.SerializedLoot);
 
-                PhaseRecorder.instance.DeserializeState(state.SerializedPhases);
+                PhaseRecorder.instance?.DeserializeState(state.SerializedPhases);
             }
             Game.RevertStatus();
         }

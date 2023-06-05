@@ -120,9 +120,11 @@ namespace DeCrawl.Systems
                 lookDirections[state.id] = state.lookDirection;
                 aliveStatus[state.id] = state.alive;
             }
+
+            RestorePositions();
         }
 
-        public void RestorePositions()
+        private void RestorePositions()
         {
             listening = false;
 

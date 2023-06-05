@@ -13,7 +13,7 @@ namespace FP
 
         public override void ClaimPosition()
         {
-            Level.ClaimPosition(entity, Position, true);
+            Level.ClaimPositionForced(entity, Position);            
         }
     }
 }
