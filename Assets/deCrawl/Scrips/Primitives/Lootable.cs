@@ -10,7 +10,7 @@ namespace DeCrawl.Primitives
         public LootOwner Owner { get; private set; }
         public Vector3Int Coordinates { get; set; }
         public bool DefinedPosition { get; set; }
-        public bool Consumed { get; set; }
+        public bool Consumed { get; set; }        
 
         public LootEventArgs(LootOwner owner)
         {
@@ -29,12 +29,14 @@ namespace DeCrawl.Primitives
     public delegate void LootEvent(Lootable loot, LootEventArgs args);
     public delegate void ManifestChangeEvent(bool visible);
 
-    public enum LootOwner { None, Player, Level };
+    public enum LootOwner { LootTable, Player, Level };
 
     public class Lootable : IdentifiableEntity
     {
         public static event LootEvent OnLoot;
         public event ManifestChangeEvent OnManifestChange;
+
+        public int SerializationPriority = 1;
 
         public Vector3Int Coordinates { get; set; }
         public LootOwner Owner { get; set; }
@@ -87,10 +89,10 @@ namespace DeCrawl.Primitives
                 // figure out where to place it by its own rules (probably track player).
                 Loot(LootOwner.Level);
             }
-            else if (args.Owner != LootOwner.None)
+            else if (args.Owner != LootOwner.LootTable)
             {
                 // If level can't hold it, it goes back to the loot table
-                Loot(LootOwner.None);
+                Loot(LootOwner.LootTable);
             } else
             {
                 Debug.LogError($"No one looted {Id}");

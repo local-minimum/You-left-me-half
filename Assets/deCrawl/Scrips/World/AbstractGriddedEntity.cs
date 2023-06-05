@@ -12,7 +12,7 @@ namespace DeCrawl.World
         [SerializeField]
         Vector3Int gridPosition;
 
-        abstract protected ILevel<Entity, ClaimCondition> level { get; }
+        abstract protected IGrid grid { get; }
 
         private void Awake()
         {
@@ -42,7 +42,7 @@ namespace DeCrawl.World
         {
             if (!Application.isPlaying)
             {
-                transform.position = level.AsWorldPosition(gridPosition);
+                transform.position = grid.AsWorldPosition(gridPosition);
             }
         }
     }

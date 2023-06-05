@@ -18,7 +18,7 @@ namespace DeCrawl.Systems
 
         private void Start()
         {
-            AvailableLootables.ToList().ForEach(l => l.Loot(LootOwner.None));
+            AvailableLootables.ToList().ForEach(l => l.Loot(LootOwner.LootTable));
         }
 
         [System.Serializable]
@@ -66,6 +66,7 @@ namespace DeCrawl.Systems
         public string SerializeState()
         {
             var lootables = AllLootables
+                .OrderBy(l => l.SerializationPriority)
                 .Select(l => {
                     Debug.Log($"Storing {l.Id} owned by {l.Owner} at {l.Coordinates}");
                     return new LootDto(l.Id, l.Coordinates, l.Owner);
@@ -76,8 +77,11 @@ namespace DeCrawl.Systems
         }
 
         public void DeserializeState(string json)
-        {
-            var allLoot = AllLootables;
+        {            
+            var allLoot = AllLootables
+                .OrderBy(l => l.SerializationPriority)
+                .ToArray();
+
             var records = JsonUtility
                 .FromJson<StateDto>(json)
                 .records
@@ -90,6 +94,13 @@ namespace DeCrawl.Systems
                 if (records.ContainsKey(loot.Id))
                 {
                     var record = records[loot.Id];
+
+                    // First return item then place it were it needs to go
+                    if (record.owner != LootOwner.LootTable)
+                    {
+                        loot.Loot(LootOwner.LootTable);
+                    }
+
                     Debug.Log($"Restore loot {loot.Id} to {record.owner} at {record.coordinates}");
                     loot.Loot(record.owner, record.coordinates);
                 }
@@ -138,7 +149,7 @@ namespace DeCrawl.Systems
 
         private void Lootable_OnLoot(Lootable loot, LootEventArgs args)
         {
-            if (args.Owner == LootOwner.None)
+            if (args.Owner == LootOwner.LootTable)
             {
                 args.Consumed = true;
 
@@ -147,7 +158,6 @@ namespace DeCrawl.Systems
 
                 args.Coordinates = Vector3Int.zero;
                 args.DefinedPosition = true;
-
 
             }
         }

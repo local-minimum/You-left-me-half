@@ -383,5 +383,10 @@ namespace YLHalf
 
             return AStarSearch.Search(searchParameters, out path);
         }
+
+        public void ResetState()
+        {
+            _grid = null;
+        }
     }
 }

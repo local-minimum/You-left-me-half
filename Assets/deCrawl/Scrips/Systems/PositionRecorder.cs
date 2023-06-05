@@ -105,12 +105,15 @@ namespace DeCrawl.Systems
         {
             listening = false;
 
+            InterfaceFinder.FindMonoBehaviourWithIGrid()?.ResetState();
+
             foreach (var entity in InterfaceFinder.FindMonoBehavioursWithIMovingEntity())
             {
                 var id = entity.Id;
                 if (positions.ContainsKey(id))
-                {
+                {                    
                     entity.SetNewGridPosition(positions[id], lookDirections[id]);
+                    entity.ClaimPosition();
                 } else
                 {
                     Debug.Log($"Entity: {entity.Id} not recorded in save and will remain in its default position");

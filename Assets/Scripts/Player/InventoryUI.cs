@@ -47,7 +47,7 @@ namespace YLHalf
                     {
                         if (inventory.Has(l => l is Repair, out Lootable repair))
                         {
-                            repair.Loot(LootOwner.None);
+                            repair.Loot(LootOwner.LootTable);
                             return true;
                         }
                         return false;
@@ -172,6 +172,28 @@ namespace YLHalf
                 }
             }
             return rt;
+        }
+
+        protected override void DestroyBagUI(Lootable loot, IInventoryBag bag)
+        {
+            var rackIndex = loot.Coordinates.y;
+
+            for (
+                int y = rackIndex * Inventory.RackHeight,
+                yMax = (rackIndex + 1) * Inventory.RackHeight,
+                localY = 0;
+                y < yMax;
+                y++, localY++
+             )
+            {
+                for (int x = 0; x < Inventory.RackWidth; x++)
+                {
+                    var coords = new Vector2Int(x, y);
+                    var slot = Slots[coords];
+                    Slots.Remove(coords);
+                    Destroy(slot.gameObject);
+                }
+            }
         }
 
         static readonly Rect RackPadding = new Rect(0.05f, 0f, 0.9f, 1f);

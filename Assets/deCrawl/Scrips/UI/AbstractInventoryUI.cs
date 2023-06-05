@@ -80,6 +80,9 @@ namespace DeCrawl.UI
         protected abstract void SlotPosition(Vector3Int coordinates, RectInt uiShape, RectTransform rt, Vector3 dragOffset);
 
         abstract protected RectTransform CreateBagUI(Lootable loot, IInventoryBag bag, Vector3Int placement);
+
+        abstract protected void DestroyBagUI(Lootable loot, IInventoryBag bag);
+
         abstract protected RectTransform CreateLootUI(Lootable loot, Vector3Int placement);
         abstract protected void PositionBag(int bagIndex, RectTransform rt);
 
@@ -124,6 +127,10 @@ namespace DeCrawl.UI
             var lootId = loot.Id;
             Loots.Remove(lootId);
             var lootTransform = Transforms[lootId];
+            if (loot.GetComponent<IInventoryBag>() != null)
+            {
+                DestroyBagUI(loot, loot.GetComponent<IInventoryBag>());
+            }
             Destroy(lootTransform.gameObject);
             Transforms.Remove(lootId);
             ApplyNewSlotState(loot, loot.Coordinates, InventorySlotUIState.Free);

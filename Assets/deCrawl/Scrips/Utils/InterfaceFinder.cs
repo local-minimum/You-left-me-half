@@ -7,6 +7,24 @@ namespace DeCrawl.Utils
 {
     public static class InterfaceFinder
     {
+        private static MonoBehaviour FindFirstMonoBehavioursWithInterface<T>()
+        {
+            MonoBehaviour[] behaviours = GameObject.FindObjectsOfType<MonoBehaviour>();
+            for (int i = 0; i < behaviours.Length; i++)
+            {
+                if (behaviours[i] is T)
+                {
+                    return behaviours[i];
+                }
+            }
+            return null;
+        }
+
+        public static IGrid FindMonoBehaviourWithIGrid()
+        {
+            return FindFirstMonoBehavioursWithInterface<IGrid>() as IGrid;
+        }
+
         public static IEnumerable<IMovingEntity> FindMonoBehavioursWithIMovingEntity()
         {
             MonoBehaviour[] behaviours = GameObject.FindObjectsOfType<MonoBehaviour>();
@@ -21,17 +39,7 @@ namespace DeCrawl.Utils
 
         public static IMovingEntity FindMonoBehaviourWithIMovingEntity()
         {
-            MonoBehaviour[] behaviours = GameObject.FindObjectsOfType<MonoBehaviour>();
-            for (int i = 0; i < behaviours.Length; i++)
-            {
-                if (behaviours[i] is IMovingEntity)
-                {
-                    return behaviours[i] as IMovingEntity;
-                }
-            }
-
-            return null;
+            return FindFirstMonoBehavioursWithInterface<IMovingEntity>() as IMovingEntity;
         }
-
     }
 }

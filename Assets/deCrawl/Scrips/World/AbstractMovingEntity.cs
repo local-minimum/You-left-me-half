@@ -21,7 +21,7 @@ namespace DeCrawl.World
             LookDirection = lookDirection;
             OnMove?.Invoke(Id, position, lookDirection);
         }
-
+        
         Vector3Int GetNavigationTraget(Navigation navigation)
         {
             switch (navigation)
@@ -120,5 +120,7 @@ namespace DeCrawl.World
 
             return NavInstructions.NoNavigation;
         }
+
+        abstract public void ClaimPosition();        
     }
 }

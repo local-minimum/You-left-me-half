@@ -18,5 +18,12 @@ namespace YLHalf
                 return level;
             }
         }
+
+        public GridEntity Entity;
+
+        public override void ClaimPosition()
+        {
+            Level.ClaimPosition(Entity, Position, true);
+        }
     }
 }

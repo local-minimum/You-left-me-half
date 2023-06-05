@@ -36,6 +36,11 @@ namespace DeCrawl.Primitives
             });
             Loots.Remove(lootable);
 
+            if (Bags.Contains(lootable.GetComponent<BagType>()))
+            {
+                Bags.Remove(lootable.GetComponent<BagType>());
+            }
+
             if (lootable is Canister)
             {
                 InvokeCanisterChange(((Canister)lootable).CanisterType);
@@ -110,7 +115,7 @@ namespace DeCrawl.Primitives
         }
 
         /// <summary>
-        /// Pick up (or move) to a specific locatoin
+        /// Pick up (or move) to a specific location
         /// </summary>
         /// <param name="loot"></param>
         /// <param name="origin"></param>
@@ -123,7 +128,11 @@ namespace DeCrawl.Primitives
             var inventorySlots = loot.InventorySlots();
             var originXY = origin.XYVector2Int();
 
-            if (MaxRowForShape(shapeHeight) < origin.y) return false;
+            if (MaxRowForShape(shapeHeight) < origin.y)
+            {
+                Debug.Log($"Shape too heigh to have origin row as {origin.y} ({shapeHeight})");
+                return false;
+            }
 
             var localOrigin = new Vector3Int(origin.x, origin.y, origin.z);
 
@@ -159,6 +168,7 @@ namespace DeCrawl.Primitives
         {
             if (Loots.Contains(loot) && args.Owner != LootOwner.Player)
             {
+                Debug.Log($"Dropping {loot.Id}");
                 Drop(loot);
                 OnInventoryChange?.Invoke(loot, InventoryEvent.Drop, Vector3Int.zero);
             }
@@ -195,7 +205,7 @@ namespace DeCrawl.Primitives
                         inventoryEvent = InventoryEvent.Move;
                     }
                 }
-                else
+                else if (loot.Owner == LootOwner.Player)
                 {
                     // Reset to previous position
                     args.Consumed = true;
@@ -203,6 +213,10 @@ namespace DeCrawl.Primitives
                     placement = loot.Coordinates;
                     Drop(loot);
                     inventoryEvent = InventoryEvent.Move;
+                } else
+                {
+                    Debug.LogError($"Cannot pick up {loot.Id} at {args.Coordinates}");
+                    return;
                 }
             }
             else
@@ -220,6 +234,7 @@ namespace DeCrawl.Primitives
                 }
                 else
                 {
+                    Debug.LogWarning($"No space in inventory for {loot.Id}");
                     return;
                 }
             }

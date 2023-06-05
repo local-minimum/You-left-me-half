@@ -118,5 +118,13 @@ namespace FP {
             // Debug.Log($"Got player position {position}");
             playerPosition = position;
         }
+
+        public void ResetState()
+        {
+            Nodes.ForEach(node =>
+            {
+                node.ClearOccupants();
+            });
+        }
     }
 }

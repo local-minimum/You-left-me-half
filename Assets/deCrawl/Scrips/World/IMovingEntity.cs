@@ -13,6 +13,8 @@ namespace DeCrawl.World
 
         public void SetNewGridPosition(Vector3Int position, CardinalDirection lookDirection);
 
+        public void ClaimPosition();
+
         public event MoveEvent OnMove;
     }
 }
