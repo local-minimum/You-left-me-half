@@ -50,5 +50,8 @@ namespace DeCrawl.Utils
         public static IEnumerable<IPhased> FindMonoBeahviourWithIPhased() =>
             FindMonoBehavioursWithInterface<IPhased>()
             .Select(behaviour => behaviour as IPhased);
+
+        public static ICurrencyPurse FindMonoBehaviourWithICurrencyPurse() =>
+            FindFirstMonoBehavioursWithInterface<ICurrencyPurse>() as ICurrencyPurse;
     }
 }

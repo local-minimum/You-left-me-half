@@ -59,6 +59,11 @@ namespace DeCrawl.Lootables
             return remaining > 0;
         }
 
+        public void Empty()
+        {
+            stored = 0;
+        }
+
         private void Start()
         {
             stored = Mathf.Min(capacity, initialStored);

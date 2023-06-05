@@ -14,12 +14,14 @@ namespace DeCrawl.Systems
             public string SerializedPositions;
             public string SerializedLoot;
             public string SerializedPhases;
+            public string SerializedCurrencies;
 
-            public StateDto(string positions, string loot, string phases)
+            public StateDto(string positions, string loot, string phases, string currencies)
             {
                 SerializedPositions = positions;
                 SerializedLoot = loot;
                 SerializedPhases = phases;
+                SerializedCurrencies = currencies;
             }
         }
 
@@ -34,8 +36,10 @@ namespace DeCrawl.Systems
             var state = new StateDto(
                 PositionRecorder.instance?.SerializeState(),
                 LootTable.instance?.SerializeState(),
-                PhaseRecorder.instance?.SerializeState()
+                PhaseRecorder.instance?.SerializeState(),
+                CurrencyTracker.SerializeState()
             );
+            
             var compressedJSON = StringCompressor.CompressString(JsonUtility.ToJson(state));
             PlayerPrefs.SetString(debugPlayerPrefsKey, compressedJSON);
         }
@@ -60,6 +64,8 @@ namespace DeCrawl.Systems
 
                 // Loot must be fixed after phases in case a phase affects what can be looted where
                 LootTable.instance?.DeserializeState(state.SerializedLoot);
+
+                CurrencyTracker.DeserializeState(state.SerializedCurrencies);
 
             }
             Game.RevertStatus();

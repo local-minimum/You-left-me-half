@@ -10,7 +10,7 @@ namespace DeCrawl.Primitives
 {
     public delegate void InventoryChange(Lootable loot, InventoryEvent inventoryEvent, Vector3Int placement);
 
-    public class UnifiedInventory<BagType> : MonoBehaviour where BagType : IInventoryBag
+    public class UnifiedInventory<BagType> : MonoBehaviour, ICurrencyPurse where BagType : IInventoryBag
     {
         public static event InventoryChange OnInventoryChange;
 
@@ -44,7 +44,7 @@ namespace DeCrawl.Primitives
 
             if (lootable is Canister)
             {
-                InvokeCanisterChange(((Canister)lootable).CanisterType);
+                InvokeCurrencyChange(((Canister)lootable).CanisterType);
             }
         }
 
@@ -63,7 +63,7 @@ namespace DeCrawl.Primitives
 
             if (newLoot && lootable is Canister)
             {
-                InvokeCanisterChange(((Canister)lootable).CanisterType);
+                InvokeCurrencyChange(((Canister)lootable).CanisterType);
             }
 
         }
@@ -275,17 +275,32 @@ namespace DeCrawl.Primitives
             Lootable.OnLoot -= Lootable_OnLoot;
         }
 
-        protected IEnumerable<Canister> GetXPCanisters() => GetLoot<Canister>()
-    .Where(canister => canister.CanisterType == CurrencyType.XP);
-        protected IEnumerable<Canister> GetHealthCanisters() => GetLoot<Canister>()
-            .Where(canister => canister.CanisterType == CurrencyType.XP);
+        #region Currency Purse
         protected IEnumerable<Canister> GetCanisters(CurrencyType type) => GetLoot<Canister>()
             .Where(canister => canister.CanisterType == type);
 
-        public int XP { get => GetXPCanisters().Sum(canister => canister.Stored); }
-        public int Health { get => GetHealthCanisters().Sum(canister => canister.Stored); }
+        public int XP { get => GetCanisters(CurrencyType.XP).Sum(canister => canister.Stored); }
+        public int Health { get => GetCanisters(CurrencyType.Health).Sum(canister => canister.Stored); }
+        public int Money { get => GetCanisters(CurrencyType.Money).Sum(canister => canister.Stored); }
 
-        public void InvokeCanisterChange(CurrencyType type)
+        public void SetCurrencyHeld(CurrencyType type, int amount, int capacity)
+        {
+            // capacity is ignored since it's handled by canister in this implementation
+            foreach (var canister in GetCanisters(type))
+            {
+                canister.Empty();
+                if (amount > 0)
+                {
+                    canister.Receive(amount, out amount);
+                }
+            }
+            if (amount > 0)
+            {
+                Debug.LogError($"{amount} {type} could not be stored in inventory, out of capacity");
+            }
+        }
+
+        public void InvokeCurrencyChange(CurrencyType type)
         {
             var (stored, capacity) = GetCanisters(type)
                 .Aggregate((0, 0), (acc, canister) => (acc.Item1 + canister.Stored, acc.Item2 + canister.Capacity));
@@ -295,12 +310,6 @@ namespace DeCrawl.Primitives
             CurrencyTracker.Update(type, stored, capacity);
         }
 
-        /// <summary>
-        /// Receives amount of currency.
-        /// </summary>
-        /// <param name="amount"></param>
-        /// <param name="type"></param>
-        /// <returns>Amount that could not be received</returns>
         public int Receive(int amount, CurrencyType type)
         {
             var canisters = GetCanisters(type).ToArray();
@@ -319,17 +328,11 @@ namespace DeCrawl.Primitives
                 }
             }
 
-            InvokeCanisterChange(type);
+            InvokeCurrencyChange(type);
 
             return amount;
         }
 
-        /// <summary>
-        /// Withdraws amount
-        /// </summary>
-        /// <param name="amount"></param>
-        /// <param name="type"></param>
-        /// <returns>Amount that could not be withdrawn</returns>
         public int Withdraw(int amount, CurrencyType type)
         {
             var canisters = GetCanisters(type).ToArray();
@@ -346,8 +349,9 @@ namespace DeCrawl.Primitives
                 }
             }
 
-            InvokeCanisterChange(type);
+            InvokeCurrencyChange(type);
             return amount;
         }
     }
+    #endregion
 }

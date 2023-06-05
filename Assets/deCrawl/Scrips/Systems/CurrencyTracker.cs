@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using DeCrawl.Utils;
 
 namespace DeCrawl.Systems
 {
@@ -64,5 +66,74 @@ namespace DeCrawl.Systems
         {
             OnChange?.Invoke(type, Available.GetValueOrDefault(type, 0), Capacity.GetValueOrDefault(type, 0));
         }
+
+        
+        [System.Serializable]
+        private struct Purse
+        {
+            public CurrencyType Currency;
+            public int Available;
+            public int Capacity;
+
+            public Purse(CurrencyType currency, int available, int capacity)
+            {
+                Currency = currency;
+                Available = available;
+                Capacity = capacity;
+            }
+        }
+
+        [System.Serializable]
+        private struct CurrenciesDto
+        {
+            public Purse[] Purses;
+
+            public CurrenciesDto(Dictionary<CurrencyType, int> available, Dictionary<CurrencyType, int> capacity)
+            {
+                var currencies = System.Enum.GetValues(typeof(CurrencyType)) as CurrencyType[];
+
+                Purses = currencies
+                    .Select(currency => new Purse(
+                        currency,
+                        available.GetValueOrDefault(currency, 0),
+                        capacity.GetValueOrDefault(currency, available.GetValueOrDefault(currency, 0))
+                    ))
+                    .ToArray();
+            }
+        }
+
+        public static string SerializeState() => JsonUtility.ToJson(new CurrenciesDto(Available, Capacity));
+
+        public static void DeserializeState(string json)
+        {
+            if (json == null)
+            {
+                Debug.LogError("No currency information stored, game state corrupt");
+                return;
+            }
+
+            var purse = InterfaceFinder.FindMonoBehaviourWithICurrencyPurse();
+            if (purse == null)
+            {
+                Debug.LogWarning("Could not restore currencies because nothing implements a purse");
+                return;
+            }
+
+            var state = JsonUtility.FromJson<CurrenciesDto>(json);
+
+            foreach (var currency in state.Purses)
+            {
+                if (currency.Available == 0 && currency.Capacity == 0)
+                {
+                    Debug.Log($"Skipping Currency Restore: {currency.Currency} since available and capacity is zero");
+                    continue;
+                }
+                Debug.Log($"Currency Restore: {currency.Currency} set to {currency.Available} / {currency.Capacity}");
+                purse?.SetCurrencyHeld(currency.Currency, currency.Available, currency.Capacity);
+                Update(currency.Currency, currency.Available, currency.Capacity);
+            }
+           
+        }
+        
     }
 }
