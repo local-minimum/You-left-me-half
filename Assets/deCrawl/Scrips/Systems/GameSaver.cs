@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using DeCrawl.Primitives;
-using DeCrawl.Utils;
+using DeCrawl.Systems.Storage;
 
 namespace DeCrawl.Systems
 {
@@ -26,12 +27,14 @@ namespace DeCrawl.Systems
         }
 
         [SerializeField]
-        private string debugPlayerPrefsKey = "save.debug";
+        private string debugStorageKey = "debug";
+
+        IEnumerable<IStorage> storages => GetComponents<IStorage>().Where(s => s.Enabled);
 
         [SerializeField]
         bool hideDebugUI = false;
 
-        void Save()
+        void Save(string saveSlot)
         {
             var state = new StateDto(
                 PositionRecorder.instance?.SerializeState(),
@@ -39,34 +42,46 @@ namespace DeCrawl.Systems
                 PhaseRecorder.instance?.SerializeState(),
                 CurrencyTracker.SerializeState()
             );
-            
-            var compressedJSON = StringCompressor.CompressString(JsonUtility.ToJson(state));
-            PlayerPrefs.SetString(debugPlayerPrefsKey, compressedJSON);
+
+            var data = JsonUtility.ToJson(state);
+            foreach (var storage in storages)
+            {
+                if (!storage.Save(saveSlot, data))
+                {
+                    Debug.Log($"Could not save state to {storage}");
+                }
+            }
         }
 
-        public bool HasSave => PlayerPrefs.HasKey(debugPlayerPrefsKey);
+        public bool HasSave(string saveSlot) => storages.Any(s => s.Has(saveSlot));
 
-        void Load()
+        void Load(StateDto state)
+        {
+            PositionRecorder.instance?.DeserializeState(state.SerializedPositions);
+
+            PhaseRecorder.instance?.DeserializeState(state.SerializedPhases);
+
+            // Loot must be fixed after phases in case a phase affects what can be looted where
+            LootTable.instance?.DeserializeState(state.SerializedLoot);
+
+            CurrencyTracker.DeserializeState(state.SerializedCurrencies);
+        }
+
+        void Load(string saveSlot)
         {
             Game.Status = GameStatus.Loading;
-            var data = PlayerPrefs.GetString(debugPlayerPrefsKey);
-            if (string.IsNullOrEmpty(data))
+            foreach (var storage in storages)
             {
-                Debug.LogWarning($"Nothing stored at {debugPlayerPrefsKey} yet");
-            }
-            else
-            {                
-                var state = JsonUtility.FromJson<StateDto>(StringCompressor.DecompressString(data));
-
-                PositionRecorder.instance?.DeserializeState(state.SerializedPositions);
-
-                PhaseRecorder.instance?.DeserializeState(state.SerializedPhases);
-
-                // Loot must be fixed after phases in case a phase affects what can be looted where
-                LootTable.instance?.DeserializeState(state.SerializedLoot);
-
-                CurrencyTracker.DeserializeState(state.SerializedCurrencies);
-
+                if (storage.Read(saveSlot, out string data))
+                {
+                    Debug.Log($"+++ Loading {saveSlot} from {storage} +++");
+                    var state = JsonUtility.FromJson<StateDto>(data);
+                    Load(state);
+                    break;
+                } else
+                {
+                    Debug.LogWarning($"Loading {saveSlot} from {storage} failed");
+                }
             }
             Game.RevertStatus();
         }
@@ -82,11 +97,11 @@ namespace DeCrawl.Systems
 
             if (GUILayout.Button("Debug Save"))
             {
-                Save();
+                Save(debugStorageKey);
             }
-            if (HasSave && GUILayout.Button("Debug Load"))
+            if (HasSave(debugStorageKey) && GUILayout.Button("Debug Load"))
             {
-                Load();
+                Load(debugStorageKey);
             }
 
             GUILayout.EndArea();
