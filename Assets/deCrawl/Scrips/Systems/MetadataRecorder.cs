@@ -25,13 +25,37 @@ namespace DeCrawl.Systems
         }
 
         public class GameMetadata {
+            /// <summary>
+            /// The title of the same, i.e. if user is allowed to input it
+            /// </summary>
             public string Title;
+            /// <summary>
+            /// The active quest or event
+            /// </summary>
             public string Quest;
+            /// <summary>
+            /// The name of the player character(s) / group
+            /// </summary>
             public string Character;
+            /// <summary>
+            /// The region or level in the game
+            /// </summary>
             public string Region;
+            /// <summary>
+            /// Any extra information the game wants to track
+            /// </summary>
             public string AuxInfo;
+            /// <summary>
+            /// Total time played (not counting menus and paused game)
+            /// </summary>
             public double PlayTimeSeconds;
+            /// <summary>
+            /// Time for the most recent version of metadata
+            /// </summary>
             public System.DateTimeOffset Time;
+            /// <summary>
+            /// An image of the game when metadata was recorded
+            /// </summary>
             public Texture2D Screenshot;
 
             public GameMetadata() { }
@@ -119,11 +143,17 @@ namespace DeCrawl.Systems
             }
         }
 
+        /// <summary>
+        /// The title of the same, i.e. if user is allowed to input it
+        /// </summary>
         public string Title
         {
             get => _Metadata.Title;
         }
 
+        /// <summary>
+        /// The active quest or event
+        /// </summary>
         public string Quest
         {
             get => _Metadata.Quest;
@@ -133,6 +163,9 @@ namespace DeCrawl.Systems
             }
         }
 
+        /// <summary>
+        /// The name of the player character(s) / group
+        /// </summary>
         public string Character
         {
             get => _Metadata.Character;
@@ -142,6 +175,9 @@ namespace DeCrawl.Systems
             }
         }
 
+        /// <summary>
+        /// The region or level in the game
+        /// </summary>
         public string Region
         {
             get => _Metadata.Region;
@@ -151,6 +187,9 @@ namespace DeCrawl.Systems
             }
         }
 
+        /// <summary>
+        /// Any extra information the game wants to track
+        /// </summary>
         public string AuxInfo
         {
             get => _Metadata.AuxInfo;
@@ -160,6 +199,9 @@ namespace DeCrawl.Systems
             }
         }
 
+        /// <summary>
+        /// An image of the game when metadata was recorded
+        /// </summary>
         public Texture2D Screenshot
         {
             get => _Metadata.Screenshot;
