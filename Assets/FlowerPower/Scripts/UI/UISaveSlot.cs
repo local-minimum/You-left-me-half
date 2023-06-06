@@ -20,7 +20,7 @@ namespace FP
         Image ScreenShot;
 
         [SerializeField]
-        string SaveSlot = "1";
+        protected string SaveSlot = "1";
 
         [SerializeField]
         Sprite NoSaveImage;
@@ -42,7 +42,7 @@ namespace FP
             Button.OnClick -= Button_OnClick;
         }
 
-        private void Button_OnClick(UIButton button)
+        virtual protected void Button_OnClick(UIButton button)
         {
             GameSaver.instance.Save(SaveSlot);
             SyncWithSave();
@@ -55,7 +55,7 @@ namespace FP
         }
 
 
-        void SyncWithSave()
+        protected void SyncWithSave()
         {
             if (GameSaver.instance == null)
             {
@@ -88,7 +88,16 @@ namespace FP
 
                 Info.text = $"{DurationText(metadata.PlayTimeSeconds)}/{metadata.Time.LocalDateTime.ToShortDateString()} {metadata.Time.LocalDateTime.ToShortTimeString()}";
                 Info.text += $"\n{metadata.AuxInfo}";
-                ScreenShot.sprite = NoSaveImage;
+
+                if (metadata.Screenshot != null)
+                {
+                    var sprite = Sprite.Create(metadata.Screenshot, new Rect(0, 0, metadata.Screenshot.width, metadata.Screenshot.height), Vector2.one * 0.5f);
+                    sprite.name = "Screenshot";
+                    ScreenShot.sprite = sprite;
+                } else
+                {
+                    ScreenShot.sprite = NoSaveImage;
+                }
                 return;
             }
                         

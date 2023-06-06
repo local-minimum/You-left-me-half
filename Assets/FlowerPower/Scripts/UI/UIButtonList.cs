@@ -7,7 +7,8 @@ namespace FP
 {
     public class UIButtonList : MonoBehaviour
     {
-        public List<UIButton> DisabledOptions = new List<UIButton>();
+        [SerializeField]
+        List<UIButton> DisabledOptions = new List<UIButton>();
 
         UIButton selectedButton;
         UIButton hoveredButton;
@@ -32,6 +33,21 @@ namespace FP
             }
         }
 
+        public void SetDisabled(IEnumerable<UIButton> buttons)
+        {
+            DisabledOptions.Clear();
+            DisabledOptions.AddRange(buttons);
+            SyncButtonStatus();
+        }
+
+        void SyncButtonStatus()
+        {
+            foreach (var button in Buttons)
+            {
+                button.Disabled = DisabledOptions.Contains(button);
+            }
+        }
+
         private void OnEnable()
         {
             DungeonInput.OnInput += DungeonInput_OnInput;
@@ -40,7 +56,6 @@ namespace FP
 
             foreach (var button in Buttons)
             {
-                button.Disabled = DisabledOptions.Contains(button);
                 button.OnHover += Button_OnHover;
                 button.OnClick += Button_OnClick;
 
@@ -55,6 +70,8 @@ namespace FP
                     selectedButton.Hovered = true;
                 }
             }
+
+            SyncButtonStatus();
         }
 
         private void OnDisable()

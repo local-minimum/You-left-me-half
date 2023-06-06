@@ -32,6 +32,7 @@ namespace DeCrawl.Systems
             public string AuxInfo;
             public double PlayTimeSeconds;
             public System.DateTimeOffset Time;
+            public Texture2D Screenshot;
 
             public GameMetadata() { }
 
@@ -44,6 +45,18 @@ namespace DeCrawl.Systems
                 AuxInfo = dto.AuxInfo;
                 PlayTimeSeconds = dto.PlayTimeSeconds;
                 Time = System.DateTimeOffset.FromUnixTimeMilliseconds(dto.EpochMillies);
+                if (!string.IsNullOrEmpty(dto.Screenshot))
+                {
+                    var bytes = System.Convert.FromBase64String(dto.Screenshot);
+                    Texture2D tex = new Texture2D(2, 2);
+                    if (ImageConversion.LoadImage(tex, bytes))
+                    {
+                        Screenshot = tex;
+                    } else
+                    {
+                        Debug.Log("Failed to load screenshot");
+                    }
+                }
             }
         }
 
@@ -57,6 +70,7 @@ namespace DeCrawl.Systems
             public string AuxInfo;
             public double PlayTimeSeconds;
             public long EpochMillies;
+            public string Screenshot;
 
             public MetadataDto(GameMetadata metadata)
             {
@@ -67,6 +81,7 @@ namespace DeCrawl.Systems
                 AuxInfo = metadata.AuxInfo;
                 PlayTimeSeconds = metadata.PlayTimeSeconds;
                 EpochMillies = metadata.Time.ToUniversalTime().ToUnixTimeMilliseconds();
+                Screenshot = System.Convert.ToBase64String(ImageConversion.EncodeToPNG(metadata.Screenshot));                
             }
         }
 
@@ -142,6 +157,15 @@ namespace DeCrawl.Systems
             set
             {
                 _Metadata.AuxInfo = value;
+            }
+        }
+
+        public Texture2D Screenshot
+        {
+            get => _Metadata.Screenshot;
+            set
+            {
+                _Metadata.Screenshot = value;
             }
         }
     }
