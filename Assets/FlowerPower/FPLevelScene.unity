@@ -3837,6 +3837,133 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7914339274635756923, guid: b8c8e4f3b5025e1499817458d6d67df2, type: 3}
   m_PrefabInstance: {fileID: 1524246365}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &304778892
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 304778894}
+  - component: {fileID: 304778893}
+  m_Layer: 0
+  m_Name: TestDice
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &304778893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 304778892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 569a287bf8118e940b0c612178d4f9d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  velocityDecay: 0.4
+  velocityToSampleTime:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.25
+      inSlope: 0.75
+      outSlope: 0.75
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0.75
+      outSlope: Infinity
+      tangentMode: 97
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  velocityToStayProbability:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: -3.9650347
+      outSlope: -3.9650347
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.019400353
+    - serializedVersion: 3
+      time: 0.11014834
+      value: 0.37264
+      inSlope: -1.8758224
+      outSlope: -1.3312421
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.043694522
+    - serializedVersion: 3
+      time: 1
+      value: -0.00000047683716
+      inSlope: -0.0890207
+      outSlope: Infinity
+      tangentMode: 97
+      weightedMode: 0
+      inWeight: 0.05549541
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  velocityToSwirveProbability:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0.005
+      value: 0.70000076
+      inSlope: -0.49751243
+      outSlope: -0.49751243
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0.20000076
+      inSlope: -0.49751243
+      outSlope: Infinity
+      tangentMode: 97
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  DebugDice: 10
+--- !u!4 &304778894
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 304778892}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 256, y: 256, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &306073840 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6524399839707702998, guid: 36d64cb1717aa3b488fa7c80624281fe, type: 3}
@@ -7526,7 +7653,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugStorageKey: debug
-  hideDebugUI: 0
+  hideDebugUI: 1
   DebugUIRect:
     serializedVersion: 2
     x: 0
