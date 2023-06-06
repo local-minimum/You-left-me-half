@@ -2451,6 +2451,7 @@ GameObject:
   - component: {fileID: 220134356}
   - component: {fileID: 220134357}
   - component: {fileID: 220134358}
+  - component: {fileID: 220134359}
   m_Layer: 0
   m_Name: Inventory
   m_TagString: Untagged
@@ -2503,6 +2504,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OnlyDirectDecendants: 1
   OwnerType: 1
+--- !u!114 &220134359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 220134355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 778b4998fa46d45419c569c1d5da1bdb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &223475394
 GameObject:
   m_ObjectHideFlags: 0
@@ -2820,6 +2833,50 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2596205675990107672, guid: d25ef63969803b8428753ae8fc875990, type: 3}
   m_PrefabInstance: {fileID: 242655945}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &245313466
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 245313468}
+  - component: {fileID: 245313467}
+  m_Layer: 0
+  m_Name: MetadataRecorder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &245313467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 245313466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5ed4e9f1dbaacb4a988f8a079c019ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &245313468
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 245313466}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 256, y: 256, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &246428590
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7171,6 +7228,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9372ff0bb930d2a41a173d31b4c6f84f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MetadataRegion: Broca's Aphasia
 --- !u!1001 &675949670
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7488,7 +7546,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   KeyPrefix: save
   CompressData: 1
-  _Enabled: 1
+  _Enabled: 0
 --- !u!114 &715027210
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7514,7 +7572,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e51ecac3370896548bf3a19d4e87ea11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Enabled: 0
+  _Enabled: 1
   FilePrefix: save
   FileSuffix: json
   Directory: unknown-incubator-flower-power

@@ -5,9 +5,9 @@ using DeCrawl.Systems;
 
 namespace FP
 {
-    public class UIMenuMain : MonoBehaviour, IUIMenuView
+    public class UISaves : MonoBehaviour, IUIMenuView
     {
-        public UIMenuSystem.State State => UIMenuSystem.State.Main;
+        public UIMenuSystem.State State => UIMenuSystem.State.Save;
 
         public bool Active { set => gameObject.SetActive(value); }
 
@@ -17,7 +17,6 @@ namespace FP
         {
             menuSystem = GetComponentInParent<UIMenuSystem>();
         }
-
 
         private void OnEnable()
         {
@@ -33,11 +32,9 @@ namespace FP
         {
             if (!DungeonInput.OverlappingTypes(type, DungeonInput.InputType.Down)) return;
 
-            if (
-                (input == DungeonInput.InputEvent.Abort || input == DungeonInput.InputEvent.Pause)
-            )
+            if (input == DungeonInput.InputEvent.Abort)
             {
-                menuSystem.state = UIMenuSystem.State.Hidden;
+                menuSystem.state = UIMenuSystem.State.Main;
             }
         }
     }

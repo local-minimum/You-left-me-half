@@ -12,13 +12,15 @@ namespace DeCrawl.Systems
         [System.Serializable]
         private struct StateDto
         {
+            public string SerializedMetadata;
             public string SerializedPositions;
             public string SerializedLoot;
             public string SerializedPhases;
             public string SerializedCurrencies;
 
-            public StateDto(string positions, string loot, string phases, string currencies)
+            public StateDto(string metadata, string positions, string loot, string phases, string currencies)
             {
+                SerializedMetadata = metadata;
                 SerializedPositions = positions;
                 SerializedLoot = loot;
                 SerializedPhases = phases;
@@ -34,9 +36,10 @@ namespace DeCrawl.Systems
         [SerializeField]
         bool hideDebugUI = false;
 
-        void Save(string saveSlot)
+        public void Save(string saveSlot)
         {
             var state = new StateDto(
+                MetadataRecorder.instance?.SerializeState(),
                 PositionRecorder.instance?.SerializeState(),
                 LootTable.instance?.SerializeState(),
                 PhaseRecorder.instance?.SerializeState(),
@@ -65,9 +68,41 @@ namespace DeCrawl.Systems
             LootTable.instance?.DeserializeState(state.SerializedLoot);
 
             CurrencyTracker.DeserializeState(state.SerializedCurrencies);
+
+            MetadataRecorder.instance?.DeserializeState(state.SerializedMetadata);
         }
 
-        void Load(string saveSlot)
+        public bool PeakMetadata(string saveSlot, out MetadataRecorder.GameMetadata metadata)
+        {
+            if (MetadataRecorder.instance == null)
+            {
+                metadata = null;
+                return false;
+            }
+
+            foreach (var storage in storages)
+            {
+                if (storage.Read(saveSlot, out string data))
+                {
+                    Debug.Log($"+++ Loading metadata {saveSlot} from {storage} +++");
+                    var state = JsonUtility.FromJson<StateDto>(data);
+                    metadata = MetadataRecorder.instance.Peak(state.SerializedMetadata);
+                    if (metadata != null)
+                    {
+                        return true;
+                    }                    
+                }
+                else
+                {
+                    Debug.LogWarning($"Loading metadata {saveSlot} from {storage} failed");
+                }
+            }
+
+            metadata = null;
+            return false;
+        }
+
+        public void Load(string saveSlot)
         {
             Game.Status = GameStatus.Loading;
             foreach (var storage in storages)

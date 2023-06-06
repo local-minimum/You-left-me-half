@@ -74,7 +74,7 @@ namespace FP
             spellWordFight.Configure(Interlocutor, FightWord, InterlocutorHealth);
 
             Game.Status = GameStatus.FightScene;
-
+            MetadataRecorder.instance.Quest = Interlocutor;
         }
 
         private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)

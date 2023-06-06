@@ -283,6 +283,8 @@ namespace DeCrawl.Primitives
         public int Health { get => GetCanisters(CurrencyType.Health).Sum(canister => canister.Stored); }
         public int Money { get => GetCanisters(CurrencyType.Money).Sum(canister => canister.Stored); }
 
+        public int Capacity(CurrencyType type) => GetCanisters(type).Sum(canister => canister.Capacity);
+
         public void SetCurrencyHeld(CurrencyType type, int amount, int capacity)
         {
             // capacity is ignored since it's handled by canister in this implementation

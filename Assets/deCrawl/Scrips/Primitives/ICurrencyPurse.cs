@@ -11,6 +11,8 @@ namespace DeCrawl.Primitives
         public int XP { get;}
         public int Health { get; }
 
+        public int Capacity(CurrencyType type);
+
         /// <summary>
         /// Implementation that registers a currency change with CurrencyTracker
         /// </summary>

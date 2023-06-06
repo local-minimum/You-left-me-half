@@ -11,7 +11,7 @@ namespace FP
 
         bool synced;
 
-        public enum State { Hidden, Main, About, Settings, Inventory };
+        public enum State { Hidden, Main, About, Settings, Inventory, Save, Load };
 
         private State _state;
 
