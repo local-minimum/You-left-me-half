@@ -21,6 +21,8 @@ namespace DeCrawl.Gadgets
 
         public static int GetOpposing(int face) => 7 - face;        
 
+        public static int GetLateral(int face, int previousFace) => (face * GetOpposing(face) * previousFace * GetOpposing(previousFace)) % 7;
+
         [SerializeField, Range(0, 1)]
         float velocityDecay = 0.3f;
 
@@ -90,9 +92,8 @@ namespace DeCrawl.Gadgets
             // Return rolling to either side;
             if (Random.value < velocityToSwirveProbability.Evaluate(velocity))
             {
-                var invalid = new int[] { upFaces[diceIndex], GetOpposing(upFaces[diceIndex]), previousUpFaces[diceIndex], GetOpposing(previousUpFaces[diceIndex]) };
-                var options = Faces.Where(v => !invalid.Contains(v)).ToArray();
-                return options[Random.Range(0, options.Length)];
+                var option = GetLateral(upFaces[diceIndex], previousUpFaces[diceIndex]);
+                return Random.value < 0.5f ? option : GetOpposing(option);                
             }
 
             // Return opposing side of previous face;

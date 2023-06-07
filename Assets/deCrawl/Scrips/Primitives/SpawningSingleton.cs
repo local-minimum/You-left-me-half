@@ -1,8 +1,10 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace DeCrawl.Primitives
 {
-    public class FindingSingleton<T> : MonoBehaviour where T : MonoBehaviour
+    public abstract class SpawningSingleton<T> : MonoBehaviour where T : MonoBehaviour
     {
         private static T _instance;
 
@@ -13,7 +15,13 @@ namespace DeCrawl.Primitives
                 if (_instance == null)
                 {
                     _instance = FindObjectOfType<T>();
-                }
+
+                    if (_instance == null)
+                    {
+                        var go = new GameObject(typeof(T).FullName);
+                        _instance = go.AddComponent<T>();                        
+                    }
+                }                
                 return _instance;
             }
         }

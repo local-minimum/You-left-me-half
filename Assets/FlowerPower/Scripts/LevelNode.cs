@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DeCrawl.Primitives;
 using DeCrawl.Utils;
+using DeCrawl.Systems.Development;
 
 namespace FP
 {
@@ -62,32 +63,33 @@ namespace FP
 
         public bool RemoveOccupant(FPEntity entity) => occupants.Remove(entity);
 
+        #if UNITY_EDITOR
         Color StatusColor
         {
             get
             {
-                if (AccessibleDirections.Count == 0) return Color.clear;
-                if (playerSpawn) return Color.cyan;
+                if (AccessibleDirections.Count == 0) return GridVisualizer.instance.StatusColor(GridVisualizer.GizmoColor.None);
 
                 switch (Occupant)
                 {
-                    case FPEntity.Nothing:
-                        return Color.white;
                     case FPEntity.Player:
-                        return Color.magenta;
+                        return GridVisualizer.instance.StatusColor(GridVisualizer.GizmoColor.Player);
                     case FPEntity.Enemy:
-                        return Color.red;
+                        return GridVisualizer.instance.StatusColor(GridVisualizer.GizmoColor.Enemy);
+                    case FPEntity.Nothing:
+                        if (GetComponent<FightTrigger>()?.WillTrigger ?? false) return GridVisualizer.instance.StatusColor(GridVisualizer.GizmoColor.Trigger);
+                        if (playerSpawn) return GridVisualizer.instance.StatusColor(GridVisualizer.GizmoColor.Stairs);
+                        return GridVisualizer.instance.StatusColor(GridVisualizer.GizmoColor.Empty);
                 }
-                return Color.black;
+                
+                return GridVisualizer.instance.StatusColor(GridVisualizer.GizmoColor.Empty);
             }
         }
 
-        float gizmoScale = 0.99f;
-        private void OnDrawGizmosSelected()
+        private void OnDrawGizmos()
         {
-            Gizmos.color = StatusColor;
-            var size = gizmoScale * LevelGridSize.Size;
-            Gizmos.DrawWireCube(transform.position + Vector3.up * 0.5f * LevelGridSize.Size, Vector3.one * size);
-        }        
+            GridVisualizer.instance.DrawTileGizmo(transform.position, LevelGridSize.Size, StatusColor);
+        }
+        #endif
     }
 }

@@ -1,35 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DeCrawl.Systems.Development;
 
 namespace YLHalf
 {
     public class GridGizmo : MonoBehaviour
     {
 #if UNITY_EDITOR
-        [SerializeField, Range(0, 1)] float gizmoScale = 0.97f;
-
         private bool GridCharacterToColor(GridEntity entity, out Color color)
         {
             switch (entity)
             {
                 case GridEntity.Other:
-                    color = Color.red;
+                    Debug.Log("other");
+                    color = GridVisualizer.instance.StatusColor(GridVisualizer.GizmoColor.Enemy);
                     return true;
                 case GridEntity.PlayerSpawn:
-                    color = Color.yellow;
+                    color = GridVisualizer.instance.StatusColor(GridVisualizer.GizmoColor.Stairs);
                     return true;
                 case GridEntity.Player:
-                    color = Color.magenta;
+                    color = GridVisualizer.instance.StatusColor(GridVisualizer.GizmoColor.Player);
                     return true;
                 case GridEntity.InBound:
-                    color = Color.cyan;
+                    color = GridVisualizer.instance.StatusColor(GridVisualizer.GizmoColor.Empty);
                     return true;
                 case GridEntity.VirtualSpace:
-                    color = Color.gray;
+                    color = GridVisualizer.instance.StatusColor(GridVisualizer.GizmoColor.Restricted);
                     return true;
                 default:
-                    color = Color.black;
+                    color = Color.clear;
                     return false;
             }
         }
@@ -38,8 +38,7 @@ namespace YLHalf
         {
             if (GridCharacterToColor(entity, out Color color))
             {
-                Gizmos.color = color;
-                Gizmos.DrawWireCube(new Vector3(coord.Item1, 0.5f, coord.Item2) * Level.GridScale, Vector3.one * Level.GridScale * gizmoScale);
+                GridVisualizer.instance.DrawTileGizmo(new Vector3(coord.Item1 * Level.GridScale, 0, coord.Item2 * Level.GridScale), Level.GridScale, color);
             }
         }
 

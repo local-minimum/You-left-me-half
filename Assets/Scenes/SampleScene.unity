@@ -317,6 +317,60 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 53200595}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &202115680
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 202115682}
+  - component: {fileID: 202115681}
+  m_Layer: 0
+  m_Name: DeCrawl.Systems.Development.GridVisualizer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &202115681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 202115680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1aa1692fe5d3a13439f63db927fe1bb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EmptyColor: {r: 1, g: 1, b: 1, a: 1}
+  RestrictedColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  PlayerColor: {r: 1, g: 0, b: 1, a: 1}
+  EnemyColor: {r: 1, g: 0, b: 0, a: 1}
+  StairsColor: {r: 0, g: 1, b: 1, a: 1}
+  TriggerColor: {r: 0, g: 0, b: 1, a: 1}
+  gizmoTileScale: 0.99
+  gizmoTileFloorAlpha: 0.75
+  gizmoTileFloorThickness: 0.1
+  gizmoTileCubeAlpha: 0.4
+--- !u!4 &202115682
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 202115680}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 14
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &203125084
 GameObject:
   m_ObjectHideFlags: 0
@@ -1030,7 +1084,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d0075132adaabd4cb2950fb9b78fca1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gizmoScale: 0.97
 --- !u!1 &631028820
 GameObject:
   m_ObjectHideFlags: 0
@@ -1575,7 +1628,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 379a75b96de67124589b109c89059487, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugPlayerPrefsKey: save.debug
+  debugStorageKey: debug
   hideDebugUI: 0
   DebugUIRect:
     serializedVersion: 2
@@ -7210,7 +7263,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh24154
+  m_Name: pb_Mesh46138
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2

@@ -39,6 +39,8 @@ namespace FP
 
         bool triggered = false;
 
+        public bool WillTrigger => !triggered;
+
         public string Id => Interlocutor;
 
         public event PhaseChangeEvent OnPhaseChange;
