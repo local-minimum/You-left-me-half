@@ -11,6 +11,8 @@ namespace ND {
 
         [SerializeField, WithAction("InitID", "Generate", "Constructs a new ID based on the name and a random number")]
         private string _id;
+
+
         void InitID()
         {
             _id = GenerateID();

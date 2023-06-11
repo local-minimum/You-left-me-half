@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68512305c761085489f587a31d755ac0, type: 3}
   m_Name: TextureCollection
   m_EditorClassIdentifier: 
-  name: 
-  _id: 
+  name: Test
+  _id: Test-22221907
   textures: []
