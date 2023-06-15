@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 68512305c761085489f587a31d755ac0, type: 3}
-  m_Name: TextureCollection
+  m_Name: TestCollection
   m_EditorClassIdentifier: 
   name: Test
   _id: Test-22221907

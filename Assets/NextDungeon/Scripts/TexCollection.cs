@@ -4,15 +4,14 @@ using UnityEngine;
 using DeCrawl.Utils;
 
 namespace ND {
-    [CreateAssetMenu(fileName = "TextureCollection", menuName = "Sprite Tools/Texture Collection")]
-    public class TextureCollection : ScriptableObject
+    [CreateAssetMenu(fileName = "Unknown Collection", menuName = "Sprite Tools/Texture Collection")]
+    public class TexCollection : ScriptableObject
     {        
         public new string name;
 
         [SerializeField, WithAction("InitID", "Generate", "Constructs a new ID based on the name and a random number")]
         private string _id;
-
-
+        
         void InitID()
         {
             _id = GenerateID();
@@ -28,8 +27,8 @@ namespace ND {
             set { _id = value; } 
         }
 
-        public Texture2D[] textures;
+        public Tex[] textures;
 
-        string GenerateID() => $"{name}-{Random.Range(0, (int) 1e8)}";        
+        public string GenerateID() => $"{name}-{Random.Range(0, (int) 1e8)}";        
     }
 }

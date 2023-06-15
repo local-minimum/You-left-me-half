@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1746fd36636f0d1498116210b9efc3fd, type: 3}
+  m_Name: TestFactory
+  m_EditorClassIdentifier: 
+  name: Tile Factory
+  source: {fileID: 2800000, guid: 19d777dc96c657f47bcc70daafb0de09, type: 3}
+  padding: {x: 0, y: 0}
+  spacing: {x: 0, y: 0}
+  tileSize: {x: 32, y: 32}
+  invertY: 1
+  magnified: 1
+  lowerBound: 24
+  upperBound: 31
