@@ -63,6 +63,7 @@ namespace ND {
             GUILayout.Label("Previews");
             
             var rects = factory.TileRects().ToArray();
+
             nSamples = rects.Length;
 
             // Calculate area we may populate

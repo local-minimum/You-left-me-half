@@ -29,6 +29,8 @@ namespace ND {
 
         public Tex[] textures;
 
+        public Texture2D GetTexture2D(int idx) => textures[idx].Texture;
+
         public string GenerateID() => $"{name}-{Random.Range(0, (int) 1e8)}";        
     }
 }
